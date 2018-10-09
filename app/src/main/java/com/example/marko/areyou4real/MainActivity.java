@@ -70,9 +70,9 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.menuSignOut :
                         signOut();
+                        break;
                 }
-                Intent intent = new Intent(getApplicationContext(),UserProfile.class);
-                startActivity(intent);
+                
                 return true;
             }
         });
