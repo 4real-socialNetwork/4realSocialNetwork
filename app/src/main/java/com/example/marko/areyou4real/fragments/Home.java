@@ -33,7 +33,7 @@ public class Home extends android.support.v4.app.Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private Context mContext;
-    private FirebaseAuth auth = FirebaseAuth.getInstance();
+    //private FirebaseAuth auth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference eventsRef = db.collection("Events");
     private SwipeRefreshLayout swipe ;
@@ -42,7 +42,7 @@ public class Home extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_layout, container, false);
-        String id = auth.getUid();
+        //String id = auth.getUid();
         mContext = getContext();
         swipe = view.findViewById(R.id.swipee);
        // Toast.makeText(mContext, auth.getUid(), Toast.LENGTH_SHORT).show();
