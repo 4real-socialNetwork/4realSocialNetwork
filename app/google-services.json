@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "810754595495",
+    "firebase_url": "https://areyou4real-62625.firebaseio.com",
+    "project_id": "areyou4real-62625",
+    "storage_bucket": "areyou4real-62625.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:810754595495:android:7842f48323d53c88",
+        "android_client_info": {
+          "package_name": "com.example.marko.areyou4real"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "810754595495-c56fprmal835repskmp6lv5qh061o6ho.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.marko.areyou4real",
+            "certificate_hash": "c2509f856ca0b16217f5f9e498114970b2cb3ea3"
+          }
+        },
+        {
+          "client_id": "810754595495-vnt20gfodgj3vfgn74ocqbtu6b2imb8i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEAIf_Rin9g_cfkg3UCzkGu8xLhVLf59g"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "810754595495-vnt20gfodgj3vfgn74ocqbtu6b2imb8i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

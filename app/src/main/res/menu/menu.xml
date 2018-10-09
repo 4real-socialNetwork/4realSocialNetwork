@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/profileMenu"
+        android:title="Profile"
+        app:showAsAction="never">
+
+
+    </item>
+    <item
+        android:id="@+id/about4real"
+        android:title="About 4Real"
+        app:showAsAction="never"></item>
+
+    <item
+        android:id="@+id/menuSignOut"
+        android:title="sign out"
+        app:showAsAction="never"></item>
+
+</menu>
