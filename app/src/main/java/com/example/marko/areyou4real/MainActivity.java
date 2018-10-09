@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                         signOut();
                         break;
                 }
-                
+
                 return true;
             }
         });
