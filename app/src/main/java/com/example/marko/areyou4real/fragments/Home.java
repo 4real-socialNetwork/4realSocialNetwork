@@ -45,7 +45,7 @@ public class Home extends android.support.v4.app.Fragment {
         String id = auth.getUid();
         mContext = getContext();
         swipe = view.findViewById(R.id.swipee);
-        Toast.makeText(mContext, auth.getUid(), Toast.LENGTH_SHORT).show();
+       // Toast.makeText(mContext, auth.getUid(), Toast.LENGTH_SHORT).show();
 
 
         mRecycleView = view.findViewById(R.id.homeRecyclerView);
