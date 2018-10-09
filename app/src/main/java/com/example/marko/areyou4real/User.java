@@ -115,8 +115,7 @@ public class User {
         this.userId = userId;
     }
 
-    public User(String userId,String name, String surname, String email, String description, int range, int fromTime, int toTime) {
-        this.userId=userId;
+    public User(String name, String surname, String email, String description, int range, int fromTime, int toTime) {
         this.name = name;
         this.surname = surname;
         this.email = email;

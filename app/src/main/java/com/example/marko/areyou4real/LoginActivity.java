@@ -33,9 +33,9 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
         btnSignUp = findViewById(R.id.btnSignUp);
-        user = auth.getCurrentUser();
-        String userId = user.getUid();
-        Toast.makeText(this, userId, Toast.LENGTH_LONG).show();
+       // user = auth.getCurrentUser();
+       // String userId = user.getUid();
+      //  Toast.makeText(this, userId, Toast.LENGTH_LONG).show();
 
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -49,8 +49,8 @@ public class CreateUser extends AppCompatActivity {
         range = findViewById(R.id.rangeBar);
         time = findViewById(R.id.etTime);
         btnCreateAccount = findViewById(R.id.btnCreateAcc);
-        userId = user.getUid();
-        Toast.makeText(this, userId, Toast.LENGTH_SHORT).show();
+//        userId = user.getUid();
+       // Toast.makeText(this, userId, Toast.LENGTH_SHORT).show();
 
         btnCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +71,7 @@ public class CreateUser extends AppCompatActivity {
         int vrijeme = Integer.parseInt(time.getText().toString());
 
 
-        User user = new User(userId, ime, prezime, mail, opis, udaljenost, vrijeme, 24);
+        User user = new User( ime, prezime, mail, opis, udaljenost, vrijeme, 24);
         usersRef.add(user);
     }
 

@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.example.marko.areyou4real.fragments.Groups;
 import com.example.marko.areyou4real.fragments.Home;
 import com.example.marko.areyou4real.fragments.adapter.SectionPagerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
     ViewPager viewPager;
@@ -58,6 +59,18 @@ public class MainActivity extends AppCompatActivity {
         item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.profileMenu:
+                        Intent intent = new Intent(getApplicationContext(),UserProfile.class);
+                        startActivity(intent);
+                        Toast.makeText(MainActivity.this, "going to UserProfile", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.about4real :
+                        Toast.makeText(MainActivity.this, "nismo jos ovaj acc napravili", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.menuSignOut :
+                        signOut();
+                }
                 Intent intent = new Intent(getApplicationContext(),UserProfile.class);
                 startActivity(intent);
                 return true;
@@ -72,5 +85,11 @@ public class MainActivity extends AppCompatActivity {
         adapter.addFragment(new Home(), "Home");
         adapter.addFragment(new Groups(), "Groups");
         viewPager.setAdapter(adapter);
+    }
+    private void signOut(){
+        FirebaseAuth.getInstance().signOut();
+        Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+        startActivity(intent);
+        Toast.makeText(this, "signing out", Toast.LENGTH_SHORT).show();
     }
 }

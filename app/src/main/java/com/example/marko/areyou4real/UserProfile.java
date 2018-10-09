@@ -21,11 +21,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 public class UserProfile extends AppCompatActivity {
     private FirebaseAuth auth = FirebaseAuth.getInstance();
-    private String userId = auth.getCurrentUser().getUid();
+//    private String userId = auth.getCurrentUser().getUid();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference usersRef = db.collection("Users");
     private DocumentReference docRef = usersRef.document();
-    private Query documentRef =  usersRef.whereEqualTo("userId",userId);
+ //   private Query documentRef =  usersRef.whereEqualTo("userId",userId);
     private EditText name;
     private EditText userDescription;
     private ImageView profilePicture;
@@ -36,7 +36,7 @@ public class UserProfile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
-        Toast.makeText(this, userId, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "nezz sjebo sm", Toast.LENGTH_SHORT).show();
         name = findViewById(R.id.etUserName);
         userDescription = findViewById(R.id.etUserDescription);
         profilePicture = findViewById(R.id.ivProfilePicture);
@@ -53,12 +53,10 @@ public class UserProfile extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        updateUI();
 
     }
     public void updateUI(){
-    usersRef.whereEqualTo("userId",userId)
-            .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+    usersRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
         @Override
         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
             for (DocumentSnapshot dc :queryDocumentSnapshots){
