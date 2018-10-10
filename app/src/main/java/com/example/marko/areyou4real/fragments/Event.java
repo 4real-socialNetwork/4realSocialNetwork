@@ -1,5 +1,7 @@
 package com.example.marko.areyou4real.fragments;
 
+import java.util.ArrayList;
+
 public class Event {
     private String name;
     private String activity;
@@ -10,6 +12,24 @@ public class Event {
     private int usersNeeded;
     private int usersEntered;
     private String eventId;
+    private String idOfTheUserWhoCreatedIt;
+    private ArrayList<String> listOfUsersParticipatingInEvent = new ArrayList<>();
+
+    public ArrayList<String> getListOfUsersParticipatingInEvent() {
+        return listOfUsersParticipatingInEvent;
+    }
+
+    public void setListOfUsersParticipatingInEvent(ArrayList<String> listOfUsersParticipatingInEvent) {
+        this.listOfUsersParticipatingInEvent = listOfUsersParticipatingInEvent;
+    }
+
+    public String getIdOfTheUserWhoCreatedIt() {
+        return idOfTheUserWhoCreatedIt;
+    }
+
+    public void setIdOfTheUserWhoCreatedIt(String idOfTheUserWhoCreatedIt) {
+        this.idOfTheUserWhoCreatedIt = idOfTheUserWhoCreatedIt;
+    }
 
     public  Event (){
 
@@ -23,7 +43,8 @@ public class Event {
         this.eventDescription = eventDescription;
     }
 
-    public Event(String name, String activity, int time, int latitude, int langitude, int usersNeeded, String eventDescription) {
+    public Event(String idOfTheUserWhoCreatedIt,String name, String activity, int time, int latitude, int langitude, int usersNeeded, String eventDescription) {
+        this.idOfTheUserWhoCreatedIt = idOfTheUserWhoCreatedIt;
         this.name = name;
         this.activity = activity;
         this.time = time;

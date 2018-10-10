@@ -20,28 +20,35 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
     private Context mContext;
     private ArrayList<Event> eventList;
 
-    public EventRecyclerAdapter(Context mContext, ArrayList<Event> eventList) {
-        this.mContext = mContext;
+
+    public EventRecyclerAdapter(ArrayList<Event> eventList, Context mContext) {
         this.eventList = eventList;
+        this.mContext = mContext;
     }
 
     @NonNull
     @Override
     public EventRecyclerAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_event_item,parent,false);
-        return new MyViewHolder(view);
+        Context context = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View contactView = inflater.inflate(R.layout.home_event_item, parent, false);
+        MyViewHolder viewHolder = new MyViewHolder(contactView);
+        return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull EventRecyclerAdapter.MyViewHolder holder, int position) {
         String name = eventList.get(position).getName();
         String place = eventList.get(position).getEventDescription();
+        final String eventId = eventList.get(position).getEventId();
         holder.sport.setText(name);
         holder.place.setText(place);
+
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext,InsideEvent.class);
+                Intent intent = new Intent(mContext, InsideEvent.class);
+                intent.putExtra("EVENT_ID",eventId);
                 mContext.startActivity(intent);
             }
         });
@@ -52,7 +59,7 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
         return eventList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public class MyViewHolder extends RecyclerView.ViewHolder {
         RelativeLayout relativeLayout;
         TextView sport;
         TextView place;
@@ -65,4 +72,6 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
 
         }
     }
+
+
 }

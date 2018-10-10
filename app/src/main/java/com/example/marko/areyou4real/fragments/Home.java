@@ -11,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.Toast;
 
 import com.example.marko.areyou4real.R;
@@ -33,29 +35,33 @@ public class Home extends android.support.v4.app.Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private Context mContext;
-    //private FirebaseAuth auth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference eventsRef = db.collection("Events");
-    private SwipeRefreshLayout swipe ;
+    private SwipeRefreshLayout swipe;
     private ArrayList<Event> listOfEvents = new ArrayList<>();
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_layout, container, false);
-        //String id = auth.getUid();
         mContext = getContext();
         swipe = view.findViewById(R.id.swipee);
-       // Toast.makeText(mContext, auth.getUid(), Toast.LENGTH_SHORT).show();
+
 
 
         mRecycleView = view.findViewById(R.id.homeRecyclerView);
-        mRecycleView.setHasFixedSize(true);
-
         mLayoutManager = new LinearLayoutManager(mContext);
+        mAdapter = new EventRecyclerAdapter( listOfEvents,getContext());
+        mRecycleView.setAdapter(mAdapter);
         mRecycleView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new EventRecyclerAdapter(getContext(), listOfEvents);
-        mRecycleView.setAdapter(mAdapter);
+        int resId = R.anim.layout_animation_fall_down;
+        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation( mContext, resId);
+        mRecycleView.setLayoutAnimation(animation);
+
+
+        mRecycleView.setHasFixedSize(true);
+
 
         loadEvents();
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -70,14 +76,13 @@ public class Home extends android.support.v4.app.Fragment {
                         int min = 15;
                         int max = 25;
                         Random random = new Random();
-                        int i = random.nextInt(max-min+1)+min;
+                        int i = random.nextInt(max - min + 1) + min;
                         me(getView());
+                        runLayoutAnimation(mRecycleView);
                     }
-                },1000);
+                }, 1000);
             }
         });
-
-
 
 
         return view;
@@ -87,6 +92,7 @@ public class Home extends android.support.v4.app.Fragment {
     public void onStart() {
         super.onStart();
         me(getView());
+        runLayoutAnimation(mRecycleView);
 
     }
 
@@ -115,19 +121,27 @@ public class Home extends android.support.v4.app.Fragment {
         });
 
     }
-    public void me (View view) {
+
+    public void me(View view) {
         mRecycleView = view.findViewById(R.id.homeRecyclerView);
         mRecycleView.setHasFixedSize(true);
 
         mLayoutManager = new LinearLayoutManager(mContext);
         mRecycleView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new EventRecyclerAdapter(getContext(), listOfEvents);
+        mAdapter = new EventRecyclerAdapter( listOfEvents,getContext());
         mRecycleView.setAdapter(mAdapter);
 
     }
-    public void setUserId(){
 
+    private void runLayoutAnimation(final RecyclerView recyclerView) {
+        final Context context = recyclerView.getContext();
+        final LayoutAnimationController controller =
+                AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down);
+
+        recyclerView.setLayoutAnimation(controller);
+        recyclerView.getAdapter().notifyDataSetChanged();
+        recyclerView.scheduleLayoutAnimation();
     }
 
 }

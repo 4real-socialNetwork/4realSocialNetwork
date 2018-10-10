@@ -54,7 +54,7 @@ public class CreateUser extends AppCompatActivity {
         btnCreateAccount = findViewById(R.id.btnCreateAcc);
         progressBar = findViewById(R.id.progressBarUser);
         rangeShower = findViewById(R.id.tvSeekBarShower);
-        rangeShower.setText(( ""+ progressBar.getProgress()+" km"));
+        rangeShower.setText(("" + progressBar.getProgress() + " km"));
 
 
         btnCreateAccount.setOnClickListener(new View.OnClickListener() {
@@ -69,13 +69,13 @@ public class CreateUser extends AppCompatActivity {
 
 
     private void createUserAndAccount() {
-       final String mail = email.getText().toString().trim();
-       final  String pass = password.getText().toString().trim();
-       final String ime = name.getText().toString().trim();
-       final  String prezime = surname.getText().toString().trim();
-       final  String opis = description.getText().toString().trim();
-       final  int udaljenost = range.getProgress();
-       final int vrijeme = Integer.parseInt(time.getText().toString());
+        final String mail = email.getText().toString().trim();
+        final String pass = password.getText().toString().trim();
+        final String ime = name.getText().toString().trim();
+        final String prezime = surname.getText().toString().trim();
+        final String opis = description.getText().toString().trim();
+        final int udaljenost = range.getProgress();
+        final int vrijeme = Integer.parseInt(time.getText().toString());
 
         if (mail.contentEquals("@") || pass.length() > 6) {
             auth.createUserWithEmailAndPassword(mail, pass)
@@ -83,7 +83,7 @@ public class CreateUser extends AppCompatActivity {
                         @Override
                         public void onSuccess(AuthResult authResult) {
 
-                            User user = new User(authResult.getUser().getUid(),ime, prezime, mail, opis, udaljenost, vrijeme, 24);
+                            User user = new User(authResult.getUser().getUid(), ime, prezime, mail, opis, udaljenost, vrijeme, 24);
                             usersRef.add(user);
 
 
@@ -97,6 +97,7 @@ public class CreateUser extends AppCompatActivity {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     Toast.makeText(CreateUser.this, "That account allready exists", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.INVISIBLE);
                 }
             });
 

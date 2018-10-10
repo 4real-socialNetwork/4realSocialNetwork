@@ -22,7 +22,7 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".fragments.InsideEvent" />
         <activity android:name=".CreateEvent" />
-        <activity android:name=".UserProfile"></activity>
+        <activity android:name=".UserProfile" />
     </application>
 
 </manifest>
