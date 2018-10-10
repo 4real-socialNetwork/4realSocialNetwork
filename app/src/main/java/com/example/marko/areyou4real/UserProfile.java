@@ -21,11 +21,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 public class UserProfile extends AppCompatActivity {
     private FirebaseAuth auth = FirebaseAuth.getInstance();
-//    private String userId = auth.getCurrentUser().getUid();
+    private String userId = auth.getCurrentUser().getUid();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference usersRef = db.collection("Users");
     private DocumentReference docRef = usersRef.document();
- //   private Query documentRef =  usersRef.whereEqualTo("userId",userId);
     private EditText name;
     private EditText userDescription;
     private ImageView profilePicture;
@@ -36,12 +35,14 @@ public class UserProfile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
-        Toast.makeText(this, "nezz sjebo sm", Toast.LENGTH_SHORT).show();
+
         name = findViewById(R.id.etUserName);
         userDescription = findViewById(R.id.etUserDescription);
         profilePicture = findViewById(R.id.ivProfilePicture);
         userInterest = findViewById(R.id.etUserInterest);
         btnSaveChanges = findViewById(R.id.btnSaveUserChanges);
+        updateUI();
+
         btnSaveChanges.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,21 +56,40 @@ public class UserProfile extends AppCompatActivity {
         super.onStart();
 
     }
-    public void updateUI(){
-    usersRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-        @Override
-        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-            for (DocumentSnapshot dc :queryDocumentSnapshots){
-                User user = dc.toObject(User.class);
-                name.setText(user.getName());
-                userInterest.setText("nogomet,kosarka,rukomet");
-                userDescription.setText(user.getDescription());
+
+    public void updateUI() {
+        usersRef.whereEqualTo("userId",userId)
+                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (DocumentSnapshot dc : queryDocumentSnapshots) {
+                    User user = dc.toObject(User.class);
+                    name.setText(user.getName());
+                    userInterest.setText(user.getInterest());
+                    userDescription.setText(user.getDescription());
+                }
             }
-        }
-    });
+        });
 
     }
-    public void saveChanges(){
+
+    public void saveChanges() {
+        usersRef.whereEqualTo("userId",userId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (DocumentSnapshot dc : queryDocumentSnapshots){
+                    String document = dc.getId();
+                    dc.getDocumentReference(document).update("description",userDescription.getText().toString(),"name",
+                            name.getText().toString(),"interest",userInterest.getText().toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(UserProfile.this, "Changes saved", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                }
+            }
+        });
     }
 }
 

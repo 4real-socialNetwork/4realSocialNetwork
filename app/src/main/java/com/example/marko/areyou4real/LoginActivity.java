@@ -16,26 +16,25 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
-    private FirebaseAuth auth;
     private EditText etEmail;
     private EditText etPassword;
     private Button btnSignUp;
     private Button btnLogin;
-    private FirebaseUser user;
+    private FirebaseAuth auth = FirebaseAuth.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        checkIfSignedIn(auth.getCurrentUser());
 
-        auth = FirebaseAuth.getInstance();
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
         btnSignUp = findViewById(R.id.btnSignUp);
-       // user = auth.getCurrentUser();
-       // String userId = user.getUid();
-      //  Toast.makeText(this, userId, Toast.LENGTH_LONG).show();
+        // user = auth.getCurrentUser();
+        // String userId = user.getUid();
+        //  Toast.makeText(this, userId, Toast.LENGTH_LONG).show();
 
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,14 +75,14 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    public void updateUI(FirebaseUser currentUser) {
+    public void checkIfSignedIn(FirebaseUser currentUser) {
         if (currentUser != null) {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
 
-        } else {
-            Toast.makeText(this, "no user yet", Toast.LENGTH_SHORT).show();
         }
 
     }
+
+
 }

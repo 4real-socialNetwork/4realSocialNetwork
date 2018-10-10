@@ -51,10 +51,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Range" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvSeekBarShower"
+                android:text="0 km"/>
             <SeekBar
                 android:id="@+id/rangeBar"
                 android:layout_width="match_parent"
-                android:layout_height="20dp" />
+                android:layout_height="20dp"
+                />
 
             <EditText
                 android:layout_width="wrap_content"
@@ -70,6 +77,12 @@
                 android:text="create account"
                 android:layout_gravity="right"
                 android:id="@+id/btnCreateAcc"/>
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/progressBarUser"
+                android:visibility="invisible"/>
 
 
 

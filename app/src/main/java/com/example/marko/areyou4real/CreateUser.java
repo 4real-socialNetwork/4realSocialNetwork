@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,9 +25,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class CreateUser extends AppCompatActivity {
     private FirebaseAuth auth = FirebaseAuth.getInstance();
-    private FirebaseUser user = auth.getCurrentUser();
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference usersRef = db.collection("Users");
+
     private EditText email;
     private EditText password;
     private EditText name;
@@ -34,13 +36,14 @@ public class CreateUser extends AppCompatActivity {
     private SeekBar range;
     private EditText time;
     private Button btnCreateAccount;
-    private String userId;
+    private ProgressBar progressBar;
+    private TextView rangeShower;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_user);
-        auth = FirebaseAuth.getInstance();
+
         email = findViewById(R.id.etEmail);
         password = findViewById(R.id.etPassword);
         name = findViewById(R.id.etName);
@@ -49,42 +52,43 @@ public class CreateUser extends AppCompatActivity {
         range = findViewById(R.id.rangeBar);
         time = findViewById(R.id.etTime);
         btnCreateAccount = findViewById(R.id.btnCreateAcc);
-//        userId = user.getUid();
-       // Toast.makeText(this, userId, Toast.LENGTH_SHORT).show();
+        progressBar = findViewById(R.id.progressBarUser);
+        rangeShower = findViewById(R.id.tvSeekBarShower);
+        rangeShower.setText(( ""+ progressBar.getProgress()+" km"));
+
 
         btnCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createUser();
-                createAcc();
+                progressBar.setVisibility(View.VISIBLE);
+                createUserAndAccount();
             }
         });
 
     }
 
-    private void createAcc() {
-        String mail = email.getText().toString().trim();
-        String ime = name.getText().toString().trim();
-        String prezime = surname.getText().toString().trim();
-        String opis = description.getText().toString().trim();
-        int udaljenost = range.getProgress();
-        int vrijeme = Integer.parseInt(time.getText().toString());
 
-
-        User user = new User( ime, prezime, mail, opis, udaljenost, vrijeme, 24);
-        usersRef.add(user);
-    }
-
-    private void createUser() {
-        String mail = email.getText().toString().trim();
-        String pass = password.getText().toString().trim();
+    private void createUserAndAccount() {
+       final String mail = email.getText().toString().trim();
+       final  String pass = password.getText().toString().trim();
+       final String ime = name.getText().toString().trim();
+       final  String prezime = surname.getText().toString().trim();
+       final  String opis = description.getText().toString().trim();
+       final  int udaljenost = range.getProgress();
+       final int vrijeme = Integer.parseInt(time.getText().toString());
 
         if (mail.contentEquals("@") || pass.length() > 6) {
             auth.createUserWithEmailAndPassword(mail, pass)
                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult authResult) {
+
+                            User user = new User(authResult.getUser().getUid(),ime, prezime, mail, opis, udaljenost, vrijeme, 24);
+                            usersRef.add(user);
+
+
                             Toast.makeText(CreateUser.this, "Acc created", Toast.LENGTH_SHORT).show();
+                            progressBar.setVisibility(View.INVISIBLE);
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent);
 
