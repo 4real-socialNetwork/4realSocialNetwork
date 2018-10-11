@@ -118,4 +118,11 @@ public class Event {
     public void setEventId(String eventId) {
         this.eventId = eventId;
     }
+
+    public void addUsersToArray(String userId){
+        listOfUsersParticipatingInEvent.add(userId);
+    }
+    public void incrementNumberOfUsersEntered(){
+        usersEntered+=1;
+    }
 }

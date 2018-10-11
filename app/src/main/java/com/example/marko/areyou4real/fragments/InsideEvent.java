@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.marko.areyou4real.MainActivity;
 import com.example.marko.areyou4real.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -37,6 +38,7 @@ public class InsideEvent extends AppCompatActivity {
     private Intent intent;
     private String eventId;
     private FloatingActionButton fab;
+    private String userId = FirebaseAuth.getInstance().getUid();
 
 
     @Override
@@ -74,7 +76,8 @@ public class InsideEvent extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (DocumentSnapshot dc : task.getResult()) {
-                        Event event = dc.toObject(Event.class);
+                        final Event event = dc.toObject(Event.class);
+                        final Event event1 = event;
                         tvEventName.setText(event.getName());
                         tvEventActivity.setText(event.getActivity());
                         tvEventTime.setText("" + event.getTime());
@@ -82,9 +85,30 @@ public class InsideEvent extends AppCompatActivity {
                         tvEventPlace.setText("Neko mjesto");
                         tvEventPlayersNeeded.setText("" + event.getUsersNeeded());
                         tvEventPlayersEntered.setText("" + event.getUsersEntered());
-                        if (event.getIdOfTheUserWhoCreatedIt() == FirebaseAuth.getInstance().getUid()) {
+                        if (event.getIdOfTheUserWhoCreatedIt().equals(FirebaseAuth.getInstance().getUid())) {
                             btnDoSomething.setText("delete event");
+                            btnDoSomething.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                eventsRef.document(eventId).delete();
+                                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                                startActivity(intent);
+                                    Toast.makeText(InsideEvent.this, "Event deleated", Toast.LENGTH_SHORT).show();
+                                }
+                            });
 
+                        } else {
+                            btnDoSomething.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                event1.addUsersToArray(userId);
+                                event1.incrementNumberOfUsersEntered();
+                                eventsRef.document(eventId).set(event1);
+                                    //moramo provjeriti jel vec usao u event, te ako ej staviti mu da ne može više ,
+                                    // nego da samo može izaći van.
+
+                                }
+                            });
                         }
                     }
                 }
