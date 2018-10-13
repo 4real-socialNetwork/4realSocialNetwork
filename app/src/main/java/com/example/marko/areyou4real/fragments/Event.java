@@ -31,7 +31,7 @@ public class Event {
         this.idOfTheUserWhoCreatedIt = idOfTheUserWhoCreatedIt;
     }
 
-    public  Event (){
+    public Event() {
 
     }
 
@@ -43,7 +43,7 @@ public class Event {
         this.eventDescription = eventDescription;
     }
 
-    public Event(String idOfTheUserWhoCreatedIt,String name, String activity, int time, int latitude, int langitude, int usersNeeded, String eventDescription) {
+    public Event(String idOfTheUserWhoCreatedIt, String name, String activity, int time, int latitude, int langitude, int usersNeeded, String eventDescription) {
         this.idOfTheUserWhoCreatedIt = idOfTheUserWhoCreatedIt;
         this.name = name;
         this.activity = activity;
@@ -51,7 +51,7 @@ public class Event {
         this.latitude = latitude;
         this.langitude = langitude;
         this.usersNeeded = usersNeeded;
-        this.eventDescription=eventDescription;
+        this.eventDescription = eventDescription;
 
     }
 
@@ -119,10 +119,17 @@ public class Event {
         this.eventId = eventId;
     }
 
-    public void addUsersToArray(String userId){
+    public void addUsersToArray(String userId) {
+        listOfUsersParticipatingInEvent.add(userId);
+        usersEntered += 1;
+
+    }
+    public void addCreatorUserToArray(String userId){
         listOfUsersParticipatingInEvent.add(userId);
     }
-    public void incrementNumberOfUsersEntered(){
-        usersEntered+=1;
+
+    public void removeUserFromEvent(String userIdToBeRemoved) {
+        listOfUsersParticipatingInEvent.remove(userIdToBeRemoved);
+        usersEntered -= 1;
     }
 }

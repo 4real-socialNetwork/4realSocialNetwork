@@ -36,7 +36,6 @@ public class CreateEvent extends AppCompatActivity {
     private DocumentReference docRef;
     private String docId;
     private String userId = FirebaseAuth.getInstance().getUid();
-    private ArrayList<String> peopleInEvent = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,10 +69,9 @@ public class CreateEvent extends AppCompatActivity {
         int ljudiPotrebno = Integer.parseInt(playersNeeded.getText().toString());
         String opis = eventDescription.getText().toString();
 
-        peopleInEvent.add(FirebaseAuth.getInstance().getUid());
         Event event = new Event(userId, ime, aktivnost, kord1, kord2, vrijeme, ljudiPotrebno, opis);
-        event.setUsersEntered(1);
-        event.setListOfUsersParticipatingInEvent(peopleInEvent);
+        event.addCreatorUserToArray(userId);
+
         eventsRef.add(event).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
