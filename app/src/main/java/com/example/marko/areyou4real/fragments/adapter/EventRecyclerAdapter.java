@@ -21,9 +21,14 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
     private ArrayList<Event> eventList;
 
 
-    public EventRecyclerAdapter(ArrayList<Event> eventList, Context mContext) {
-        this.eventList = eventList;
+    public EventRecyclerAdapter(Context mContext) {
+        this.eventList = new ArrayList<>();
         this.mContext = mContext;
+    }
+
+    public void addItem(Event event) {
+        this.eventList.add(event);
+        notifyItemInserted(getItemCount() - 1);
     }
 
     @NonNull

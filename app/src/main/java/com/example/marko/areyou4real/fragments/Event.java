@@ -6,7 +6,7 @@ public class Event {
     private String name;
     private String activity;
     private String eventDescription;
-    private int time;
+    private double time;
     private int latitude;
     private int langitude;
     private int usersNeeded;
@@ -43,7 +43,7 @@ public class Event {
         this.eventDescription = eventDescription;
     }
 
-    public Event(String idOfTheUserWhoCreatedIt, String name, String activity, int time, int latitude, int langitude, int usersNeeded, String eventDescription) {
+    public Event(String idOfTheUserWhoCreatedIt, String name, String activity, double time, int latitude, int langitude, int usersNeeded, String eventDescription) {
         this.idOfTheUserWhoCreatedIt = idOfTheUserWhoCreatedIt;
         this.name = name;
         this.activity = activity;
@@ -71,11 +71,11 @@ public class Event {
         this.activity = activity;
     }
 
-    public int getTime() {
+    public double getTime() {
         return time;
     }
 
-    public void setTime(int time) {
+    public void setTime(double time) {
         this.time = time;
     }
 

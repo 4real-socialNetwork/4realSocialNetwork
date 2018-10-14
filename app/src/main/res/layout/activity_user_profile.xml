@@ -40,6 +40,7 @@
         android:layout_height="wrap_content"
         android:text="save changes"
         android:layout_gravity="right"
-        android:id="@+id/btnSaveUserChanges"/>
+        android:id="@+id/btnSaveUserChanges"
+        />
 
 </LinearLayout>

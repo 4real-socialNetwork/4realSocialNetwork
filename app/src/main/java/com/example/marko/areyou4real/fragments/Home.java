@@ -1,10 +1,12 @@
 package com.example.marko.areyou4real.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +17,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.Toast;
 
+import com.example.marko.areyou4real.CreateEvent;
 import com.example.marko.areyou4real.R;
 import com.example.marko.areyou4real.fragments.adapter.EventRecyclerAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -32,13 +35,13 @@ import java.util.Random;
 
 public class Home extends android.support.v4.app.Fragment {
     private RecyclerView mRecycleView;
-    private RecyclerView.Adapter mAdapter;
+    private EventRecyclerAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private Context mContext;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference eventsRef = db.collection("Events");
     private SwipeRefreshLayout swipe;
-    private ArrayList<Event> listOfEvents = new ArrayList<>();
+    private FloatingActionButton fab;
 
     @Nullable
     @Override
@@ -46,12 +49,13 @@ public class Home extends android.support.v4.app.Fragment {
         View view = inflater.inflate(R.layout.home_layout, container, false);
         mContext = getContext();
         swipe = view.findViewById(R.id.swipee);
+        fab = view.findViewById(R.id.fab);
 
 
 
         mRecycleView = view.findViewById(R.id.homeRecyclerView);
         mLayoutManager = new LinearLayoutManager(mContext);
-        mAdapter = new EventRecyclerAdapter( listOfEvents,getContext());
+        mAdapter = new EventRecyclerAdapter(getContext());
         mRecycleView.setAdapter(mAdapter);
         mRecycleView.setLayoutManager(mLayoutManager);
 
@@ -62,6 +66,13 @@ public class Home extends android.support.v4.app.Fragment {
 
         mRecycleView.setHasFixedSize(true);
 
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext,CreateEvent.class);
+                startActivity(intent);
+            }
+        });
 
         loadEvents();
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -72,12 +83,6 @@ public class Home extends android.support.v4.app.Fragment {
                     @Override
                     public void run() {
                         swipe.setRefreshing(false);
-
-                        int min = 15;
-                        int max = 25;
-                        Random random = new Random();
-                        int i = random.nextInt(max - min + 1) + min;
-                        me(getView());
                         runLayoutAnimation(mRecycleView);
                     }
                 }, 1000);
@@ -91,16 +96,11 @@ public class Home extends android.support.v4.app.Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        me(getView());
         runLayoutAnimation(mRecycleView);
 
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
 
-    }
 
     public void loadEvents() {
         eventsRef
@@ -110,7 +110,8 @@ public class Home extends android.support.v4.app.Fragment {
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         for (DocumentSnapshot document : queryDocumentSnapshots) {
                             Event event = document.toObject(Event.class);
-                            listOfEvents.add(event);
+                            mAdapter.addItem(event);
+                            mAdapter.notifyDataSetChanged();
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -119,18 +120,6 @@ public class Home extends android.support.v4.app.Fragment {
                 Toast.makeText(mContext, "error", Toast.LENGTH_SHORT).show();
             }
         });
-
-    }
-
-    public void me(View view) {
-        mRecycleView = view.findViewById(R.id.homeRecyclerView);
-        mRecycleView.setHasFixedSize(true);
-
-        mLayoutManager = new LinearLayoutManager(mContext);
-        mRecycleView.setLayoutManager(mLayoutManager);
-
-        mAdapter = new EventRecyclerAdapter( listOfEvents,getContext());
-        mRecycleView.setAdapter(mAdapter);
 
     }
 

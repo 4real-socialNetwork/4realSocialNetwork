@@ -24,7 +24,6 @@ public class UserProfile extends AppCompatActivity {
     private String userId = auth.getCurrentUser().getUid();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference usersRef = db.collection("Users");
-    private DocumentReference docRef = usersRef.document();
     private EditText name;
     private EditText userDescription;
     private ImageView profilePicture;

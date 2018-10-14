@@ -1,5 +1,6 @@
 package com.example.marko.areyou4real;
 
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.marko.areyou4real.fragments.Event;
@@ -21,6 +23,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class CreateEvent extends AppCompatActivity {
     private EditText name;
@@ -58,6 +61,28 @@ public class CreateEvent extends AppCompatActivity {
             }
         });
 
+        time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar myCalender = Calendar.getInstance();
+                int hour = myCalender.get(Calendar.HOUR_OF_DAY);
+                int minute = myCalender.get(Calendar.MINUTE);
+
+
+                TimePickerDialog.OnTimeSetListener myTimeListener = new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        myCalender.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        myCalender.set(Calendar.MINUTE, minute);
+
+                    }
+                };
+                TimePickerDialog timePickerDialog = new TimePickerDialog(CreateEvent.this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar, myTimeListener, hour, minute, true);
+                timePickerDialog.setTitle("Choose hour:");
+                timePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                timePickerDialog.show();
+            }
+        });
     }
 
     public void createEvent() {
@@ -65,11 +90,11 @@ public class CreateEvent extends AppCompatActivity {
         String aktivnost = activity.getText().toString();
         int kord1 = Integer.parseInt(lat.getText().toString());
         int kord2 = Integer.parseInt(longitude.getText().toString());
-        int vrijeme = Integer.parseInt(time.getText().toString());
+        double vrijeme = Double.parseDouble(time.getText().toString());
         int ljudiPotrebno = Integer.parseInt(playersNeeded.getText().toString());
         String opis = eventDescription.getText().toString();
 
-        Event event = new Event(userId, ime, aktivnost, kord1, kord2, vrijeme, ljudiPotrebno, opis);
+        Event event = new Event(userId, ime, aktivnost, vrijeme, kord2, kord1, ljudiPotrebno, opis);
         event.addCreatorUserToArray(userId);
 
         eventsRef.add(event).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
