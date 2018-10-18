@@ -57,7 +57,8 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="29dp"
         android:layout_marginBottom="29dp"
-        android:text="Create Group" />
+        android:text="Create Group"
+        android:id="@+id/btnCreateGroup"/>
 
 
 

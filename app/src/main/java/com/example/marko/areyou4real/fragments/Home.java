@@ -53,6 +53,7 @@ public class Home extends android.support.v4.app.Fragment {
 
 
 
+
         mRecycleView = view.findViewById(R.id.homeRecyclerView);
         mLayoutManager = new LinearLayoutManager(mContext);
         mAdapter = new EventRecyclerAdapter(getContext());
@@ -97,6 +98,7 @@ public class Home extends android.support.v4.app.Fragment {
     public void onStart() {
         super.onStart();
         runLayoutAnimation(mRecycleView);
+
 
     }
 

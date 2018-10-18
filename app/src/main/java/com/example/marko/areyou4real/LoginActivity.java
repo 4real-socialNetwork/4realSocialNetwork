@@ -1,5 +1,6 @@
 package com.example.marko.areyou4real;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnSignUp;
     private Button btnLogin;
     private FirebaseAuth auth = FirebaseAuth.getInstance();
+    private Context mContext = LoginActivity.this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void signUp() {
-        Intent intent = new Intent(this, CreateUser.class);
+        Intent intent = new Intent(mContext, CreateUser.class);
         startActivity(intent);
 
     }
@@ -67,8 +69,9 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            Intent intent = new Intent(mContext, MainActivity.class);
                             startActivity(intent);
+                            finish();
                         } else {
                             Toast.makeText(LoginActivity.this, "auth failed", Toast.LENGTH_SHORT).show();
                         }
@@ -83,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void checkIfSignedIn(FirebaseUser currentUser) {
         if (currentUser != null) {
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            Intent intent = new Intent(mContext, MainActivity.class);
             startActivity(intent);
 
         }

@@ -1,5 +1,6 @@
 package com.example.marko.areyou4real;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +28,7 @@ public class CreateUser extends AppCompatActivity {
     private FirebaseAuth auth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference usersRef = db.collection("Users");
+    private Context mContext = CreateUser.this;
 
     private EditText email;
     private EditText password;
@@ -89,8 +91,9 @@ public class CreateUser extends AppCompatActivity {
 
                             Toast.makeText(CreateUser.this, "Acc created", Toast.LENGTH_SHORT).show();
                             progressBar.setVisibility(View.INVISIBLE);
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            Intent intent = new Intent(mContext, MainActivity.class);
                             startActivity(intent);
+                            finish();
 
                         }
                     }).addOnFailureListener(new OnFailureListener() {
