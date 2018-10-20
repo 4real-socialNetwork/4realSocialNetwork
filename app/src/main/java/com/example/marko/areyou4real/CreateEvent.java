@@ -26,7 +26,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class CreateEvent extends AppCompatActivity {
-    
+
+    private static final String TAG = "CreateEvent";
+
     private EditText name;
     private EditText activity;
     private EditText lat;
@@ -40,11 +42,12 @@ public class CreateEvent extends AppCompatActivity {
     private DocumentReference docRef;
     private String docId;
     private String userId = FirebaseAuth.getInstance().getUid();
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
+        System.out.println("onCreate Create Event.");
 
         name = findViewById(R.id.etName);
         activity = findViewById(R.id.etActivity);
