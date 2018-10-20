@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class CreateEvent extends AppCompatActivity {
+    
     private EditText name;
     private EditText activity;
     private EditText lat;
