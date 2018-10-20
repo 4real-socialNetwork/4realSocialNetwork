@@ -1,6 +1,7 @@
 package com.example.marko.areyou4real;
 
 import android.content.Context;
+import android.nfc.Tag;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class CreateGroup extends AppCompatActivity {
+    private final String provjera = "provjera?";
 
     private EditText etGroupName;
     private EditText etAddUsers;
@@ -76,7 +78,6 @@ public class CreateGroup extends AppCompatActivity {
     }
 
     public void loadData() {
-
 
         userRef.get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
