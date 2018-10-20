@@ -103,6 +103,7 @@ public class InsideEvent extends AppCompatActivity {
                 } catch (NullPointerException exception) {
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intent);
+                    Toast.makeText(InsideEvent.this, "yes", Toast.LENGTH_SHORT).show();
                 }
 
 
