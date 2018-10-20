@@ -70,12 +70,7 @@ public class CreateGroup extends AppCompatActivity {
             }
         });
 
-        btnCreateGroup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadData();
-            }
-        });
+
     }
 
     public void loadData() {
@@ -90,7 +85,6 @@ public class CreateGroup extends AppCompatActivity {
                                 User user = dc.toObject(User.class);
                                 userList.add(user);
                                 mAdapter.notifyDataSetChanged();
-                                Toast.makeText(getApplicationContext(), user.getName(), Toast.LENGTH_SHORT).show();
                             }
 
                         }
