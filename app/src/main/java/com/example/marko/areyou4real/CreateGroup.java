@@ -7,8 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -38,8 +40,9 @@ public class CreateGroup extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private SearchUserRecyclerViewAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private Context mContext;
+    private Context mContext = CreateGroup.this;
     private FirebaseAuth auth = FirebaseAuth.getInstance();
+    private String userId = auth.getUid();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference userRef = db.collection("Users");
     private ArrayList<User> userList = new ArrayList<>();
@@ -48,8 +51,12 @@ public class CreateGroup extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        Toast.makeText(mContext, "Ide li?", Toast.LENGTH_SHORT).show();
 
         etGroupName = findViewById(R.id.etGroupName);
         etAddUsers = findViewById(R.id.etAddUsers);
@@ -75,6 +82,14 @@ public class CreateGroup extends AppCompatActivity {
         });
 
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return true;
     }
 
     public void loadData() {

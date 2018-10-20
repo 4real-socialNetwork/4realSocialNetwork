@@ -53,7 +53,7 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, InsideEvent.class);
-                intent.putExtra("EVENT_ID",eventId);
+                intent.putExtra("EVENT_ID", eventId);
                 mContext.startActivity(intent);
             }
         });

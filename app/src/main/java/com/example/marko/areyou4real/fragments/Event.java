@@ -124,7 +124,8 @@ public class Event {
         usersEntered += 1;
 
     }
-    public void addCreatorUserToArray(String userId){
+
+    public void addCreatorUserToArray(String userId) {
         listOfUsersParticipatingInEvent.add(userId);
     }
 

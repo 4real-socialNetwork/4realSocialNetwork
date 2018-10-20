@@ -4,17 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CreateGroup"
-    android:padding="16dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".CreateGroup">
+
+    <android.support.v7.widget.Toolbar
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@color/colorPrimary"
+        android:id="@+id/toolbar"
+         />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/etGroupName"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="25dp"
-        android:text="Group name :" />
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="62dp"
+        android:text="Group name:" />
 
     <EditText
         android:id="@+id/etGroupName"
@@ -22,7 +32,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="46dp" />
+        android:layout_marginTop="127dp"
+        android:layout_marginLeft="16dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -43,23 +54,22 @@
         android:hint="search..." />
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/searchRecyclerView"
         android:layout_width="226dp"
         android:layout_height="219dp"
         android:layout_below="@+id/etAddUsers"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="-2dp"
-        android:id="@+id/searchRecyclerView"/>
+        android:layout_marginTop="-2dp" />
 
     <Button
+        android:id="@+id/btnCreateGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="29dp"
         android:layout_marginBottom="29dp"
-        android:text="Create Group"
-        android:id="@+id/btnCreateGroup"/>
-
+        android:text="Create Group" />
 
 
 </RelativeLayout>

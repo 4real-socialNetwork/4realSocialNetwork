@@ -20,7 +20,7 @@ public class SearchUserRecyclerViewAdapter extends RecyclerView.Adapter<SearchUs
     Context mContext;
     ArrayList<User> userList;
 
-    public SearchUserRecyclerViewAdapter(Context mContext,ArrayList<User>userList) {
+    public SearchUserRecyclerViewAdapter(Context mContext, ArrayList<User> userList) {
         this.mContext = mContext;
         this.userList = userList;
     }
@@ -42,6 +42,7 @@ public class SearchUserRecyclerViewAdapter extends RecyclerView.Adapter<SearchUs
             }
         });
     }
+
     public void addUser(User user) {
         this.userList.add(user);
         notifyItemInserted(getItemCount() - 1);
@@ -63,7 +64,7 @@ public class SearchUserRecyclerViewAdapter extends RecyclerView.Adapter<SearchUs
         }
     }
 
-    public void filterList(ArrayList<User> filteredList){
+    public void filterList(ArrayList<User> filteredList) {
         userList = filteredList;
         notifyDataSetChanged();
     }
