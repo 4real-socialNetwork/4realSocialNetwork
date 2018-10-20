@@ -47,6 +47,8 @@ public class CreateGroup extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
 
+        Toast.makeText(mContext, "Ide li?", Toast.LENGTH_SHORT).show();
+
         etGroupName = findViewById(R.id.etGroupName);
         etAddUsers = findViewById(R.id.etAddUsers);
         btnCreateGroup = findViewById(R.id.btnCreateGroup);
