@@ -61,10 +61,12 @@ public class Group {
         this.groupPicture = groupPicture;
         this.groupId = groupId;
     }
-    public void addUserToGroup(String userId){
+
+    public void addUserToGroup(String userId) {
         listOfUsersInGroup.add(userId);
     }
-    public void exitGroup(String userId){
-      listOfUsersInGroup.remove(userId);
+
+    public void exitGroup(String userId) {
+        listOfUsersInGroup.remove(userId);
     }
 }
