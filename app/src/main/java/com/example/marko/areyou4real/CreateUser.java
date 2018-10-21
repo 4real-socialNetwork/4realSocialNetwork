@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -69,8 +70,11 @@ public class CreateUser extends AppCompatActivity {
 
     }
 
-
     private void createUserAndAccount() {
+
+        if (!validateForm()) {
+            return;
+        }
         final String mail = email.getText().toString().trim();
         final String pass = password.getText().toString().trim();
         final String ime = name.getText().toString().trim();
@@ -108,6 +112,47 @@ public class CreateUser extends AppCompatActivity {
             Toast.makeText(this, "Password or email not valid", Toast.LENGTH_SHORT).show();
         }
 
+    }
+    private boolean validateForm() {
+        boolean result = true;
+        if (TextUtils.isEmpty(email.getText().toString())) {
+            email.setError("Required");
+            result = false;
+        } else {
+            email.setError(null);
+        }
+        if (TextUtils.isEmpty(password.getText().toString())) {
+            password.setError("Required");
+            result = false;
+        } else {
+            password.setError(null);
+        }
+        if (TextUtils.isEmpty(name.getText().toString())) {
+            name.setError("Required");
+            result = false;
+        } else {
+            name.setError(null);
+        }
+        if (TextUtils.isEmpty(surname.getText().toString())) {
+            surname.setError("Required");
+            result = false;
+        } else {
+            surname.setError(null);
+        }
+        if (TextUtils.isEmpty(description.getText().toString())) {
+            description.setError("Required");
+            result = false;
+        } else {
+            description.setError(null);
+        }
+        if (TextUtils.isEmpty(time.getText().toString())) {
+            time.setError("Required");
+            result = false;
+        } else {
+            time.setError(null);
+        }
+
+        return result;
     }
 
 

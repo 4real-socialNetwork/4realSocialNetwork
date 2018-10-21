@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,12 +21,15 @@ import com.google.firebase.auth.FirebaseUser;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginActivity";
+
     
     private EditText etEmail;
     private EditText etPassword;
     private Button btnSignUp;
     private Button btnLogin;
+
     private FirebaseAuth auth = FirebaseAuth.getInstance();
+
     private Context mContext = LoginActivity.this;
 
     @Override
@@ -38,9 +42,6 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
         btnSignUp = findViewById(R.id.btnSignUp);
-        // user = auth.getCurrentUser();
-        // String userId = user.getUid();
-        //  Toast.makeText(this, userId, Toast.LENGTH_LONG).show();
 
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,13 +59,24 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        checkIfSignedIn(auth.getCurrentUser());
+    }
+
     private void signUp() {
         Intent intent = new Intent(mContext, CreateUser.class);
         startActivity(intent);
-
     }
 
     private void login() {
+
+        if (!validateForm()) {
+            return;
+        }
+
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
         auth.signInWithEmailAndPassword(email, password)
@@ -91,9 +103,27 @@ public class LoginActivity extends AppCompatActivity {
         if (currentUser != null) {
             Intent intent = new Intent(mContext, MainActivity.class);
             startActivity(intent);
-
+            finish();
         }
 
+    }
+    private boolean validateForm() {
+        boolean result = true;
+        if (TextUtils.isEmpty(etEmail.getText().toString())) {
+            etEmail.setError("Required");
+            result = false;
+        } else {
+            etEmail.setError(null);
+        }
+
+        if (TextUtils.isEmpty(etPassword.getText().toString())) {
+            etPassword.setError("Required");
+            result = false;
+        } else {
+            etPassword.setError(null);
+        }
+
+        return result;
     }
 
 
