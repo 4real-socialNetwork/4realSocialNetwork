@@ -8,6 +8,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.Toast;
 
 import com.example.marko.areyou4real.fragments.Event;
@@ -89,4 +91,5 @@ public class MyEvents extends AppCompatActivity {
         }
         return true;
     }
+
 }

@@ -26,11 +26,16 @@ import com.google.common.cache.RemovalNotification;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Home extends android.support.v4.app.Fragment {
@@ -74,6 +79,7 @@ public class Home extends android.support.v4.app.Fragment {
         });
 
         loadEvents();
+
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -82,7 +88,9 @@ public class Home extends android.support.v4.app.Fragment {
                     @Override
                     public void run() {
                         swipe.setRefreshing(false);
+                        updateData();
                         runLayoutAnimation(mRecycleView);
+
                     }
                 }, 1000);
             }
@@ -95,11 +103,8 @@ public class Home extends android.support.v4.app.Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        runLayoutAnimation(mRecycleView);
-
 
     }
-
 
     public void loadEvents() {
         eventsRef
@@ -130,6 +135,28 @@ public class Home extends android.support.v4.app.Fragment {
         recyclerView.setLayoutAnimation(controller);
         recyclerView.getAdapter().notifyDataSetChanged();
         recyclerView.scheduleLayoutAnimation();
+    }
+
+    public void updateData() {
+        mAdapter.clearAll();
+        eventsRef
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (DocumentSnapshot document : queryDocumentSnapshots) {
+                            Event event = document.toObject(Event.class);
+                            mAdapter.addItem(event);
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(mContext, "error", Toast.LENGTH_SHORT).show();
+            }
+        });
+        mAdapter.notifyDataSetChanged();
     }
 
 }

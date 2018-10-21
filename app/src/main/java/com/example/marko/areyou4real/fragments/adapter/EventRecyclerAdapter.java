@@ -77,6 +77,9 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
 
         }
     }
+    public void clearAll(){
+        eventList.clear();
+    }
 
 
 }
