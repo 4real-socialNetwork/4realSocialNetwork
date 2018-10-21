@@ -5,20 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="16dp"
     tools:context=".CreateUser">
-
-    <android.support.v7.widget.Toolbar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/toolbar"
-        android:background="@color/colorPrimary"/>
-
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp"
-        >
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -63,12 +55,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tvSeekBarShower"
-                android:text="0 km"/>
-            <SeekBar
-                android:id="@+id/rangeBar"
+                android:id="@+id/tvSeekBarShower" />
+
+            <android.support.v7.widget.AppCompatSeekBar
+                android:id="@+id/seekBar"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
+                android:max="100"
                 />
 
             <EditText
@@ -77,7 +70,6 @@
                 android:hint="time"
                 android:inputType="datetime"
                 android:id="@+id/etTime"/>
-
 
             <Button
                 android:layout_width="wrap_content"
@@ -92,11 +84,8 @@
                 android:id="@+id/progressBarUser"
                 android:visibility="invisible"/>
 
-
-
-
-
         </LinearLayout>
+
     </ScrollView>
 
 

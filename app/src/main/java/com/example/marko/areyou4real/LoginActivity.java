@@ -27,7 +27,8 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnSignUp;
     private Button btnLogin;
 
-    private FirebaseAuth auth = FirebaseAuth.getInstance();
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     private Context mContext = LoginActivity.this;
 
@@ -35,7 +36,19 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        checkIfSignedIn(auth.getCurrentUser());
+
+        mAuth = FirebaseAuth.getInstance();
+
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+
+                if (user != null){
+                    checkIfSignedIn(user);
+                }
+            }
+        };
 
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
@@ -45,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signUp();
+                createUser();
             }
         });
 
@@ -61,11 +74,18 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-        checkIfSignedIn(auth.getCurrentUser());
+        mAuth.addAuthStateListener(mAuthStateListener);
     }
 
-    private void signUp() {
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mAuth != null){
+            mAuth.removeAuthStateListener(mAuthStateListener);
+        }
+    }
+
+    private void createUser() {
         Intent intent = new Intent(mContext, CreateUser.class);
         startActivity(intent);
     }
@@ -78,7 +98,8 @@ public class LoginActivity extends AppCompatActivity {
 
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
-        auth.signInWithEmailAndPassword(email, password)
+
+        mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -109,20 +130,34 @@ public class LoginActivity extends AppCompatActivity {
     private boolean validateForm() {
         boolean result = true;
         if (TextUtils.isEmpty(etEmail.getText().toString())) {
-            etEmail.setError("Required");
+            etEmail.setError("Obavezno popuniti");
             result = false;
-        } else {
+        } else if (!isEmailValid(etEmail.getText().toString())){
+            etEmail.setError("Email adresa nije valjana");
+            result = false;
+        }
+        else {
             etEmail.setError(null);
         }
-
         if (TextUtils.isEmpty(etPassword.getText().toString())) {
-            etPassword.setError("Required");
+            etPassword.setError("Obavezno popuniti");
             result = false;
-        } else {
+
+        } else if(!isPasswordValid(etPassword.getText().toString())){
+            etEmail.setError("Lozinka nije dovoljno duga");
+            result = false;
+        }
+        else {
             etPassword.setError(null);
         }
 
         return result;
+    }
+    private boolean isEmailValid(String email){
+        return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+    private boolean isPasswordValid(String password) {
+        return password.length() > 5;
     }
 
 

@@ -7,9 +7,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,10 +35,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class CreateGroup extends AppCompatActivity {
-    private final String provjera = "provjera?";
 
-    private EditText etGroupName;
-    private EditText etAddUsers;
     private Button btnCreateGroup;
     private RecyclerView mRecyclerView;
     private SearchUserRecyclerViewAdapter mAdapter;
@@ -46,6 +46,7 @@ public class CreateGroup extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference userRef = db.collection("Users");
     private ArrayList<User> userList = new ArrayList<>();
+    private ArrayList<User> newUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,30 +59,34 @@ public class CreateGroup extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
-        etGroupName = findViewById(R.id.etGroupName);
-        etAddUsers = findViewById(R.id.etAddUsers);
         btnCreateGroup = findViewById(R.id.btnCreateGroup);
         loadData();
+        newUser = new ArrayList<>(userList);
+        setmAdapter();
 
 
-        etAddUsers.addTextChangedListener(new TextWatcher() {
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menu_search = getMenuInflater();
+        menu_search.inflate(R.menu.menu_search, menu);
+
+        MenuItem search = menu.findItem(R.id.app_bar_search);
+        SearchView searchView = (SearchView) search.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public boolean onQueryTextSubmit(String query) {
+                return false;
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                loadData();
-                filter(s.toString());
+            public boolean onQueryTextChange(String newText) {
+                mAdapter.getFilter().filter(newText);
+                return false;
             }
         });
-
-
+        return true;
     }
 
     @Override
@@ -114,21 +119,15 @@ public class CreateGroup extends AppCompatActivity {
             }
         });
 
-        mRecyclerView = findViewById(R.id.searchRecyclerView);
+
+    }
+
+    private void setmAdapter() {
+        mRecyclerView = findViewById(R.id.container);
         mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mAdapter = new SearchUserRecyclerViewAdapter(getApplicationContext(), userList);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
-    }
-
-    private void filter(String text) {
-        ArrayList<User> filteredList = new ArrayList<>();
-        for (User user : filteredList) {
-            if (user.getName().toLowerCase().contains(text.toLowerCase())) {
-                filteredList.add(user);
-            }
-        }
-        mAdapter.filterList(filteredList);
     }
 }

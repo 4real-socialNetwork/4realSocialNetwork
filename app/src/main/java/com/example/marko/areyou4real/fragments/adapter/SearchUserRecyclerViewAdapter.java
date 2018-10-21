@@ -6,6 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -16,13 +18,15 @@ import com.example.marko.areyou4real.User;
 
 import java.util.ArrayList;
 
-public class SearchUserRecyclerViewAdapter extends RecyclerView.Adapter<SearchUserRecyclerViewAdapter.ViewHolder> {
+public class SearchUserRecyclerViewAdapter extends RecyclerView.Adapter<SearchUserRecyclerViewAdapter.ViewHolder> implements Filterable {
     Context mContext;
     ArrayList<User> userList;
+    ArrayList<User> userListFull;
 
     public SearchUserRecyclerViewAdapter(Context mContext, ArrayList<User> userList) {
         this.mContext = mContext;
         this.userList = userList;
+        userListFull = new ArrayList<>(userList);
     }
 
     @NonNull
@@ -53,6 +57,38 @@ public class SearchUserRecyclerViewAdapter extends RecyclerView.Adapter<SearchUs
         return userList.size();
     }
 
+    @Override
+    public Filter getFilter() {
+        return filterUser;
+    }
+
+    private Filter filterUser = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            ArrayList<User> filteredList = new ArrayList<>();
+            if (constraint==null || constraint.length()==0){
+                filteredList.addAll(userListFull);
+            }else {
+                String filteredPattern = constraint.toString().toLowerCase().trim();
+                for (User user : userListFull){
+                    if (user.getName().toLowerCase().contains(filteredPattern)){
+                        filteredList.add(user);
+                    }
+                }
+            }
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+            return  results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            userList.clear();
+            userList.addAll((ArrayList<User>)results.values);
+            notifyDataSetChanged();
+        }
+    };
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView userName;
         LinearLayout searchUserLinearLayout;
@@ -64,8 +100,5 @@ public class SearchUserRecyclerViewAdapter extends RecyclerView.Adapter<SearchUs
         }
     }
 
-    public void filterList(ArrayList<User> filteredList) {
-        userList = filteredList;
-        notifyDataSetChanged();
-    }
+
 }
