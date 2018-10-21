@@ -58,8 +58,10 @@ public class Home extends android.support.v4.app.Fragment {
 
 
         mRecycleView = view.findViewById(R.id.homeRecyclerView);
+        mRecycleView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(mContext);
         mAdapter = new EventRecyclerAdapter(getContext());
+        mAdapter.clearAll();
         mRecycleView.setAdapter(mAdapter);
         mRecycleView.setLayoutManager(mLayoutManager);
 
@@ -67,8 +69,9 @@ public class Home extends android.support.v4.app.Fragment {
         LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(mContext, resId);
         mRecycleView.setLayoutAnimation(animation);
 
+        loadEvents();
 
-        mRecycleView.setHasFixedSize(true);
+
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,7 +81,6 @@ public class Home extends android.support.v4.app.Fragment {
             }
         });
 
-        loadEvents();
 
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -157,6 +159,9 @@ public class Home extends android.support.v4.app.Fragment {
             }
         });
         mAdapter.notifyDataSetChanged();
+    }
+    private void setmAdapter(){
+
     }
 
 }
