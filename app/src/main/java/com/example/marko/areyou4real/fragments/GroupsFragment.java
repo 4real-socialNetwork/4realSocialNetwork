@@ -31,7 +31,7 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private Context mContext ;
+    private Context mContext;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference eventsRef = db.collection("Groups");
     private FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -44,7 +44,7 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.groups_layout, container, false);
         swipe = view.findViewById(R.id.groupSwipe);
-        mContext= getContext();
+        mContext = getContext();
 
         floatingActionButton = view.findViewById(R.id.fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -59,19 +59,16 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
         strings.add("afasgsagagag");
 
 
-        groupsList.add(new Group("family",strings,strings.size(),null,"asfasfsafas"));
+        groupsList.add(new Group("family", strings, strings.size(), null, "asfasfsafas"));
 
 
         mRecyclerView = view.findViewById(R.id.container);
         mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new GridLayoutManager(mContext,2);
+        mLayoutManager = new GridLayoutManager(mContext, 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new GroupsRecyclerAdapter(mContext,groupsList);
+        mAdapter = new GroupsRecyclerAdapter(mContext, groupsList);
         mRecyclerView.setAdapter(mAdapter);
-
-
-
 
 
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

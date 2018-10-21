@@ -1,6 +1,7 @@
 package com.example.marko.areyou4real.fragments.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.marko.areyou4real.InsideGroup;
 import com.example.marko.areyou4real.R;
 import com.example.marko.areyou4real.fragments.Group;
 
@@ -29,7 +31,7 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
     @NonNull
     @Override
     public GroupsRecyclerAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-       View view =  LayoutInflater.from(parent.getContext()).inflate(R.layout.groups_layout_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.groups_layout_item, parent, false);
         return new MyViewHolder(view);
     }
 
@@ -38,7 +40,8 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
         holder.groupItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mcontext, "well shit", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(mcontext, InsideGroup.class);
+                mcontext.startActivity(intent);
             }
         });
         holder.groupName.setText(grupsList.get(position).getGroupName());
@@ -48,10 +51,12 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
     public int getItemCount() {
         return grupsList.size();
     }
+
     public class MyViewHolder extends RecyclerView.ViewHolder {
         RelativeLayout groupItem;
         ImageView groupImage;
         TextView groupName;
+
         public MyViewHolder(View itemView) {
             super(itemView);
             this.groupImage = itemView.findViewById(R.id.ivGroupImage);

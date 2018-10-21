@@ -5,61 +5,74 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".CreateEvent"
-    android:padding="16dp">
+    tools:context=".CreateEvent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary" />
 
     <EditText
         android:id="@+id/etName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="name" />
+        android:hint="name"
+        android:padding="16dp" />
 
     <EditText
         android:id="@+id/etActivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="activity" />
+        android:hint="activity"
+        android:padding="16dp" />
 
     <EditText
         android:id="@+id/etTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="time"
         android:hint="at what time?"
-        />
+        android:inputType="time"
+        android:padding="16dp" />
 
     <EditText
         android:id="@+id/etLat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="lattitude"
         android:inputType="number"
-        android:hint="lattitude"/>
+        android:padding="16dp" />
 
     <EditText
         android:id="@+id/etLong"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="longitude"
         android:inputType="number"
-        android:hint="longitude"/>
+        android:padding="16dp" />
 
     <EditText
         android:id="@+id/etPlayersNeeded"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="players needed"
         android:inputType="number"
-        android:hint="players needed"/>
+        android:padding="16dp" />
+
     <EditText
+        android:id="@+id/etEventDescription"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:id="@+id/etEventDescription"
-        android:hint="Description" />
+        android:hint="Description"
+        android:padding="16dp" />
 
     <Button
+        android:id="@+id/btnCreateEvent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/btnCreateEvent"
-        android:text="Create Event"
-        android:layout_gravity="right"/>
+        android:layout_gravity="right"
+        android:padding="16dp"
+        android:text="Create Event" />
 
 
 </LinearLayout>

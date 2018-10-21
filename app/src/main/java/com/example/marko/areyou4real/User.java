@@ -13,7 +13,8 @@ public class User {
     String description;
     String interest;
 
-    public  User (){}
+    public User() {
+    }
 
     public int getUsersFinalGrade() {
         return usersFinalGrade;
@@ -105,10 +106,6 @@ public class User {
     }
 
 
-
-
-
-
     public String getUserId() {
         return userId;
     }
@@ -117,7 +114,7 @@ public class User {
         this.userId = userId;
     }
 
-    public User(String userId,String name, String surname, String email, String description, int range, int fromTime, int toTime) {
+    public User(String userId, String name, String surname, String email, String description, int range, int fromTime, int toTime) {
         this.userId = userId;
         this.name = name;
         this.surname = surname;
@@ -132,6 +129,6 @@ public class User {
     public void gradeUser(int grade) {
         userGrades += grade;
         numberOfGrades += 1;
-        usersFinalGrade = userGrades/numberOfGrades;
+        usersFinalGrade = userGrades / numberOfGrades;
     }
 }

@@ -52,8 +52,6 @@ public class Home extends android.support.v4.app.Fragment {
         fab = view.findViewById(R.id.fab);
 
 
-
-
         mRecycleView = view.findViewById(R.id.homeRecyclerView);
         mLayoutManager = new LinearLayoutManager(mContext);
         mAdapter = new EventRecyclerAdapter(getContext());
@@ -61,7 +59,7 @@ public class Home extends android.support.v4.app.Fragment {
         mRecycleView.setLayoutManager(mLayoutManager);
 
         int resId = R.anim.layout_animation_fall_down;
-        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation( mContext, resId);
+        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(mContext, resId);
         mRecycleView.setLayoutAnimation(animation);
 
 
@@ -70,7 +68,7 @@ public class Home extends android.support.v4.app.Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext,CreateEvent.class);
+                Intent intent = new Intent(mContext, CreateEvent.class);
                 startActivity(intent);
             }
         });
@@ -101,7 +99,6 @@ public class Home extends android.support.v4.app.Fragment {
 
 
     }
-
 
 
     public void loadEvents() {

@@ -57,7 +57,7 @@ public class UserProfile extends AppCompatActivity {
     }
 
     public void updateUI() {
-        usersRef.whereEqualTo("userId",userId)
+        usersRef.whereEqualTo("userId", userId)
                 .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -73,13 +73,13 @@ public class UserProfile extends AppCompatActivity {
     }
 
     public void saveChanges() {
-        usersRef.whereEqualTo("userId",userId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        usersRef.whereEqualTo("userId", userId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for (DocumentSnapshot dc : queryDocumentSnapshots){
+                for (DocumentSnapshot dc : queryDocumentSnapshots) {
                     String document = dc.getId();
-                    dc.getDocumentReference(document).update("description",userDescription.getText().toString(),"name",
-                            name.getText().toString(),"interest",userInterest.getText().toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    dc.getDocumentReference(document).update("description", userDescription.getText().toString(), "name",
+                            name.getText().toString(), "interest", userInterest.getText().toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Toast.makeText(UserProfile.this, "Changes saved", Toast.LENGTH_SHORT).show();
