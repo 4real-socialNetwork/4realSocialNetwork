@@ -10,9 +10,9 @@
 
     </item>
     <item
-        android:id="@+id/about4real"
+        android:id="@+id/myEvents"
         android:focusableInTouchMode="false"
-        android:title="About 4Real"
+        android:title="My events"
         app:showAsAction="never"></item>
 
     <item

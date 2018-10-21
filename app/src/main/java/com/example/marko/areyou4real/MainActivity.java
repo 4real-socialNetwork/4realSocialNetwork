@@ -60,8 +60,9 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "going to UserProfile", Toast.LENGTH_SHORT).show();
 
             return false;
-        } else if (item.getItemId() == R.id.about4real) {
-            Toast.makeText(MainActivity.this, "nismo jos ovaj acc napravili", Toast.LENGTH_SHORT).show();
+        } else if (item.getItemId() == R.id.myEvents) {
+            Intent intent = new Intent(MainActivity.this,MyEvents.class);
+            startActivity(intent);
         } else if (item.getItemId() == R.id.menuSignOut) {
             signOut();
         }

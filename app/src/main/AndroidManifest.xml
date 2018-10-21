@@ -20,16 +20,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CreateUser"
-            android:noHistory="true"/>
+        <activity
+            android:name=".CreateUser"
+            android:noHistory="true" />
         <activity android:name=".MainActivity" />
         <activity android:name=".fragments.InsideEvent" />
-        <activity android:name=".CreateEvent"
-            android:noHistory="true"/>
+        <activity
+            android:name=".CreateEvent"
+            android:noHistory="true" />
         <activity android:name=".UserProfile" />
         <activity android:name=".InsideGroup" />
-        <activity android:name=".CreateGroup"
-            android:noHistory="true"></activity>
+        <activity
+            android:name=".CreateGroup"
+            android:noHistory="true" />
+        <activity android:name=".MyEvents"></activity>
     </application>
 
 </manifest>
