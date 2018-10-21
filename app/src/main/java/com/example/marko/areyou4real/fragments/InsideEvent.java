@@ -156,7 +156,12 @@ public class InsideEvent extends AppCompatActivity {
 
                         } else if (!(event.getListOfUsersParticipatingInEvent().contains(userId))) {
                             btnDoSomething.setText(btnText3);
-                            joinEvent();
+                            if (event.getUsersEntered()>=event.getUsersNeeded()){
+                                btnDoSomething.setText("Event full");
+                            }else{
+                                joinEvent();
+
+                            }
                         } else {
                             btnDoSomething.setText(btnText2);
                             exitEvent();
@@ -246,7 +251,7 @@ public class InsideEvent extends AppCompatActivity {
         btnDoSomething.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent intent = new Intent(InsideEvent.this, MainActivity.class);
                 startActivity(intent);
                 Toast.makeText(InsideEvent.this, "event deleted", Toast.LENGTH_SHORT).show();
                 eventsRef.document(eventId).delete().addOnCompleteListener(new OnCompleteListener<Void>() {

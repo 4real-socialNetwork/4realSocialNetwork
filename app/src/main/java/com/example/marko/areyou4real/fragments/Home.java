@@ -160,8 +160,6 @@ public class Home extends android.support.v4.app.Fragment {
         });
         mAdapter.notifyDataSetChanged();
     }
-    private void setmAdapter(){
 
-    }
 
 }

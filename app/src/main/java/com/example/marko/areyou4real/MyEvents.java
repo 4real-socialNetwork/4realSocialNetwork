@@ -1,7 +1,9 @@
 package com.example.marko.areyou4real;
 
 import android.content.Context;
+import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,6 +35,7 @@ public class MyEvents extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference eventsRef = db.collection("Events");
     private String userId = FirebaseAuth.getInstance().getUid();
+    private SwipeRefreshLayout swipe;
 
 
     @Override
@@ -44,11 +47,34 @@ public class MyEvents extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        swipe = findViewById(R.id.swipe);
 
-        loadEvents();
+
+        loadEventsJoined();
         setmAdapter();
 
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipe.setRefreshing(true);
+                (new Handler()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipe.setRefreshing(false);
+                        mAdapter.clearAll();
+                        loadEventsJoined();
 
+                    }
+                }, 1000);
+            }
+        });
+
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     private void setmAdapter() {
@@ -91,5 +117,26 @@ public class MyEvents extends AppCompatActivity {
         }
         return true;
     }
+    private void loadEventsJoined(){
+        eventsRef
+                .whereArrayContains("listOfUsersParticipatingInEvent", userId)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (DocumentSnapshot document : queryDocumentSnapshots) {
+                            Event event = document.toObject(Event.class);
+                            mAdapter.addItem(event);
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(mContext, "error", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
 
 }
