@@ -15,12 +15,15 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.marko.areyou4real.dialogs.InterestDialog;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
 
 public class CreateUser extends AppCompatActivity {
 
@@ -29,7 +32,7 @@ public class CreateUser extends AppCompatActivity {
     private CollectionReference mUsersRef = db.collection("Users");
 
     private Context mContext = CreateUser.this;
-
+    private Button btnInteres;
     private EditText email;
     private EditText password;
     private EditText name;
@@ -38,8 +41,9 @@ public class CreateUser extends AppCompatActivity {
     private AppCompatSeekBar seekBar;
     private EditText time;
     private Button btnCreateAccount;
-    //private ProgressBar progressBar;
+    private ProgressBar progressBar;
     private TextView showSeekBar;
+    private ArrayList<String> selectedItems = new ArrayList<>();
 
     private int current_range = 0;
 
@@ -48,7 +52,7 @@ public class CreateUser extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_user);
 
-
+        btnInteres = findViewById(R.id.btnInteres);
         email = findViewById(R.id.etEmail);
         password = findViewById(R.id.etPassword);
         name = findViewById(R.id.etName);
@@ -57,7 +61,7 @@ public class CreateUser extends AppCompatActivity {
         seekBar = findViewById(R.id.seekBar);
         time = findViewById(R.id.etTime);
         btnCreateAccount = findViewById(R.id.btnCreateAcc);
-        //progressBar = findViewById(R.id.progressBarUser);
+        progressBar = findViewById(R.id.progressBarUser);
         showSeekBar = findViewById(R.id.tvSeekBarShower);
 
         showSeekBar.setText(current_range + " km");
@@ -83,8 +87,14 @@ public class CreateUser extends AppCompatActivity {
         btnCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //progressBar.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
                 createUserAndAccount();
+            }
+        });
+        btnInteres.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDialog();
             }
         });
 
@@ -115,7 +125,7 @@ public class CreateUser extends AppCompatActivity {
 
 
                             Toast.makeText(CreateUser.this, "Acc created", Toast.LENGTH_SHORT).show();
-                            //progressBar.setVisibility(View.INVISIBLE);
+                            progressBar.setVisibility(View.INVISIBLE);
                             Intent intent = new Intent(mContext, MainActivity.class);
                             startActivity(intent);
                             finish();
@@ -125,7 +135,7 @@ public class CreateUser extends AppCompatActivity {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     Toast.makeText(CreateUser.this, "That account allready exists", Toast.LENGTH_SHORT).show();
-                    //progressBar.setVisibility(View.INVISIBLE);
+                    progressBar.setVisibility(View.INVISIBLE);
                 }
             });
 
@@ -174,6 +184,15 @@ public class CreateUser extends AppCompatActivity {
         }
 
         return result;
+    }
+
+    public void openDialog(){
+        InterestDialog dialog = new InterestDialog();
+        dialog.show(getFragmentManager(),"ExampleDialog");
+    }
+
+    public void setItems(ArrayList<String> items){
+        selectedItems.addAll(items);
     }
 
 }

@@ -60,8 +60,9 @@ public class Home extends android.support.v4.app.Fragment {
         mRecycleView = view.findViewById(R.id.homeRecyclerView);
         mRecycleView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(mContext);
-        mAdapter = new EventRecyclerAdapter(getContext());
+        mAdapter = new EventRecyclerAdapter(mContext);
         mAdapter.clearAll();
+        loadEvents();
         mRecycleView.setAdapter(mAdapter);
         mRecycleView.setLayoutManager(mLayoutManager);
 
@@ -69,7 +70,6 @@ public class Home extends android.support.v4.app.Fragment {
         LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(mContext, resId);
         mRecycleView.setLayoutAnimation(animation);
 
-        loadEvents();
 
 
 
@@ -100,12 +100,6 @@ public class Home extends android.support.v4.app.Fragment {
 
 
         return view;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
     }
 
     public void loadEvents() {
