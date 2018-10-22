@@ -20,6 +20,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -45,7 +46,7 @@ public class CreateUser extends AppCompatActivity {
     private TextView showSeekBar;
     private ArrayList<String> selectedItems = new ArrayList<>();
 
-    private int current_range = 0;
+    private int current_range = 5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,13 +115,14 @@ public class CreateUser extends AppCompatActivity {
         final int udaljenost = seekBar.getProgress();
         final int vrijeme = Integer.parseInt(time.getText().toString());
 
+
         if (mail.contentEquals("@") || pass.length() > 6) {
             mAuth.createUserWithEmailAndPassword(mail, pass)
                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult authResult) {
 
-                            User user = new User(authResult.getUser().getUid(), ime, prezime, mail, opis, udaljenost, vrijeme, 24);
+                            User user = new User(FirebaseAuth.getInstance().getUid(), ime, prezime, mail, opis, selectedItems, udaljenost, 14, vrijeme);
                             mUsersRef.add(user);
 
 
@@ -141,44 +143,63 @@ public class CreateUser extends AppCompatActivity {
 
         } else {
             Toast.makeText(this, "Password or email not valid", Toast.LENGTH_SHORT).show();
+            progressBar.setVisibility(View.INVISIBLE);
         }
 
     }
+
     private boolean validateForm() {
         boolean result = true;
         if (TextUtils.isEmpty(email.getText().toString())) {
             email.setError("Obavezno ispuniti");
             result = false;
+            btnCreateAccount.setEnabled(false);
+            progressBar.setVisibility(View.INVISIBLE);
         } else {
             email.setError(null);
         }
         if (TextUtils.isEmpty(password.getText().toString())) {
             password.setError("Obavezno ispuniti");
             result = false;
+            progressBar.setVisibility(View.INVISIBLE);
+
+
         } else {
             password.setError(null);
         }
         if (TextUtils.isEmpty(name.getText().toString())) {
             name.setError("Obavezno ispuniti");
             result = false;
+            progressBar.setVisibility(View.INVISIBLE);
+
+
         } else {
             name.setError(null);
         }
         if (TextUtils.isEmpty(surname.getText().toString())) {
             surname.setError("Obavezno ispuniti");
             result = false;
+            progressBar.setVisibility(View.INVISIBLE);
+
+
         } else {
             surname.setError(null);
         }
         if (TextUtils.isEmpty(description.getText().toString())) {
             description.setError("Obavezno ispuniti");
             result = false;
+            progressBar.setVisibility(View.INVISIBLE);
+
+
         } else {
             description.setError(null);
         }
         if (TextUtils.isEmpty(time.getText().toString())) {
             time.setError("Obavezno ispuniti");
             result = false;
+            progressBar.setVisibility(View.INVISIBLE);
+
+
         } else {
             time.setError(null);
         }
@@ -186,13 +207,15 @@ public class CreateUser extends AppCompatActivity {
         return result;
     }
 
-    public void openDialog(){
+    public void openDialog() {
         InterestDialog dialog = new InterestDialog();
-        dialog.show(getFragmentManager(),"ExampleDialog");
+        dialog.show(getFragmentManager(), "ExampleDialog");
     }
 
-    public void setItems(ArrayList<String> items){
+    public void setItems(ArrayList<String> items) {
         selectedItems.addAll(items);
+        Toast.makeText(mContext, selectedItems.size() + " ", Toast.LENGTH_SHORT).show();
+
     }
 
 }
