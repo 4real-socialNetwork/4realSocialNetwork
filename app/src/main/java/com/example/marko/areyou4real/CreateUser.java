@@ -113,7 +113,6 @@ public class CreateUser extends AppCompatActivity {
                             User user = new User(authResult.getUser().getUid(), ime, prezime, mail, opis, udaljenost, vrijeme, 24);
                             mUsersRef.add(user);
 
-
                             Toast.makeText(CreateUser.this, "Acc created", Toast.LENGTH_SHORT).show();
                             //progressBar.setVisibility(View.INVISIBLE);
                             Intent intent = new Intent(mContext, MainActivity.class);
