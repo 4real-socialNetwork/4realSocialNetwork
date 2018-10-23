@@ -28,6 +28,8 @@ import java.util.ArrayList;
 
 public class CreateUser extends AppCompatActivity {
 
+    private static final String TAG = "CreateUser";
+
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference mUsersRef = db.collection("Users");
