@@ -26,6 +26,7 @@ import com.pchmn.materialchips.model.ChipInterface;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class CreateGroup extends AppCompatActivity {
 
@@ -124,7 +125,7 @@ public class CreateGroup extends AppCompatActivity {
         dialog.setCancelable(true);
 
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.copyFrom(Objects.requireNonNull(dialog.getWindow()).getAttributes());
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
