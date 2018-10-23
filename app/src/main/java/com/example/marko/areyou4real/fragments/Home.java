@@ -15,10 +15,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.example.marko.areyou4real.CreateEvent;
 import com.example.marko.areyou4real.R;
+import com.example.marko.areyou4real.User;
 import com.example.marko.areyou4real.fragments.adapter.EventRecyclerAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -38,15 +40,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static android.app.Activity.RESULT_OK;
+
 public class Home extends android.support.v4.app.Fragment {
     private RecyclerView mRecycleView;
     private EventRecyclerAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private Context mContext;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private String userId = FirebaseAuth.getInstance().getUid();
     private CollectionReference eventsRef = db.collection("Events");
+    private CollectionReference userRef = db.collection("Users");
     private SwipeRefreshLayout swipe;
     private FloatingActionButton fab;
+    private ArrayList<String> interests = new ArrayList<>();
 
     @Nullable
     @Override
@@ -55,22 +62,13 @@ public class Home extends android.support.v4.app.Fragment {
         mContext = getContext();
         swipe = view.findViewById(R.id.swipee);
         fab = view.findViewById(R.id.fab);
+        setInterests();
+        setmAdapter(view);
 
-
-        mRecycleView = view.findViewById(R.id.homeRecyclerView);
-        mRecycleView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(mContext);
-        mAdapter = new EventRecyclerAdapter(mContext);
-        mAdapter.clearAll();
-        loadEvents();
-        mRecycleView.setAdapter(mAdapter);
-        mRecycleView.setLayoutManager(mLayoutManager);
 
         int resId = R.anim.layout_animation_fall_down;
         LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(mContext, resId);
         mRecycleView.setLayoutAnimation(animation);
-
-
 
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -90,7 +88,7 @@ public class Home extends android.support.v4.app.Fragment {
                     @Override
                     public void run() {
                         swipe.setRefreshing(false);
-                        updateData();
+                        setInterests();
                         runLayoutAnimation(mRecycleView);
 
                     }
@@ -102,24 +100,27 @@ public class Home extends android.support.v4.app.Fragment {
         return view;
     }
 
+
     public void loadEvents() {
-        eventsRef
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        for (DocumentSnapshot document : queryDocumentSnapshots) {
-                            Event event = document.toObject(Event.class);
-                            mAdapter.addItem(event);
-                            mAdapter.notifyDataSetChanged();
-                        }
+        for (String item : interests) {
+            eventsRef.whereEqualTo("activity", item)
+                    .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    for (DocumentSnapshot dc : queryDocumentSnapshots) {
+                        Event event = dc.toObject(Event.class);
+                        mAdapter.addItem(event);
+                        mAdapter.notifyDataSetChanged();
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(mContext, "error", Toast.LENGTH_SHORT).show();
-            }
-        });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(mContext, e.toString(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
 
     }
 
@@ -155,5 +156,40 @@ public class Home extends android.support.v4.app.Fragment {
         mAdapter.notifyDataSetChanged();
     }
 
+
+    private void setInterests() {
+        if (interests.size() == 0 || interests == null) {
+            userRef.whereEqualTo("userId", userId)
+                    .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    for (DocumentSnapshot dc : queryDocumentSnapshots) {
+                        User user = dc.toObject(User.class);
+                        ArrayList<String> list = new ArrayList<>(user.getInterests());
+                        Home.this.interests.addAll(list);
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(mContext, e.toString(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        loadEvents();
+
+
+    }
+
+    private void setmAdapter(View view) {
+        mRecycleView = view.findViewById(R.id.homeRecyclerView);
+        mRecycleView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(mContext);
+        mAdapter = new EventRecyclerAdapter(mContext);
+        mRecycleView.setAdapter(mAdapter);
+        mRecycleView.setLayoutManager(mLayoutManager);
+
+        mAdapter.notifyDataSetChanged();
+    }
 
 }
