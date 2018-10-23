@@ -3,6 +3,8 @@ package com.example.marko.areyou4real;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,6 +37,13 @@ public class UserProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+
         name = findViewById(R.id.etUserName);
         userDescription = findViewById(R.id.etUserDescription);
         profilePicture = findViewById(R.id.ivProfilePicture);
@@ -51,6 +60,14 @@ public class UserProfile extends AppCompatActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId()==android.R.id.home){
+            finish();
+        }
+        return true;
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
 
@@ -64,7 +81,6 @@ public class UserProfile extends AppCompatActivity {
                 for (DocumentSnapshot dc : queryDocumentSnapshots) {
                     User user = dc.toObject(User.class);
                     name.setText(user.getName());
-                    userInterest.setText(user.getInterest());
                     userDescription.setText(user.getDescription());
                 }
             }

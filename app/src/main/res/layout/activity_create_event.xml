@@ -20,12 +20,25 @@
         android:hint="name"
         android:padding="16dp" />
 
-    <EditText
-        android:id="@+id/etActivity"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="16dp"
+        android:text="Vrsta aktivnosti:" />
+
+    <Spinner
+        android:id="@+id/spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="activity"
         android:padding="16dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/darker_gray" />
 
     <EditText
         android:id="@+id/etTime"

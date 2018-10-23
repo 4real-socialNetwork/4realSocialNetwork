@@ -74,6 +74,12 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Interesi"
+                android:id="@+id/btnInteres"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="create account"
                 android:layout_gravity="right"
                 android:id="@+id/btnCreateAcc"/>

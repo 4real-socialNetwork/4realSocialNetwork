@@ -25,7 +25,10 @@
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:background="@color/cardview_light_background"
+            app:tabSelectedTextColor="@color/colorAccent"
+            app:tabTextColor="@color/colorPrimary"/>
 
     </android.support.design.widget.AppBarLayout>
 

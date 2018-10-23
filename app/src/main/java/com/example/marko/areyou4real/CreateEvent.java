@@ -8,8 +8,12 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -27,12 +31,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class CreateEvent extends AppCompatActivity {
+public class CreateEvent extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private static final String TAG = "CreateEvent";
 
     private EditText name;
-    private EditText activity;
+    private Spinner activity;
     private EditText lat;
     private EditText longitude;
     private EditText time;
@@ -44,20 +48,22 @@ public class CreateEvent extends AppCompatActivity {
     private DocumentReference docRef;
     private String docId;
     private String userId = FirebaseAuth.getInstance().getUid();
+    private String selectedInteres;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
         System.out.println("onCreate Create Event.");
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        setToolbar();
 
         name = findViewById(R.id.etName);
-        activity = findViewById(R.id.etActivity);
+        activity = findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.interests, android.R.layout.simple_spinner_item);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        activity.setAdapter(spinnerAdapter);
+        activity.setOnItemSelectedListener(this);
+
         lat = findViewById(R.id.etLat);
         longitude = findViewById(R.id.etLong);
         time = findViewById(R.id.etTime);
@@ -106,7 +112,7 @@ public class CreateEvent extends AppCompatActivity {
 
     public void createEvent() {
         String ime = name.getText().toString();
-        String aktivnost = activity.getText().toString();
+        String aktivnost = selectedInteres;
         int kord1 = Integer.parseInt(lat.getText().toString());
         int kord2 = Integer.parseInt(longitude.getText().toString());
         double vrijeme = Double.parseDouble(time.getText().toString());
@@ -140,4 +146,21 @@ public class CreateEvent extends AppCompatActivity {
         });
     }
 
+    private void setToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        selectedInteres = parent.getItemAtPosition(position).toString();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 }

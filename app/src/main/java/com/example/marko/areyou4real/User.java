@@ -2,6 +2,8 @@ package com.example.marko.areyou4real;
 
 import android.widget.ImageView;
 
+import java.util.ArrayList;
+
 
 public class User {
 
@@ -11,7 +13,7 @@ public class User {
     String email;
     ImageView profilePicure;
     String description;
-    String interest;
+    ArrayList<String> interests;
 
     public User() {
     }
@@ -24,13 +26,12 @@ public class User {
         this.usersFinalGrade = usersFinalGrade;
     }
 
-    public String getInterest() {
-
-        return interest;
+    public ArrayList<String> getInterests() {
+        return interests;
     }
 
-    public void setInterest(String interest) {
-        this.interest = interest;
+    public void setInterests(ArrayList<String> interests) {
+        this.interests = interests;
     }
 
     int range;
@@ -114,17 +115,17 @@ public class User {
         this.userId = userId;
     }
 
-    public User(String userId, String name, String surname, String email, String description, int range, int fromTime, int toTime) {
+    public User(String userId, String name, String surname, String email, String description, ArrayList<String> interests, int range, int fromTime, int toTime) {
         this.userId = userId;
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.description = description;
+        this.interests = interests;
         this.range = range;
         this.fromTime = fromTime;
         this.toTime = toTime;
     }
-
 
     public void gradeUser(int grade) {
         userGrades += grade;
