@@ -4,7 +4,7 @@
     <item
         android:id="@+id/profileMenu"
         android:focusableInTouchMode="false"
-        android:title="Profile"
+        android:title="Profil"
         app:showAsAction="never">
 
 
@@ -12,13 +12,13 @@
     <item
         android:id="@+id/myEvents"
         android:focusableInTouchMode="false"
-        android:title="My events"
+        android:title="Moji eventi"
         app:showAsAction="never"></item>
 
     <item
         android:id="@+id/menuSignOut"
         android:focusableInTouchMode="false"
-        android:title="sign out"
+        android:title="Odjava"
         app:showAsAction="never"></item>
 
 </menu>

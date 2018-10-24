@@ -17,7 +17,7 @@
         android:id="@+id/etName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="name"
+        android:hint="Naziv događaja"
         android:padding="16dp" />
 
     <TextView
@@ -44,7 +44,7 @@
         android:id="@+id/etTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="at what time?"
+        android:hint="Vrijeme održavanja"
         android:inputType="time"
         android:padding="16dp" />
 
@@ -52,7 +52,7 @@
         android:id="@+id/etLat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="lattitude"
+        android:hint="lat"
         android:inputType="number"
         android:padding="16dp" />
 
@@ -60,7 +60,7 @@
         android:id="@+id/etLong"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="longitude"
+        android:hint="long"
         android:inputType="number"
         android:padding="16dp" />
 
@@ -68,7 +68,7 @@
         android:id="@+id/etPlayersNeeded"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="players needed"
+        android:hint="Potreban broj igrača"
         android:inputType="number"
         android:padding="16dp" />
 
@@ -76,7 +76,7 @@
         android:id="@+id/etEventDescription"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:hint="Description"
+        android:hint="Opis događaja"
         android:padding="16dp" />
 
     <Button
@@ -85,7 +85,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:padding="16dp"
-        android:text="Create Event" />
+        android:text="Stvori
+događaj" />
 
 
 </LinearLayout>
