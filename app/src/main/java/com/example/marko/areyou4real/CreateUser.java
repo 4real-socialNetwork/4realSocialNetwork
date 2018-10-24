@@ -1,8 +1,10 @@
 package com.example.marko.areyou4real;
 
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSeekBar;
@@ -14,9 +16,11 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.marko.areyou4real.dialogs.InterestDialog;
+import com.example.marko.areyou4real.fragments.TimePickerFragment;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
@@ -27,7 +31,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
-public class CreateUser extends AppCompatActivity {
+public class CreateUser extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
 
     private static final String TAG = "CreateUser";
 
@@ -48,8 +52,17 @@ public class CreateUser extends AppCompatActivity {
     private ProgressBar progressBar;
     private TextView showSeekBar;
     private ArrayList<String> selectedItems = new ArrayList<>();
+    private Button btnTimeFrom;
+    private int startTimeHour;
+    private int endTimeHour;
+    private int startTimeMinutes;
+    private int endTimeMinutes;
+    private Button btnTimeTo;
+    private TextView tvShowInterest;
 
     private int current_range = 5;
+    //tag putem kojeg saznajemo koji timepicker se koristi :)
+    private int witchTimePicker = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +80,9 @@ public class CreateUser extends AppCompatActivity {
         btnCreateAccount = findViewById(R.id.btnCreateAcc);
         progressBar = findViewById(R.id.progressBarUser);
         showSeekBar = findViewById(R.id.tvSeekBarShower);
+        btnTimeFrom = findViewById(R.id.btnFromTime);
+        btnTimeTo = findViewById(R.id.btnEndTime);
+        tvShowInterest = findViewById(R.id.tvShowInterest);
 
         showSeekBar.setText(current_range + " km");
         seekBar.setProgress(current_range);
@@ -88,6 +104,24 @@ public class CreateUser extends AppCompatActivity {
             }
         });
 
+        btnTimeFrom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                witchTimePicker=0;
+                DialogFragment timePicker = new TimePickerFragment();
+                timePicker.show(getSupportFragmentManager(),"Time picker");
+            }
+        });
+
+        btnTimeTo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                witchTimePicker=1;
+                DialogFragment timePicker = new TimePickerFragment();
+                timePicker.show(getSupportFragmentManager(),"Time picker 2");
+            }
+        });
+
         btnCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,6 +135,7 @@ public class CreateUser extends AppCompatActivity {
                 openDialog();
             }
         });
+
 
     }
 
@@ -215,8 +250,13 @@ public class CreateUser extends AppCompatActivity {
     }
 
     public void setItems(ArrayList<String> items) {
+        selectedItems.clear();
+        String string = "";
         selectedItems.addAll(items);
-        Toast.makeText(mContext, selectedItems.size() + " ", Toast.LENGTH_SHORT).show();
+        for(int i=0;i<selectedItems.size();i++){
+           string +="" + selectedItems.get(i)+",";
+        }
+        tvShowInterest.setText(string);
 
     }
     private void setUpToolbar (){
@@ -235,4 +275,23 @@ public class CreateUser extends AppCompatActivity {
         }
         return true;
     }
+
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        TextView timeStart = findViewById(R.id.tvStartTimeDisplay);
+        TextView timeEnd = findViewById(R.id.tvEndTimeDisplay);
+        if(witchTimePicker==0){
+            startTimeHour = hourOfDay;
+            startTimeMinutes = minute;
+            timeStart.setText(startTimeHour+" : "+startTimeMinutes);
+        }else if (witchTimePicker==1){
+            endTimeHour = hourOfDay;
+            endTimeMinutes =minute;
+            timeEnd.setText(endTimeHour+" : "+endTimeMinutes);
+        }
+
+
+    }
+
 }
