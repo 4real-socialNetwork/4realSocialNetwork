@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.example.marko.areyou4real.InsideGroup;
 import com.example.marko.areyou4real.R;
-import com.example.marko.areyou4real.fragments.Group;
+import com.example.marko.areyou4real.model.Group;
 
 import java.util.ArrayList;
 

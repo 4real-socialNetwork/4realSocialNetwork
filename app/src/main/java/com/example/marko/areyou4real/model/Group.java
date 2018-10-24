@@ -1,4 +1,4 @@
-package com.example.marko.areyou4real.fragments;
+package com.example.marko.areyou4real.model;
 
 import android.widget.ImageView;
 

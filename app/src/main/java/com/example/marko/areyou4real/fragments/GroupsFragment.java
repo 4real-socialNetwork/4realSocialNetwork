@@ -15,8 +15,8 @@ import android.view.ViewGroup;
 
 import com.example.marko.areyou4real.CreateGroup;
 import com.example.marko.areyou4real.R;
-import com.example.marko.areyou4real.adapter.EventRecyclerAdapter;
 import com.example.marko.areyou4real.adapter.GroupsRecyclerAdapter;
+import com.example.marko.areyou4real.model.Group;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;

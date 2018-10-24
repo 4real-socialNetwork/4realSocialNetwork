@@ -12,7 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.marko.areyou4real.fragments.Event;
+import com.example.marko.areyou4real.model.Event;
 import com.example.marko.areyou4real.adapter.EventRecyclerAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;

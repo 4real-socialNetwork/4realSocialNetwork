@@ -21,6 +21,7 @@ import com.example.marko.areyou4real.CreateEvent;
 import com.example.marko.areyou4real.R;
 import com.example.marko.areyou4real.User;
 import com.example.marko.areyou4real.adapter.EventRecyclerAdapter;
+import com.example.marko.areyou4real.model.Event;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;

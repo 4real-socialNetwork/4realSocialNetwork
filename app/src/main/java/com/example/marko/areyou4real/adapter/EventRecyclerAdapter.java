@@ -11,8 +11,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.marko.areyou4real.R;
-import com.example.marko.areyou4real.fragments.Event;
-import com.example.marko.areyou4real.fragments.InsideEvent;
+import com.example.marko.areyou4real.model.Event;
+import com.example.marko.areyou4real.InsideEvent;
 
 import java.util.ArrayList;
 

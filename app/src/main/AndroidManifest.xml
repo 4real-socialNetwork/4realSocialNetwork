@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".LoginActivity"
+            android:name=".LoginCreateUser.LoginActivity"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,10 +21,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CreateUser"
+            android:name=".LoginCreateUser.CreateUser"
             android:noHistory="true" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".fragments.InsideEvent" />
+        <activity android:name=".InsideEvent" />
         <activity
             android:name=".CreateEvent"
             android:noHistory="true" />

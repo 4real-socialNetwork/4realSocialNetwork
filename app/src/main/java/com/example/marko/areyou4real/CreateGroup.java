@@ -13,9 +13,9 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.example.marko.areyou4real.adapter.UsersAdapter;
+import com.example.marko.areyou4real.model.UserChip;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -33,15 +33,15 @@ import java.util.Objects;
 public class CreateGroup extends AppCompatActivity {
 
     private ChipsInput mChipsInput;
-    private List<UserChip> items = new ArrayList<>();
-    private List<ChipInterface> items_added = new ArrayList<>();
-    private List<User> items_users = new ArrayList<>();
+    private List<UserChip> mItems = new ArrayList<>();
+    private List<ChipInterface> mItemsAdded = new ArrayList<>();
+    private List<User> mItemsUsers = new ArrayList<>();
 
 
     private Context mContext = CreateGroup.this;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference userRef = db.collection("Users");
+    private CollectionReference mUsersRef = db.collection("Users");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,27 +62,27 @@ public class CreateGroup extends AppCompatActivity {
     }
     private void getUsersChipList(){
         Integer id = 0;
-        for (User user : items_users){
+        for (User user : mItemsUsers){
             UserChip userChip = new UserChip(id.toString(), user.name, user.email);
 
-            items.add(userChip);
+            mItems.add(userChip);
             id++;
         }
-        System.out.println("items filled with userChip objects");
-        mChipsInput.setFilterableList(items);
+        System.out.println("mItems filled with userChip objects");
+        mChipsInput.setFilterableList(mItems);
     }
 
     public void loadUsers() {
-        userRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        mUsersRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
                     System.out.println("onComplete: Task is succesfull.");
                     for (DocumentSnapshot dc : task.getResult()){
                         User user = dc.toObject(User.class);
-                        items_users.add(user);
+                        mItemsUsers.add(user);
                     }
-                    System.out.println("users loaded to the list: " + items_users.toString());
+                    System.out.println("users loaded to the list: " + mItemsUsers.toString());
 
                     ((ImageButton) findViewById(R.id.users)).setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -98,12 +98,12 @@ public class CreateGroup extends AppCompatActivity {
                     mChipsInput.addChipsListener(new ChipsInput.ChipsListener() {
                         @Override
                         public void onChipAdded(ChipInterface chip, int i) {
-                            items_added.add(chip);
+                            mItemsAdded.add(chip);
                         }
 
                         @Override
                         public void onChipRemoved(ChipInterface chip, int i) {
-                            items_added.remove(chip);
+                            mItemsAdded.remove(chip);
                         }
 
                         @Override
@@ -134,7 +134,7 @@ public class CreateGroup extends AppCompatActivity {
 
         RecyclerView recyclerView = (RecyclerView) dialog.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        UsersAdapter _adapter = new UsersAdapter(mContext, items_users);
+        UsersAdapter _adapter = new UsersAdapter(mContext, mItemsUsers);
         recyclerView.setAdapter(_adapter);
         _adapter.setOnItemClickListener(new UsersAdapter.OnItemClickListener() {
             @Override

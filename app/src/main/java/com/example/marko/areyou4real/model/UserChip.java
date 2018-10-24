@@ -1,4 +1,4 @@
-package com.example.marko.areyou4real;
+package com.example.marko.areyou4real.model;
 
 import android.graphics.drawable.Drawable;
 import android.net.Uri;

@@ -1,4 +1,4 @@
-package com.example.marko.areyou4real;
+package com.example.marko.areyou4real.LoginCreateUser;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,12 +16,14 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.marko.areyou4real.MainActivity;
+import com.example.marko.areyou4real.R;
+import com.example.marko.areyou4real.User;
 import com.example.marko.areyou4real.dialogs.InterestDialog;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
