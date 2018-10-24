@@ -21,7 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginActivity";
-
+    
     private EditText etEmail;
     private EditText etPassword;
     private Button btnSignUp;
@@ -159,6 +159,5 @@ public class LoginActivity extends AppCompatActivity {
     private boolean isPasswordValid(String password) {
         return password.length() > 5;
     }
-
 
 }

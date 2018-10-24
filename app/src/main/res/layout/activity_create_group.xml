@@ -12,22 +12,42 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:background="@color/colorPrimary" />
 
 
-    <android.support.v7.widget.RecyclerView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:id="@+id/container"
-        android:padding="16dp"/>
-
-    <Button
-        android:id="@+id/btnCreateGroup"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Create Group"
-        android:layout_gravity="bottom|end"/>
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:gravity="center"
+            android:minHeight="15dp"
+            android:text="To"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textColor="@color/colorPrimary" />
+
+        <com.pchmn.materialchips.ChipsInput
+            android:id="@+id/chips_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:chip_deletable="true"
+            app:maxRows="3"
+            app:showChipDetailed="false" />
+
+        <ImageButton
+            android:id="@+id/users"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:tint="@color/colorAccent"
+            android:src="@drawable/ic_search_black_24dp"/>
+
+    </LinearLayout>
+
 
 </LinearLayout>

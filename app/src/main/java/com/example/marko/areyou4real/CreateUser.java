@@ -28,6 +28,8 @@ import java.util.ArrayList;
 
 public class CreateUser extends AppCompatActivity {
 
+    private static final String TAG = "CreateUser";
+
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference mUsersRef = db.collection("Users");
@@ -124,7 +126,6 @@ public class CreateUser extends AppCompatActivity {
 
                             User user = new User(FirebaseAuth.getInstance().getUid(), ime, prezime, mail, opis, selectedItems, udaljenost, 14, vrijeme);
                             mUsersRef.add(user);
-
 
                             Toast.makeText(CreateUser.this, "Acc created", Toast.LENGTH_SHORT).show();
                             progressBar.setVisibility(View.INVISIBLE);

@@ -1,133 +1,148 @@
 package com.example.marko.areyou4real;
 
+import android.app.Dialog;
 import android.content.Context;
-import android.nfc.Tag;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.example.marko.areyou4real.fragments.adapter.SearchUserRecyclerViewAdapter;
+import com.example.marko.areyou4real.fragments.adapter.UsersAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.pchmn.materialchips.ChipsInput;
+import com.pchmn.materialchips.model.ChipInterface;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class CreateGroup extends AppCompatActivity {
 
-    private Button btnCreateGroup;
-    private RecyclerView mRecyclerView;
-    private SearchUserRecyclerViewAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private ChipsInput mChipsInput;
+    private List<UserChip> items = new ArrayList<>();
+    private List<ChipInterface> items_added = new ArrayList<>();
+    private List<User> items_users = new ArrayList<>();
+
+
     private Context mContext = CreateGroup.this;
-    private FirebaseAuth auth = FirebaseAuth.getInstance();
-    private String userId = auth.getUid();
+
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference userRef = db.collection("Users");
-    private ArrayList<User> userList = new ArrayList<>();
-    private ArrayList<User> newUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        mChipsInput = findViewById(R.id.chips_input);
 
-        btnCreateGroup = findViewById(R.id.btnCreateGroup);
-        loadData();
-        newUser = new ArrayList<>(userList);
-        setmAdapter();
+        initComponent();
+    }
+    private void initComponent(){
+        // get Users for the database
+        loadUsers();
 
+        //chips listener
 
     }
+    private void getUsersChipList(){
+        Integer id = 0;
+        for (User user : items_users){
+            UserChip userChip = new UserChip(id.toString(), user.name, user.email);
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menu_search = getMenuInflater();
-        menu_search.inflate(R.menu.menu_search, menu);
-
-        MenuItem search = menu.findItem(R.id.app_bar_search);
-        SearchView searchView = (SearchView) search.getActionView();
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                mAdapter.getFilter().filter(newText);
-                return false;
-            }
-        });
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
+            items.add(userChip);
+            id++;
         }
-        return true;
+        System.out.println("items filled with userChip objects");
+        mChipsInput.setFilterableList(items);
     }
 
-    public void loadData() {
+    public void loadUsers() {
+        userRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    System.out.println("onComplete: Task is succesfull.");
+                    for (DocumentSnapshot dc : task.getResult()){
+                        User user = dc.toObject(User.class);
+                        items_users.add(user);
+                    }
+                    System.out.println("users loaded to the list: " + items_users.toString());
 
-        userRef.get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (DocumentSnapshot dc : task.getResult()) {
-                                User user = dc.toObject(User.class);
-                                userList.add(user);
-                                mAdapter.notifyDataSetChanged();
-                            }
+                    ((ImageButton) findViewById(R.id.users)).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            System.out.println("clicked all the users, dialog appears");
+                            dialogUsers();
+                        }
+                    });
+                    // adding users to the chip list
+                    getUsersChipList();
+
+
+                    mChipsInput.addChipsListener(new ChipsInput.ChipsListener() {
+                        @Override
+                        public void onChipAdded(ChipInterface chip, int i) {
+                            items_added.add(chip);
+                        }
+
+                        @Override
+                        public void onChipRemoved(ChipInterface chip, int i) {
+                            items_added.remove(chip);
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence) {
 
                         }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
+                    });
+
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(mContext, "Something went wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Could not fetch users from firestore", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    private void dialogUsers() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+        dialog.setContentView(R.layout.dialog_users);
+        dialog.setCancelable(true);
 
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(Objects.requireNonNull(dialog.getWindow()).getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
+        RecyclerView recyclerView = (RecyclerView) dialog.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        UsersAdapter _adapter = new UsersAdapter(mContext, items_users);
+        recyclerView.setAdapter(_adapter);
+        _adapter.setOnItemClickListener(new UsersAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, User obj, int position) {
+                    mChipsInput.addChip(obj.name, obj.email);
+                    dialog.hide();
+                }
+        });
+
+        dialog.show();
+        dialog.getWindow().setAttributes(lp);
     }
 
-    private void setmAdapter() {
-        mRecyclerView = findViewById(R.id.container);
-        mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        mAdapter = new SearchUserRecyclerViewAdapter(getApplicationContext(), userList);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
-    }
 }

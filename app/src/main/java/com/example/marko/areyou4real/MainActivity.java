@@ -18,6 +18,9 @@ import com.example.marko.areyou4real.fragments.adapter.SectionPagerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivity";
+
     ViewPager viewPager;
     SectionPagerAdapter mPageAdapter;
 
