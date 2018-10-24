@@ -1,4 +1,4 @@
-package com.example.marko.areyou4real.fragments.adapter;
+package com.example.marko.areyou4real.adapter;
 
 import android.content.Context;
 import android.content.Intent;

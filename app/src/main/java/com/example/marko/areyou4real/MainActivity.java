@@ -1,7 +1,6 @@
 package com.example.marko.areyou4real;
 
 import android.content.Intent;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -9,12 +8,11 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.example.marko.areyou4real.fragments.GroupsFragment;
 import com.example.marko.areyou4real.fragments.Home;
-import com.example.marko.areyou4real.fragments.adapter.SectionPagerAdapter;
+import com.example.marko.areyou4real.adapter.SectionPagerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
@@ -55,8 +53,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-
         if (item.getItemId() == R.id.profileMenu) {
             Intent intent = new Intent(getApplicationContext(), UserProfile.class);
             startActivity(intent);

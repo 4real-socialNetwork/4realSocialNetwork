@@ -13,7 +13,7 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.example.marko.areyou4real.fragments.adapter.UsersAdapter;
+import com.example.marko.areyou4real.adapter.UsersAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;

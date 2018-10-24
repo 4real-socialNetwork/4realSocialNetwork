@@ -15,32 +15,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.example.marko.areyou4real.CreateEvent;
 import com.example.marko.areyou4real.R;
 import com.example.marko.areyou4real.User;
-import com.example.marko.areyou4real.fragments.adapter.EventRecyclerAdapter;
+import com.example.marko.areyou4real.adapter.EventRecyclerAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.common.cache.RemovalNotification;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import static android.app.Activity.RESULT_OK;
 
 public class Home extends android.support.v4.app.Fragment {
     private RecyclerView mRecycleView;

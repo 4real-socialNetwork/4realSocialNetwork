@@ -1,6 +1,5 @@
 package com.example.marko.areyou4real.fragments;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,11 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.marko.areyou4real.CreateEvent;
 import com.example.marko.areyou4real.CreateGroup;
 import com.example.marko.areyou4real.R;
-import com.example.marko.areyou4real.fragments.adapter.EventRecyclerAdapter;
-import com.example.marko.areyou4real.fragments.adapter.GroupsRecyclerAdapter;
+import com.example.marko.areyou4real.adapter.EventRecyclerAdapter;
+import com.example.marko.areyou4real.adapter.GroupsRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;

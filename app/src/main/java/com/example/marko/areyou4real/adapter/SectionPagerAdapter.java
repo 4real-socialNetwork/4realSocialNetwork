@@ -1,4 +1,4 @@
-package com.example.marko.areyou4real.fragments.adapter;
+package com.example.marko.areyou4real.adapter;
 
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
