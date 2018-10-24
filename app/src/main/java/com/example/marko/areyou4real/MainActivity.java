@@ -72,8 +72,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         SectionPagerAdapter adapter = new SectionPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new Home(), "Home");
-        adapter.addFragment(new GroupsFragment(), "GroupsFragment");
+        adapter.addFragment(new Home(), "Događaji");
+        adapter.addFragment(new GroupsFragment(), "Vaše grupe");
         viewPager.setAdapter(adapter);
     }
 
@@ -81,6 +81,6 @@ public class MainActivity extends AppCompatActivity {
         FirebaseAuth.getInstance().signOut();
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
         startActivity(intent);
-        Toast.makeText(this, "signing out", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "odjavljivanje", Toast.LENGTH_SHORT).show();
     }
 }

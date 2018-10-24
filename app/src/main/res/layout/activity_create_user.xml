@@ -5,8 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
     tools:context=".CreateUser">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -15,7 +20,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="16dp">
 
             <EditText
                 android:id="@+id/etEmail"
@@ -33,62 +39,63 @@
                 android:id="@+id/etName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Name" />
+                android:hint="Ime" />
 
             <EditText
                 android:id="@+id/etSurname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Surname" />
+                android:hint="Prezime" />
 
             <EditText
                 android:id="@+id/etDescripiton"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:hint="Description" />
+                android:hint="O meni" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Range" />
+                android:text="Najdalja udaljesnost događaja : " />
 
             <TextView
+                android:id="@+id/tvSeekBarShower"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/tvSeekBarShower" />
+                android:layout_height="wrap_content" />
 
             <android.support.v7.widget.AppCompatSeekBar
                 android:id="@+id/seekBar"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:max="100"
-                />
+                android:max="100" />
 
             <EditText
+                android:id="@+id/etTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="time"
-                android:inputType="datetime"
-                android:id="@+id/etTime"/>
+                android:hint="slobodno vrijeme"
+                android:inputType="datetime" />
 
             <Button
+                android:id="@+id/btnInteres"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Interesi"
-                android:id="@+id/btnInteres"/>
+                android:text="Interesi" />
 
             <Button
+                android:id="@+id/btnCreateAcc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="create account"
                 android:layout_gravity="right"
-                android:id="@+id/btnCreateAcc"/>
+                android:text="Stvorite
+ igrača" />
+
             <ProgressBar
+                android:id="@+id/progressBarUser"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:id="@+id/progressBarUser"
-                android:visibility="invisible"/>
+                android:visibility="invisible" />
 
         </LinearLayout>
 

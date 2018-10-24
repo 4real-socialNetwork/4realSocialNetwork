@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSeekBar;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -54,7 +55,7 @@ public class CreateUser extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_user);
-
+        setUpToolbar();
         btnInteres = findViewById(R.id.btnInteres);
         email = findViewById(R.id.etEmail);
         password = findViewById(R.id.etPassword);
@@ -127,7 +128,7 @@ public class CreateUser extends AppCompatActivity {
                             User user = new User(FirebaseAuth.getInstance().getUid(), ime, prezime, mail, opis, selectedItems, udaljenost, 14, vrijeme);
                             mUsersRef.add(user);
 
-                            Toast.makeText(CreateUser.this, "Acc created", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CreateUser.this, "Račun kreiran", Toast.LENGTH_SHORT).show();
                             progressBar.setVisibility(View.INVISIBLE);
                             Intent intent = new Intent(mContext, MainActivity.class);
                             startActivity(intent);
@@ -137,13 +138,13 @@ public class CreateUser extends AppCompatActivity {
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(CreateUser.this, "That account allready exists", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreateUser.this, "Već postoji korisnik s tim računom", Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.INVISIBLE);
                 }
             });
 
         } else {
-            Toast.makeText(this, "Password or email not valid", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Email ili šifa nisu ispravni", Toast.LENGTH_SHORT).show();
             progressBar.setVisibility(View.INVISIBLE);
         }
 
@@ -218,5 +219,20 @@ public class CreateUser extends AppCompatActivity {
         Toast.makeText(mContext, selectedItems.size() + " ", Toast.LENGTH_SHORT).show();
 
     }
+    private void setUpToolbar (){
+        android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId()==android.R.id.home){
+            finish();
+        }
+        return true;
+    }
 }
