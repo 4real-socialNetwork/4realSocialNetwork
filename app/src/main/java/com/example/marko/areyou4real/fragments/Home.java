@@ -171,6 +171,8 @@ public class Home extends android.support.v4.app.Fragment {
                         ArrayList<String> list = new ArrayList<>(user.getInterests());
                         Home.this.interests.addAll(list);
                     }
+                    loadEvents();
+
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -179,7 +181,6 @@ public class Home extends android.support.v4.app.Fragment {
                 }
             });
         }
-    loadEvents();
 
     }
 
