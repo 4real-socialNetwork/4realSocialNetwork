@@ -1,11 +1,13 @@
-package com.example.marko.areyou4real;
+package com.example.marko.areyou4real.fragments;
+
 
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,29 +16,27 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.example.marko.areyou4real.fragments.Event;
-import com.example.marko.areyou4real.fragments.TimePickerFragment;
+import com.example.marko.areyou4real.MainActivity;
+import com.example.marko.areyou4real.R;
+import com.example.marko.areyou4real.model.Event;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-
 public class CreateEvent extends AppCompatActivity implements AdapterView.OnItemSelectedListener , TimePickerDialog.OnTimeSetListener{
 
     private static final String TAG = "CreateEvent";
+
+    private Context mContext = CreateEvent.this;
 
     private EditText name;
     private Spinner activity;
@@ -117,7 +117,7 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 Toast.makeText(CreateEvent.this, "Event created", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent intent = new Intent(mContext, MainActivity.class);
                 startActivity(intent);
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -132,6 +132,7 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
                     docRef = task.getResult();
                     docId = docRef.getId();
                     docRef.update("eventId", docId);
+
                 }
             }
         });

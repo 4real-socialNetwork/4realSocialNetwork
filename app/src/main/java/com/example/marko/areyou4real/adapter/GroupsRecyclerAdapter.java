@@ -1,4 +1,4 @@
-package com.example.marko.areyou4real.fragments.adapter;
+package com.example.marko.areyou4real.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,23 +8,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.marko.areyou4real.InsideGroup;
 import com.example.marko.areyou4real.R;
-import com.example.marko.areyou4real.fragments.Group;
+import com.example.marko.areyou4real.model.Group;
 
 import java.util.ArrayList;
 
 public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAdapter.MyViewHolder> {
-    Context mcontext;
+    Context mContext;
     ArrayList<Group> grupsList;
 
     public GroupsRecyclerAdapter(Context mcontext, ArrayList<Group> grupsList) {
-        this.mcontext = mcontext;
+        this.mContext = mcontext;
         this.grupsList = grupsList;
     }
 
@@ -40,8 +38,8 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
         holder.groupItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mcontext, InsideGroup.class);
-                mcontext.startActivity(intent);
+                Intent intent = new Intent(mContext, InsideGroup.class);
+                mContext.startActivity(intent);
             }
         });
         holder.groupName.setText(grupsList.get(position).getGroupName());

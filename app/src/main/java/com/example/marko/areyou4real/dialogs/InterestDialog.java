@@ -1,20 +1,16 @@
 package com.example.marko.areyou4real.dialogs;
 
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 
-import com.example.marko.areyou4real.CreateUser;
-import com.example.marko.areyou4real.MainActivity;
+import com.example.marko.areyou4real.LoginCreateUser.CreateUser;
 import com.example.marko.areyou4real.R;
 import com.example.marko.areyou4real.UserProfile;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class InterestDialog extends DialogFragment {
     private ArrayList<String> mSelectedItems;

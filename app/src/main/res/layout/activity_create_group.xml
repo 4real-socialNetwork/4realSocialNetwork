@@ -48,5 +48,22 @@
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/btn_create_group"
+        android:layout_width="wrap_content"
+        android:layout_margin="50dp"
+        android:layout_height="wrap_content"
+        android:text="Stvori grupu"/>
+
+    <EditText
+        android:id="@+id/group_name"
+        android:layout_width="wrap_content"
+        android:layout_margin="50dp"
+        android:layout_height="wrap_content"
+        android:hint="Group name"/>
+
+
+
+
 
 </LinearLayout>

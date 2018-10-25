@@ -1,6 +1,4 @@
-package com.example.marko.areyou4real.fragments;
-
-import android.widget.ImageView;
+package com.example.marko.areyou4real.model;
 
 import java.util.ArrayList;
 
@@ -8,12 +6,13 @@ public class Group {
     private String groupName;
     private ArrayList<String> listOfUsersInGroup = new ArrayList<>();
 
-    public Group() {
-    }
-    public Group(String groupName, ArrayList<String> listOfUsersInGroup, ImageView groupPicture, String groupId) {
+    public Group(String groupName, ArrayList<String> listOfUsersInGroup) {
+
         this.groupName = groupName;
         this.listOfUsersInGroup = listOfUsersInGroup;
+    }
 
+    public Group() {
     }
 
     public String getGroupName() {
@@ -34,4 +33,7 @@ public class Group {
     public void addUserId(String userId){
         listOfUsersInGroup.add(userId);
     }
+
+
+
 }

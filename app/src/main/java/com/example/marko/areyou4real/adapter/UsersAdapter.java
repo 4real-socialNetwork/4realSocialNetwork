@@ -1,10 +1,12 @@
-package com.example.marko.areyou4real.fragments.adapter;
+package com.example.marko.areyou4real.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.marko.areyou4real.R;
@@ -12,6 +14,7 @@ import com.example.marko.areyou4real.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -33,19 +36,6 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         this.mContext = context;
     }
 
-    public class OriginalViewHolder extends RecyclerView.ViewHolder {
-
-        public TextView name;
-        public View lyt_parent;
-
-        public OriginalViewHolder(View v) {
-            super(v);
-
-            name = v.findViewById(R.id.name);
-            lyt_parent = v.findViewById(R.id.lyt_parent);
-        }
-    }
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder vh;
@@ -56,7 +46,7 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof OriginalViewHolder) {
             OriginalViewHolder view = (OriginalViewHolder) holder;
 
@@ -78,4 +68,16 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return items.size();
     }
 
+    public class OriginalViewHolder extends RecyclerView.ViewHolder {
+
+        public TextView name;
+        public View lyt_parent;
+
+        public OriginalViewHolder(View v) {
+            super(v);
+
+            name = v.findViewById(R.id.name);
+            lyt_parent = v.findViewById(R.id.lyt_parent);
+        }
+    }
 }
