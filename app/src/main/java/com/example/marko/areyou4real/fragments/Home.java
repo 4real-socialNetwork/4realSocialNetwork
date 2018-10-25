@@ -106,14 +106,15 @@ public class Home extends android.support.v4.app.Fragment {
         return view;
     }
 
-    public void loadEvents(){
+
+    public void loadEvents() {
         mAdapter.clearAll();
-        for (String item : interests){
-            eventsRef.whereEqualTo("activity",item)
+        for (String item : interests) {
+            eventsRef.whereEqualTo("activity", item)
                     .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    for (DocumentSnapshot dc : task.getResult()){
+                    for (DocumentSnapshot dc : task.getResult()) {
                         Event event = dc.toObject(Event.class);
                         mAdapter.addItem(event);
                         mAdapter.notifyDataSetChanged();
@@ -127,9 +128,6 @@ public class Home extends android.support.v4.app.Fragment {
             });
         }
     }
-
-
-
 
 
     private void runLayoutAnimation(final RecyclerView recyclerView) {
