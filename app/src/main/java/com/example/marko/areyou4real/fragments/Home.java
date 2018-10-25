@@ -17,7 +17,6 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.Toast;
 
-import com.example.marko.areyou4real.CreateEvent;
 import com.example.marko.areyou4real.R;
 import com.example.marko.areyou4real.User;
 import com.example.marko.areyou4real.adapter.EventRecyclerAdapter;
@@ -52,8 +51,8 @@ public class Home extends android.support.v4.app.Fragment {
         mContext = getContext();
         swipe = view.findViewById(R.id.swipee);
         fab = view.findViewById(R.id.fab);
-        setInterests();
         setmAdapter(view);
+        setInterests();
 
         int resId = R.anim.layout_animation_fall_down;
         LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(mContext, resId);
@@ -76,6 +75,7 @@ public class Home extends android.support.v4.app.Fragment {
                     @Override
                     public void run() {
                         swipe.setRefreshing(false);
+
                         setInterests();
                         runLayoutAnimation(mRecycleView);
 
@@ -90,6 +90,7 @@ public class Home extends android.support.v4.app.Fragment {
 
 
     public void loadEvents() {
+        mAdapter.clearAll();
         for (String item : interests) {
             eventsRef.whereEqualTo("activity", item)
                     .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -108,6 +109,7 @@ public class Home extends android.support.v4.app.Fragment {
                 }
             });
         }
+        mAdapter.notifyDataSetChanged();
 
 
     }
@@ -156,6 +158,8 @@ public class Home extends android.support.v4.app.Fragment {
                         ArrayList<String> list = new ArrayList<>(user.getInterests());
                         Home.this.interests.addAll(list);
                     }
+                    loadEvents();
+
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -165,6 +169,7 @@ public class Home extends android.support.v4.app.Fragment {
             });
         }
         loadEvents();
+
     }
 
     private void setmAdapter(View view) {

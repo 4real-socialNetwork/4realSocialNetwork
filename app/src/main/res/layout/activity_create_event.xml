@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".CreateEvent">
+    tools:context=".fragments.CreateEvent">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -40,13 +40,30 @@
         android:layout_alignParentBottom="true"
         android:background="@android:color/darker_gray" />
 
-    <EditText
-        android:id="@+id/etTime"
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Vrijeme održavanja"
-        android:inputType="time"
-        android:padding="16dp" />
+        android:text="Odredite vrijeme održavanja eventa:"
+        android:paddingLeft="16dp"
+        android:id="@+id/tvEventTime"/>
+
+    <Button
+        android:id="@+id/btnTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:text="sat"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvTimeStart"
+        android:paddingLeft="16dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/darker_gray" />
 
     <EditText
         android:id="@+id/etLat"

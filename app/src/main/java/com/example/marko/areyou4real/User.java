@@ -16,6 +16,44 @@ public class User {
     ImageView profilePicure;
     String description;
     ArrayList<String> interests;
+    int timeStartHour;
+    int timeStartMinutes;
+    int timeStopHour;
+    int timeStopMinutes;
+    int range;
+
+    public int getTimeStartHour() {
+        return timeStartHour;
+    }
+
+    public void setTimeStartHour(int timeStartHour) {
+        this.timeStartHour = timeStartHour;
+    }
+
+    public int getTimestartMinute() {
+        return timeStartMinutes;
+    }
+
+    public void setTimestartMinute(int timestartMinute) {
+        this.timeStartMinutes = timestartMinute;
+    }
+
+    public int getTimeStopHour() {
+        return timeStopHour;
+    }
+
+    public void setTimeStopHour(int timeStopHour) {
+        this.timeStopHour = timeStopHour;
+    }
+
+
+    public int getTimeStopMinute() {
+        return timeStopMinutes;
+    }
+
+    public void setTimeStopMinute(int timeStopMinute) {
+        this.timeStopMinutes = timeStopMinute;
+    }
 
     public User() {
     }
@@ -36,9 +74,7 @@ public class User {
         this.interests = interests;
     }
 
-    int range;
-    int fromTime;
-    int toTime;
+
     //we will use this in the case of leaving reviews from 1 to 5, and then we will calculate the users review grade.
     private int userGrades;
     private int numberOfGrades;
@@ -92,22 +128,6 @@ public class User {
         this.range = range;
     }
 
-    public int getFromTime() {
-        return fromTime;
-    }
-
-    public void setFromTime(int fromTime) {
-        this.fromTime = fromTime;
-    }
-
-    public int getToTime() {
-        return toTime;
-    }
-
-    public void setToTime(int toTime) {
-        this.toTime = toTime;
-    }
-
 
     public String getUserId() {
         return userId;
@@ -117,7 +137,9 @@ public class User {
         this.userId = userId;
     }
 
-    public User(String userId, String name, String surname, String email, String description, ArrayList<String> interests, int range, int fromTime, int toTime) {
+    public User(String userId, String name, String surname, String email, String description,
+                ArrayList<String> interests, int range, int timeStartHour,
+                int timeStartMinutes, int timeStopHour, int timeStopMinutes) {
         this.userId = userId;
         this.name = name;
         this.surname = surname;
@@ -125,8 +147,10 @@ public class User {
         this.description = description;
         this.interests = interests;
         this.range = range;
-        this.fromTime = fromTime;
-        this.toTime = toTime;
+        this.timeStartHour = timeStartHour;
+        this.timeStartMinutes = timeStartMinutes;
+        this.timeStopHour = timeStopHour;
+        this.timeStopMinutes = timeStopMinutes;
     }
 
     public void gradeUser(int grade) {

@@ -129,8 +129,6 @@ public class CreateGroup extends AppCompatActivity {
 
             }
         });
-
-
     }
     private void addRemoveChips(){
         mChipsInput.addChipsListener(new ChipsInput.ChipsListener() {

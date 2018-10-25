@@ -61,6 +61,15 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
             }
         });
 
+
+
+
+        ArrayList<String> strings = new ArrayList<>();
+        strings.add("afasgsagagag");
+
+        groupsList.add(new Group("family", strings, null, "asfasfsafas"));
+
+
         mRecyclerView = view.findViewById(R.id.container);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new GridLayoutManager(mContext, 2);

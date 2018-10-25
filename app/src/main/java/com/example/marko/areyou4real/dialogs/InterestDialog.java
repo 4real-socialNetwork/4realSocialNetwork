@@ -8,17 +8,20 @@ import android.os.Bundle;
 
 import com.example.marko.areyou4real.LoginCreateUser.CreateUser;
 import com.example.marko.areyou4real.R;
+import com.example.marko.areyou4real.UserProfile;
 
 import java.util.ArrayList;
 
 public class InterestDialog extends DialogFragment {
     private ArrayList<String> mSelectedItems;
 
+    private int witch = 0;
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         mSelectedItems = new ArrayList<>();
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Odaberite Vaše interese");
         builder.setMultiChoiceItems(R.array.interests, null, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
@@ -35,8 +38,16 @@ public class InterestDialog extends DialogFragment {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                getInterestsInActivity(mSelectedItems);
-                dialog.dismiss();
+
+
+                try {
+                    getInterestsInActivity(mSelectedItems);
+                } catch (Exception e) {
+                    getInterestInProfileActivity(mSelectedItems);
+                    dialog.dismiss();
+
+                }
+
 
             }
         });
@@ -50,8 +61,15 @@ public class InterestDialog extends DialogFragment {
     }
 
     private void getInterestsInActivity(ArrayList<String> value) {
+        witch = 0;
         CreateUser activity = (CreateUser) getActivity();
         activity.setItems(value);
 
+    }
+
+    private void getInterestInProfileActivity(ArrayList<String> value) {
+        witch = 1;
+        UserProfile activity = (UserProfile) getActivity();
+        activity.setItems(value);
     }
 }
