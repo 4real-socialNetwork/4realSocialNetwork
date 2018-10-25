@@ -61,7 +61,7 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
             }
         });
 
-
+        
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
