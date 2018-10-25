@@ -84,7 +84,8 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
 
     public void getGroups() {
         mAdapter.clearAll();
-        groupsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        groupsRef.get().
+                addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (DocumentSnapshot dc : queryDocumentSnapshots) {

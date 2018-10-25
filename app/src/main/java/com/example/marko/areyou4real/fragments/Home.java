@@ -21,8 +21,10 @@ import com.example.marko.areyou4real.R;
 import com.example.marko.areyou4real.User;
 import com.example.marko.areyou4real.adapter.EventRecyclerAdapter;
 import com.example.marko.areyou4real.model.Event;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -59,7 +61,14 @@ public class Home extends android.support.v4.app.Fragment {
         mContext = getContext();
         swipe = view.findViewById(R.id.swipee);
         fab = view.findViewById(R.id.fab);
-        setmAdapter(view);
+        mRecycleView = view.findViewById(R.id.homeRecyclerView);
+        mRecycleView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(mContext);
+        mAdapter = new EventRecyclerAdapter(mContext);
+        mRecycleView.setAdapter(mAdapter);
+        mRecycleView.setLayoutManager(mLayoutManager);
+
+        mAdapter.notifyDataSetChanged();
         setInterests();
 
 
@@ -85,7 +94,6 @@ public class Home extends android.support.v4.app.Fragment {
                     @Override
                     public void run() {
                         swipe.setRefreshing(false);
-                        mAdapter.clearAll();
                         setInterests();
                         runLayoutAnimation(mRecycleView);
 
@@ -98,17 +106,14 @@ public class Home extends android.support.v4.app.Fragment {
         return view;
     }
 
-
-
-    public void loadEvents() {
+    public void loadEvents(){
         mAdapter.clearAll();
-        mAdapter.notifyDataSetChanged();
-        for (String item : interests) {
-            eventsRef.whereEqualTo("activity", item)
-                    .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        for (String item : interests){
+            eventsRef.whereEqualTo("activity",item)
+                    .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
-                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                    for (DocumentSnapshot dc : queryDocumentSnapshots) {
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    for (DocumentSnapshot dc : task.getResult()){
                         Event event = dc.toObject(Event.class);
                         mAdapter.addItem(event);
                         mAdapter.notifyDataSetChanged();
@@ -121,10 +126,11 @@ public class Home extends android.support.v4.app.Fragment {
                 }
             });
         }
-        mAdapter.notifyDataSetChanged();
-
-
     }
+
+
+
+
 
     private void runLayoutAnimation(final RecyclerView recyclerView) {
         final Context context = recyclerView.getContext();
@@ -138,7 +144,7 @@ public class Home extends android.support.v4.app.Fragment {
 
 
     private void setInterests() {
-
+        interests.clear();
         userRef.whereEqualTo("userId", userId)
                 .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
@@ -146,10 +152,9 @@ public class Home extends android.support.v4.app.Fragment {
                 for (DocumentSnapshot dc : queryDocumentSnapshots) {
                     User user = dc.toObject(User.class);
                     ArrayList<String> list = new ArrayList<>(user.getInterests());
-                    Home.this.interests.addAll(list);
+                    interests.addAll(list);
                 }
                 loadEvents();
-
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -158,18 +163,7 @@ public class Home extends android.support.v4.app.Fragment {
             }
         });
 
-    mAdapter.clearAll();
     }
 
-    private void setmAdapter(View view) {
-        mRecycleView = view.findViewById(R.id.homeRecyclerView);
-        mRecycleView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(mContext);
-        mAdapter = new EventRecyclerAdapter(mContext);
-        mRecycleView.setAdapter(mAdapter);
-        mRecycleView.setLayoutManager(mLayoutManager);
-
-        mAdapter.notifyDataSetChanged();
-    }
 
 }
