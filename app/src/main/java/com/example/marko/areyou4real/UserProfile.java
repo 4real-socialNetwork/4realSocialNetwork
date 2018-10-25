@@ -56,6 +56,9 @@ public class UserProfile extends AppCompatActivity implements TimePickerDialog.O
     private int startMinute;
     private int endHour;
     private int endMinute;
+    private int interesiWasClicked = 0;
+    private int pocetakEventaWasClickerd = 0;
+    private int krajEventaWasClicked = 0;
 
 
     @Override
@@ -84,6 +87,7 @@ public class UserProfile extends AppCompatActivity implements TimePickerDialog.O
         btnUserInterest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                interesiWasClicked = 1;
                 openDialog();
             }
         });
@@ -99,6 +103,7 @@ public class UserProfile extends AppCompatActivity implements TimePickerDialog.O
         btnTimeStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                pocetakEventaWasClickerd = 1;
                 witchTimePicker = 0;
                 DialogFragment timePicker = new TimePickerFragment();
                 timePicker.show(getSupportFragmentManager(), "Time picker");
@@ -107,6 +112,7 @@ public class UserProfile extends AppCompatActivity implements TimePickerDialog.O
         btnTimeEnd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                krajEventaWasClicked = 1;
                 witchTimePicker = 1;
                 DialogFragment timePicker = new TimePickerFragment();
                 timePicker.show(getSupportFragmentManager(), "Time picker 2");
@@ -201,29 +207,80 @@ public class UserProfile extends AppCompatActivity implements TimePickerDialog.O
     }
 
     private void updateUserProfile() {
-        if(updatedInterest.size()==0||updatedInterest==null){
+
+        if (interesiWasClicked == 1 && pocetakEventaWasClickerd == 1 && krajEventaWasClicked == 1) {
+            usersRef.document(value).update("name", name.getText().toString(), "description",
+                    userDescription.getText().toString(), "interests", updatedInterest
+                    , "timeStartHour", startHour, "timeStartMinute", startMinute
+                    , "timeStopHour", endHour, "timeStopMinute", endMinute).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    Toast.makeText(UserProfile.this, "Promjene spremljene", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else if (interesiWasClicked == 0 && pocetakEventaWasClickerd == 1 && krajEventaWasClicked == 1) {
+            usersRef.document(value).update("name", name.getText().toString(), "description"
+                    , userDescription.getText().toString(), "timeStartHour", startHour, "timeStartMinute", startMinute
+                    , "timeStopHour", endHour, "timeStopMinute", endMinute).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    Toast.makeText(UserProfile.this, "Promjene spremljene", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else if (interesiWasClicked == 0 && pocetakEventaWasClickerd == 0 && krajEventaWasClicked == 1) {
+            usersRef.document(value).update("name", name.getText().toString(), "description", userDescription.getText().toString(),
+                    "timeStopHour", endHour, "timeStopMinute", endMinute).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    Toast.makeText(UserProfile.this, "Promjene spremljene", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        } else if (interesiWasClicked == 0 && pocetakEventaWasClickerd == 0 && krajEventaWasClicked == 0) {
+            usersRef.document(value).update("name", name.getText().toString(), "description", userDescription.getText().toString())
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            progressBar.setVisibility(View.INVISIBLE);
+                            Toast.makeText(UserProfile.this, "Promjene spremljene", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+        } else if (interesiWasClicked == 1 && pocetakEventaWasClickerd == 0 && krajEventaWasClicked == 0) {
+            usersRef.document(value).update("name", name.getText().toString(), "description", userDescription.getText().toString(),
+                    "interests", updatedInterest).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    Toast.makeText(UserProfile.this, "Promjene spremljene", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        } else if (interesiWasClicked == 0 && pocetakEventaWasClickerd == 1 && krajEventaWasClicked == 0) {
             usersRef.document(value).update("name", name.getText().toString(), "description", userDescription.getText().toString()
-                    , "timeStartHour", startHour, "timeStartMinute", startMinute
-                    , "timeStopHour", endHour, "timeStopMinute", endMinute).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    , "timeStartHour", startHour, "timeStartMinute", startMinute).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     progressBar.setVisibility(View.INVISIBLE);
                     Toast.makeText(UserProfile.this, "Promjene spremljene", Toast.LENGTH_SHORT).show();
                 }
             });
-        }else {
-            usersRef.document(value).update("name", name.getText().toString(), "description", userDescription.getText().toString(), "interests", updatedInterest
+        } else if (interesiWasClicked == 1 && pocetakEventaWasClickerd == 1 && krajEventaWasClicked == 0) {
+            usersRef.document(value).update("name", name.getText().toString(), "description",
+                    userDescription.getText().toString(), "interests", updatedInterest
                     , "timeStartHour", startHour, "timeStartMinute", startMinute
-                    , "timeStopHour", endHour, "timeStopMinute", endMinute).addOnSuccessListener(new OnSuccessListener<Void>() {
+            ).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     progressBar.setVisibility(View.INVISIBLE);
                     Toast.makeText(UserProfile.this, "Promjene spremljene", Toast.LENGTH_SHORT).show();
                 }
             });
-        }
-        }
 
-
+        }
+    }
 }
 

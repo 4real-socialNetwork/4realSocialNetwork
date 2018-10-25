@@ -7,7 +7,6 @@ import java.util.ArrayList;
 public class Group {
     private String groupName;
     private ArrayList<String> listOfUsersInGroup = new ArrayList<>();
-    private int numberOfusersInGroup;
     private ImageView groupPicture;
     private String groupId;
 
@@ -30,13 +29,6 @@ public class Group {
         this.listOfUsersInGroup = listOfUsersInGroup;
     }
 
-    public int getNumberOfusersInGroup() {
-        return numberOfusersInGroup;
-    }
-
-    public void setNumberOfusersInGroup(int numberOfusersInGroup) {
-        this.numberOfusersInGroup = numberOfusersInGroup;
-    }
 
     public ImageView getGroupPicture() {
         return groupPicture;
@@ -54,10 +46,9 @@ public class Group {
         this.groupId = groupId;
     }
 
-    public Group(String groupName, ArrayList<String> listOfUsersInGroup, int numberOfusersInGroup, ImageView groupPicture, String groupId) {
+    public Group(String groupName, ArrayList<String> listOfUsersInGroup, ImageView groupPicture, String groupId) {
         this.groupName = groupName;
         this.listOfUsersInGroup = listOfUsersInGroup;
-        this.numberOfusersInGroup = numberOfusersInGroup;
         this.groupPicture = groupPicture;
         this.groupId = groupId;
     }

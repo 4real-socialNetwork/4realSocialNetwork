@@ -59,7 +59,7 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
         strings.add("afasgsagagag");
 
 
-        groupsList.add(new Group("family", strings, strings.size(), null, "asfasfsafas"));
+        groupsList.add(new Group("family", strings, null, "asfasfsafas"));
 
 
         mRecyclerView = view.findViewById(R.id.container);
