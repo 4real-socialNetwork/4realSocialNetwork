@@ -25,7 +25,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -40,8 +42,7 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
     private Context mContext;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference groupsRef = db.collection("Groups");
-    private FirebaseAuth auth = FirebaseAuth.getInstance();
-    private String userId = auth.getUid();
+    private String userId = FirebaseAuth.getInstance().getUid();
     FloatingActionButton floatingActionButton;
 
     @Nullable
@@ -50,8 +51,8 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
         View view = inflater.inflate(R.layout.groups_layout, container, false);
         swipe = view.findViewById(R.id.groupSwipe);
         mContext = getContext();
-        setmAdapter(view);
-        getGroups();
+        setmRecyclerView(view);
+
         floatingActionButton = view.findViewById(R.id.fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,7 +62,7 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
             }
         });
 
-        
+
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -82,20 +83,22 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
         return view;
     }
 
+
     public void getGroups() {
         mAdapter.clearAll();
-        groupsRef.get().
+        groupsRef.whereArrayContains("listOfUsersInGroup", userId)
+                .get().
                 addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for (DocumentSnapshot dc : queryDocumentSnapshots) {
-                    Group group = dc.toObject(Group.class);
-                    mAdapter.addGroup(group);
-                    mAdapter.notifyDataSetChanged();
-                }
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (DocumentSnapshot dc : queryDocumentSnapshots) {
+                            Group group = dc.toObject(Group.class);
+                            mAdapter.addGroup(group);
+                            mAdapter.notifyDataSetChanged();
+                        }
 
-            }
-        }).addOnFailureListener(new OnFailureListener() {
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(mContext, e.toString(), Toast.LENGTH_SHORT).show();
@@ -104,7 +107,7 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
 
     }
 
-    public void setmAdapter(View view) {
+    private void setmRecyclerView(View view) {
         mRecyclerView = view.findViewById(R.id.container);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new GridLayoutManager(mContext, 2);
@@ -114,4 +117,28 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
         mRecyclerView.setAdapter(mAdapter);
     }
 
-}
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        groupsRef.whereArrayContains("listOfUsersInGroup",userId)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
+              if(e!=null){
+                  Toast.makeText(mContext, "error while downloading", Toast.LENGTH_SHORT).show();
+                  return;
+              }
+                mAdapter.clearAll();
+                for (DocumentSnapshot dc : queryDocumentSnapshots){
+                    Group group = dc.toObject(Group.class);
+                    mAdapter.addGroup(group);
+                    mAdapter.notifyDataSetChanged();
+
+                }
+            }
+        });
+    }
+    }
+

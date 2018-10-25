@@ -61,6 +61,7 @@ public class Home extends android.support.v4.app.Fragment {
         mContext = getContext();
         swipe = view.findViewById(R.id.swipee);
         fab = view.findViewById(R.id.fab);
+
         mRecycleView = view.findViewById(R.id.homeRecyclerView);
         mRecycleView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(mContext);
