@@ -24,12 +24,20 @@ import com.example.marko.areyou4real.model.Event;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 
 public class Home extends android.support.v4.app.Fragment {
     private RecyclerView mRecycleView;
@@ -54,9 +62,11 @@ public class Home extends android.support.v4.app.Fragment {
         setmAdapter(view);
         setInterests();
 
+
         int resId = R.anim.layout_animation_fall_down;
         LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(mContext, resId);
         mRecycleView.setLayoutAnimation(animation);
+
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +85,7 @@ public class Home extends android.support.v4.app.Fragment {
                     @Override
                     public void run() {
                         swipe.setRefreshing(false);
-
+                        mAdapter.clearAll();
                         setInterests();
                         runLayoutAnimation(mRecycleView);
 
@@ -89,8 +99,10 @@ public class Home extends android.support.v4.app.Fragment {
     }
 
 
+
     public void loadEvents() {
         mAdapter.clearAll();
+        mAdapter.notifyDataSetChanged();
         for (String item : interests) {
             eventsRef.whereEqualTo("activity", item)
                     .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -124,52 +136,29 @@ public class Home extends android.support.v4.app.Fragment {
         recyclerView.scheduleLayoutAnimation();
     }
 
-    public void updateData() {
-        mAdapter.clearAll();
-        eventsRef
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        for (DocumentSnapshot document : queryDocumentSnapshots) {
-                            Event event = document.toObject(Event.class);
-                            mAdapter.addItem(event);
-                            mAdapter.notifyDataSetChanged();
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(mContext, "error", Toast.LENGTH_SHORT).show();
-            }
-        });
-        mAdapter.notifyDataSetChanged();
-    }
-
 
     private void setInterests() {
-        if (interests.size() == 0 || interests == null) {
-            userRef.whereEqualTo("userId", userId)
-                    .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                @Override
-                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                    for (DocumentSnapshot dc : queryDocumentSnapshots) {
-                        User user = dc.toObject(User.class);
-                        ArrayList<String> list = new ArrayList<>(user.getInterests());
-                        Home.this.interests.addAll(list);
-                    }
-                    loadEvents();
 
+        userRef.whereEqualTo("userId", userId)
+                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (DocumentSnapshot dc : queryDocumentSnapshots) {
+                    User user = dc.toObject(User.class);
+                    ArrayList<String> list = new ArrayList<>(user.getInterests());
+                    Home.this.interests.addAll(list);
                 }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(mContext, e.toString(), Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-        loadEvents();
+                loadEvents();
 
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(mContext, e.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    mAdapter.clearAll();
     }
 
     private void setmAdapter(View view) {
@@ -182,4 +171,5 @@ public class Home extends android.support.v4.app.Fragment {
 
         mAdapter.notifyDataSetChanged();
     }
+
 }
