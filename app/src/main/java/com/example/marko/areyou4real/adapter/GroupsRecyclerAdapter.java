@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.marko.areyou4real.InsideGroup;
 import com.example.marko.areyou4real.R;
+import com.example.marko.areyou4real.model.Event;
 import com.example.marko.areyou4real.model.Group;
 
 import java.util.ArrayList;
@@ -21,16 +22,22 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
     Context mContext;
     ArrayList<Group> grupsList;
 
-    public GroupsRecyclerAdapter(Context mcontext, ArrayList<Group> grupsList) {
+    public GroupsRecyclerAdapter(Context mcontext) {
         this.mContext = mcontext;
-        this.grupsList = grupsList;
+        this.grupsList = new ArrayList<>();
     }
+
 
     @NonNull
     @Override
     public GroupsRecyclerAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.groups_layout_item, parent, false);
         return new MyViewHolder(view);
+    }
+    public void addGroup(Group group){
+        grupsList.add(group);
+        notifyItemInserted(getItemCount() - 1);
+
     }
 
     @Override
@@ -61,5 +68,8 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
             this.groupItem = itemView.findViewById(R.id.groupsItemLayout);
             this.groupName = itemView.findViewById(R.id.tvGroupName);
         }
+    }
+    public void clearAll(){
+        grupsList.clear();
     }
 }

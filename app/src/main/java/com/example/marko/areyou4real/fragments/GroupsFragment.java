@@ -35,14 +35,13 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
 
     private SwipeRefreshLayout swipe;
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private GroupsRecyclerAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private Context mContext;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference eventsRef = db.collection("Groups");
+    private CollectionReference groupsRef = db.collection("Groups");
     private FirebaseAuth auth = FirebaseAuth.getInstance();
     private String userId = auth.getUid();
-    //private ArrayList<Group> groupsList = new ArrayList<>();
     FloatingActionButton floatingActionButton;
 
     @Nullable
@@ -51,7 +50,8 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
         View view = inflater.inflate(R.layout.groups_layout, container, false);
         swipe = view.findViewById(R.id.groupSwipe);
         mContext = getContext();
-
+        setmAdapter(view);
+        getGroups();
         floatingActionButton = view.findViewById(R.id.fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,22 +61,7 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
             }
         });
 
-
-
-
-        ArrayList<String> strings = new ArrayList<>();
-        strings.add("afasgsagagag");
-
-        groupsList.add(new Group("family", strings, null, "asfasfsafas"));
-        git
-        mRecyclerView = view.findViewById(R.id.container);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new GridLayoutManager(mContext, 2);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        mAdapter = new GroupsRecyclerAdapter(mContext, groupsList);
-        mRecyclerView.setAdapter(mAdapter);
-
+        
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -85,7 +70,7 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
                     @Override
                     public void run() {
                         swipe.setRefreshing(false);
-
+                        getGroups();
                         int min = 15;
                         int max = 25;
                         Random random = new Random();
@@ -95,6 +80,37 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
             }
         });
         return view;
+    }
+
+    public void getGroups() {
+        mAdapter.clearAll();
+        groupsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (DocumentSnapshot dc : queryDocumentSnapshots) {
+                    Group group = dc.toObject(Group.class);
+                    mAdapter.addGroup(group);
+                    mAdapter.notifyDataSetChanged();
+                }
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(mContext, e.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    public void setmAdapter(View view) {
+        mRecyclerView = view.findViewById(R.id.container);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new GridLayoutManager(mContext, 2);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        mAdapter = new GroupsRecyclerAdapter(mContext);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
 }
