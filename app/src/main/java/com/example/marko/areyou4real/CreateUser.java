@@ -47,7 +47,6 @@ public class CreateUser extends AppCompatActivity implements TimePickerDialog.On
     private EditText surname;
     private EditText description;
     private AppCompatSeekBar seekBar;
-    private EditText time;
     private Button btnCreateAccount;
     private ProgressBar progressBar;
     private TextView showSeekBar;
@@ -59,6 +58,8 @@ public class CreateUser extends AppCompatActivity implements TimePickerDialog.On
     private int endTimeMinutes;
     private Button btnTimeTo;
     private TextView tvShowInterest;
+    private TextView tvStartTimeDisplay;
+    private TextView tvEndTimeDisplay;
 
     private int current_range = 5;
     //tag putem kojeg saznajemo koji timepicker se koristi :)
@@ -76,13 +77,14 @@ public class CreateUser extends AppCompatActivity implements TimePickerDialog.On
         surname = findViewById(R.id.etSurname);
         description = findViewById(R.id.etDescripiton);
         seekBar = findViewById(R.id.seekBar);
-        time = findViewById(R.id.etTime);
         btnCreateAccount = findViewById(R.id.btnCreateAcc);
         progressBar = findViewById(R.id.progressBarUser);
         showSeekBar = findViewById(R.id.tvSeekBarShower);
         btnTimeFrom = findViewById(R.id.btnFromTime);
         btnTimeTo = findViewById(R.id.btnEndTime);
         tvShowInterest = findViewById(R.id.tvShowInterest);
+        tvStartTimeDisplay = findViewById(R.id.tvStartTimeDisplay);
+        tvEndTimeDisplay = findViewById(R.id.tvEndTimeDisplay);
 
         showSeekBar.setText(current_range + " km");
         seekBar.setProgress(current_range);
@@ -107,18 +109,18 @@ public class CreateUser extends AppCompatActivity implements TimePickerDialog.On
         btnTimeFrom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                witchTimePicker=0;
+                witchTimePicker = 0;
                 DialogFragment timePicker = new TimePickerFragment();
-                timePicker.show(getSupportFragmentManager(),"Time picker");
+                timePicker.show(getSupportFragmentManager(), "Time picker");
             }
         });
 
         btnTimeTo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                witchTimePicker=1;
+                witchTimePicker = 1;
                 DialogFragment timePicker = new TimePickerFragment();
-                timePicker.show(getSupportFragmentManager(),"Time picker 2");
+                timePicker.show(getSupportFragmentManager(), "Time picker 2");
             }
         });
 
@@ -151,7 +153,6 @@ public class CreateUser extends AppCompatActivity implements TimePickerDialog.On
         final String prezime = surname.getText().toString().trim();
         final String opis = description.getText().toString().trim();
         final int udaljenost = seekBar.getProgress();
-        final int vrijeme = Integer.parseInt(time.getText().toString());
 
 
         if (mail.contentEquals("@") || pass.length() > 6) {
@@ -160,7 +161,7 @@ public class CreateUser extends AppCompatActivity implements TimePickerDialog.On
                         @Override
                         public void onSuccess(AuthResult authResult) {
 
-                            User user = new User(FirebaseAuth.getInstance().getUid(), ime, prezime, mail, opis, selectedItems, udaljenost, 14, vrijeme);
+                            User user = new User(FirebaseAuth.getInstance().getUid(), ime, prezime, mail, opis, selectedItems, udaljenost, startTimeHour,startTimeMinutes, endTimeHour,endTimeMinutes);
                             mUsersRef.add(user);
 
                             Toast.makeText(CreateUser.this, "Račun kreiran", Toast.LENGTH_SHORT).show();
@@ -231,14 +232,14 @@ public class CreateUser extends AppCompatActivity implements TimePickerDialog.On
         } else {
             description.setError(null);
         }
-        if (TextUtils.isEmpty(time.getText().toString())) {
-            time.setError("Obavezno ispuniti");
+        if (TextUtils.isEmpty(tvStartTimeDisplay.getText().toString())) {
+            tvStartTimeDisplay.setError("Obavezno ispuniti");
             result = false;
             progressBar.setVisibility(View.INVISIBLE);
 
 
         } else {
-            time.setError(null);
+            tvStartTimeDisplay.setError(null);
         }
 
         return result;
@@ -253,13 +254,14 @@ public class CreateUser extends AppCompatActivity implements TimePickerDialog.On
         selectedItems.clear();
         String string = "";
         selectedItems.addAll(items);
-        for(int i=0;i<selectedItems.size();i++){
-           string +="" + selectedItems.get(i)+",";
+        for (int i = 0; i < selectedItems.size(); i++) {
+            string += "" + selectedItems.get(i) + ",";
         }
         tvShowInterest.setText(string);
 
     }
-    private void setUpToolbar (){
+
+    private void setUpToolbar() {
         android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -270,7 +272,7 @@ public class CreateUser extends AppCompatActivity implements TimePickerDialog.On
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId()==android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             finish();
         }
         return true;
@@ -281,14 +283,14 @@ public class CreateUser extends AppCompatActivity implements TimePickerDialog.On
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         TextView timeStart = findViewById(R.id.tvStartTimeDisplay);
         TextView timeEnd = findViewById(R.id.tvEndTimeDisplay);
-        if(witchTimePicker==0){
+        if (witchTimePicker == 0) {
             startTimeHour = hourOfDay;
             startTimeMinutes = minute;
-            timeStart.setText(startTimeHour+" : "+startTimeMinutes);
-        }else if (witchTimePicker==1){
+            timeStart.setText(startTimeHour + " : " + startTimeMinutes);
+        } else if (witchTimePicker == 1) {
             endTimeHour = hourOfDay;
-            endTimeMinutes =minute;
-            timeEnd.setText(endTimeHour+" : "+endTimeMinutes);
+            endTimeMinutes = minute;
+            timeEnd.setText(endTimeHour + " : " + endTimeMinutes);
         }
 
 

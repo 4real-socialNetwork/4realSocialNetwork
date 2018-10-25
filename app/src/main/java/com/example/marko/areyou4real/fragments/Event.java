@@ -6,7 +6,17 @@ public class Event {
     private String name;
     private String activity;
     private String eventDescription;
-    private double time;
+    private int startHour;
+
+    public int getStartMinute() {
+        return startMinute;
+    }
+
+    public void setStartMinute(int startMinute) {
+        this.startMinute = startMinute;
+    }
+
+    private int startMinute;
     private int latitude;
     private int langitude;
     private int usersNeeded;
@@ -43,11 +53,12 @@ public class Event {
         this.eventDescription = eventDescription;
     }
 
-    public Event(String idOfTheUserWhoCreatedIt, String name, String activity, double time, int latitude, int langitude, int usersNeeded, String eventDescription) {
+    public Event(String idOfTheUserWhoCreatedIt, String name, String activity, int startHour,int startMinute, int latitude, int langitude, int usersNeeded, String eventDescription) {
         this.idOfTheUserWhoCreatedIt = idOfTheUserWhoCreatedIt;
         this.name = name;
         this.activity = activity;
-        this.time = time;
+        this.startHour = startHour;
+        this.startMinute = startMinute;
         this.latitude = latitude;
         this.langitude = langitude;
         this.usersNeeded = usersNeeded;
@@ -71,12 +82,12 @@ public class Event {
         this.activity = activity;
     }
 
-    public double getTime() {
-        return time;
+    public int getStartHour() {
+        return startHour;
     }
 
-    public void setTime(double time) {
-        this.time = time;
+    public void setStartHour(double time) {
+        this.startHour = startHour;
     }
 
     public int getLatitude() {

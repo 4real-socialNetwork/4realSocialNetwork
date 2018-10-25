@@ -3,6 +3,7 @@ package com.example.marko.areyou4real;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -14,10 +15,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.marko.areyou4real.fragments.Event;
+import com.example.marko.areyou4real.fragments.TimePickerFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -31,7 +34,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class CreateEvent extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class CreateEvent extends AppCompatActivity implements AdapterView.OnItemSelectedListener , TimePickerDialog.OnTimeSetListener{
 
     private static final String TAG = "CreateEvent";
 
@@ -39,7 +42,6 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
     private Spinner activity;
     private EditText lat;
     private EditText longitude;
-    private EditText time;
     private EditText playersNeeded;
     private EditText eventDescription;
     private Button btnCreateEvent;
@@ -49,6 +51,10 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
     private String docId;
     private String userId = FirebaseAuth.getInstance().getUid();
     private String selectedInteres;
+    private int startTimeHour;
+    private int startTimeMinute;
+    private Button btnSetTime;
+    private TextView tvEventTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,17 +62,24 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
         setContentView(R.layout.activity_create_event);
         System.out.println("onCreate Create Event.");
         setToolbar();
-
+        tvEventTime = findViewById(R.id.tvTimeStart);
         name = findViewById(R.id.etName);
         activity = findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.interests, android.R.layout.simple_spinner_item);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         activity.setAdapter(spinnerAdapter);
         activity.setOnItemSelectedListener(this);
+        btnSetTime = findViewById(R.id.btnTime);
+        btnSetTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment timePicker = new TimePickerFragment();
+                timePicker.show(getSupportFragmentManager(), "Time picker");
+            }
+        });
 
         lat = findViewById(R.id.etLat);
         longitude = findViewById(R.id.etLong);
-        time = findViewById(R.id.etTime);
         playersNeeded = findViewById(R.id.etPlayersNeeded);
         eventDescription = findViewById(R.id.etEventDescription);
         btnCreateEvent = findViewById(R.id.btnCreateEvent);
@@ -78,28 +91,7 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
             }
         });
 
-        time.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Calendar myCalender = Calendar.getInstance();
-                int hour = myCalender.get(Calendar.HOUR_OF_DAY);
-                int minute = myCalender.get(Calendar.MINUTE);
 
-
-                TimePickerDialog.OnTimeSetListener myTimeListener = new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        myCalender.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                        myCalender.set(Calendar.MINUTE, minute);
-
-                    }
-                };
-                TimePickerDialog timePickerDialog = new TimePickerDialog(CreateEvent.this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar, myTimeListener, hour, minute, true);
-                timePickerDialog.setTitle("Choose hour:");
-                timePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-                timePickerDialog.show();
-            }
-        });
     }
 
     @Override
@@ -115,11 +107,10 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
         String aktivnost = selectedInteres;
         int kord1 = Integer.parseInt(lat.getText().toString());
         int kord2 = Integer.parseInt(longitude.getText().toString());
-        double vrijeme = Double.parseDouble(time.getText().toString());
         int ljudiPotrebno = Integer.parseInt(playersNeeded.getText().toString());
         String opis = eventDescription.getText().toString();
 
-        Event event = new Event(userId, ime, aktivnost, vrijeme, kord2, kord1, ljudiPotrebno, opis);
+        Event event = new Event(userId, ime, aktivnost, startTimeHour,startTimeMinute, kord2, kord1, ljudiPotrebno, opis);
         event.addCreatorUserToArray(userId);
 
         eventsRef.add(event).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -162,5 +153,12 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+    startTimeHour = hourOfDay;
+    startTimeMinute = minute;
+    tvEventTime.setText(startTimeHour+" : "+startTimeMinute);
     }
 }

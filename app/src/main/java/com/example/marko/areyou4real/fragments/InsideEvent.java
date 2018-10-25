@@ -100,7 +100,7 @@ public class InsideEvent extends AppCompatActivity {
                     Event event = documentSnapshot.toObject(Event.class);
                     tvEventName.setText(event.getName());
                     tvEventActivity.setText(event.getActivity());
-                    tvEventTime.setText("" + event.getTime());
+                    tvEventTime.setText("" + event.getStartHour()+" : "+event.getStartMinute());
                     tvEventDescription.setText(event.getEventDescription());
                     tvEventPlace.setText("Neko mjesto");
                     tvEventPlayersNeeded.setText("" + event.getUsersNeeded());
@@ -144,7 +144,7 @@ public class InsideEvent extends AppCompatActivity {
 
                         tvEventName.setText(event.getName());
                         tvEventActivity.setText(event.getActivity());
-                        tvEventTime.setText("" + event.getTime());
+                        tvEventTime.setText("" + event.getStartHour()+" : "+event.getStartMinute());
                         tvEventDescription.setText(event.getEventDescription());
                         tvEventPlace.setText("Neko mjesto");
                         tvEventPlayersNeeded.setText("" + event.getUsersNeeded());
