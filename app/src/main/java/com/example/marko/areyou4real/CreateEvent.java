@@ -1,6 +1,7 @@
 package com.example.marko.areyou4real;
 
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -32,6 +33,8 @@ import java.util.Calendar;
 public class CreateEvent extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private static final String TAG = "CreateEvent";
+
+    private Context mContext = CreateEvent.this;
 
     private EditText name;
     private Spinner activity;
@@ -124,7 +127,7 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 Toast.makeText(CreateEvent.this, "Event created", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent intent = new Intent(mContext, MainActivity.class);
                 startActivity(intent);
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -139,6 +142,7 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
                     docRef = task.getResult();
                     docId = docRef.getId();
                     docRef.update("eventId", docId);
+
                 }
             }
         });

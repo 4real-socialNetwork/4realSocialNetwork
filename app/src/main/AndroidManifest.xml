@@ -30,9 +30,7 @@
             android:noHistory="true" />
         <activity android:name=".UserProfile" />
         <activity android:name=".InsideGroup" />
-        <activity
-            android:name=".CreateGroup"
-            android:noHistory="true" />
+        <activity android:name=".CreateGroup" />
         <activity android:name=".MyEvents"></activity>
     </application>
 

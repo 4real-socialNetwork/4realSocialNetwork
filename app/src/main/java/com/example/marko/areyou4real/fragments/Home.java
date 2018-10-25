@@ -55,11 +55,9 @@ public class Home extends android.support.v4.app.Fragment {
         setInterests();
         setmAdapter(view);
 
-
         int resId = R.anim.layout_animation_fall_down;
         LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(mContext, resId);
         mRecycleView.setLayoutAnimation(animation);
-
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,8 +165,6 @@ public class Home extends android.support.v4.app.Fragment {
             });
         }
         loadEvents();
-
-
     }
 
     private void setmAdapter(View view) {
@@ -181,5 +177,4 @@ public class Home extends android.support.v4.app.Fragment {
 
         mAdapter.notifyDataSetChanged();
     }
-
 }

@@ -2,9 +2,11 @@ package com.example.marko.areyou4real;
 
 import android.widget.ImageView;
 
+import com.google.firebase.firestore.IgnoreExtraProperties;
+
 import java.util.ArrayList;
 
-
+@IgnoreExtraProperties
 public class User {
 
     String userId;

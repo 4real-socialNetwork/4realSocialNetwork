@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -12,19 +13,26 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.marko.areyou4real.CreateGroup;
 import com.example.marko.areyou4real.R;
 import com.example.marko.areyou4real.adapter.GroupsRecyclerAdapter;
+import com.example.marko.areyou4real.model.Event;
 import com.example.marko.areyou4real.model.Group;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 public class GroupsFragment extends android.support.v4.app.Fragment {
+
     private SwipeRefreshLayout swipe;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -34,7 +42,7 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
     private CollectionReference eventsRef = db.collection("Groups");
     private FirebaseAuth auth = FirebaseAuth.getInstance();
     private String userId = auth.getUid();
-    private ArrayList<Group> groupsList = new ArrayList<>();
+    //private ArrayList<Group> groupsList = new ArrayList<>();
     FloatingActionButton floatingActionButton;
 
     @Nullable
@@ -53,13 +61,6 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
             }
         });
 
-        ArrayList<String> strings = new ArrayList<>();
-        strings.add("afasgsagagag");
-
-
-        groupsList.add(new Group("family", strings, strings.size(), null, "asfasfsafas"));
-
-
         mRecyclerView = view.findViewById(R.id.container);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new GridLayoutManager(mContext, 2);
@@ -67,7 +68,6 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
 
         mAdapter = new GroupsRecyclerAdapter(mContext, groupsList);
         mRecyclerView.setAdapter(mAdapter);
-
 
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -88,4 +88,5 @@ public class GroupsFragment extends android.support.v4.app.Fragment {
         });
         return view;
     }
+
 }
