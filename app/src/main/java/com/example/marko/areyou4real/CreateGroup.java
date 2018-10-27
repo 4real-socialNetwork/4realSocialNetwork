@@ -58,6 +58,9 @@ public class CreateGroup extends AppCompatActivity {
     private FirebaseFirestore mInstance = FirebaseFirestore.getInstance();
     private CollectionReference mUsersRef = mInstance.collection("Users");
     private CollectionReference mGroupsRef = mInstance.collection("Groups");
+    private DocumentReference docRef;
+
+    private String groupId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,9 +80,9 @@ public class CreateGroup extends AppCompatActivity {
         mUsersRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
 
-                    for (DocumentSnapshot dc : task.getResult()){
+                    for (DocumentSnapshot dc : task.getResult()) {
                         User user = dc.toObject(User.class);
                         mItemsUsers.put(user.getName(), user);
                     }
@@ -116,21 +119,32 @@ public class CreateGroup extends AppCompatActivity {
             public void onClick(View v) {
                 System.out.println("Add to group triggered");
                 List<Chip> contactsSelected = (List<Chip>) mChipsInput.getSelectedChipList();
-                for (Chip chip : contactsSelected){
+                for (Chip chip : contactsSelected) {
                     mNewGroup.add(mItemsUsers.get(chip.getLabel()));
 
                 }
-                for (User user : mNewGroup){
+                for (User user : mNewGroup) {
                     group.addUserId(user.getUserId());
                 }
+                group.addUserId(FirebaseAuth.getInstance().getUid());
                 group.setGroupName(mGroupName.getText().toString().trim());
-                mGroupsRef.add(group);
+                mGroupsRef.add(group).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                    if(task.isSuccessful()){
+                    docRef = task.getResult();
+                    groupId = docRef.getId();
+                    docRef.update("groupId",groupId);
+                    }
+                    }
+                });
                 finish();
 
             }
         });
     }
-    private void addRemoveChips(){
+
+    private void addRemoveChips() {
         mChipsInput.addChipsListener(new ChipsInput.ChipsListener() {
             @Override
             public void onChipAdded(ChipInterface chip, int i) {
@@ -149,8 +163,8 @@ public class CreateGroup extends AppCompatActivity {
         });
     }
 
-    private void getUsersChipList(){
-        for (User user : mItemsUsers.values()){
+    private void getUsersChipList() {
+        for (User user : mItemsUsers.values()) {
             Chip userChip = new Chip(user.name, user.email);
 
             mUsers.add(user);
@@ -177,16 +191,16 @@ public class CreateGroup extends AppCompatActivity {
         _adapter.setOnItemClickListener(new UsersAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, User obj, int position) {
-                    mChipsInput.addChip(obj.name, obj.email);
-                    dialog.hide();
-                }
+                mChipsInput.addChip(obj.name, obj.email);
+                dialog.hide();
+            }
         });
 
         dialog.show();
         dialog.getWindow().setAttributes(lp);
     }
 
-    private void setUpToolbar (){
+    private void setUpToolbar() {
         android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -194,6 +208,7 @@ public class CreateGroup extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {

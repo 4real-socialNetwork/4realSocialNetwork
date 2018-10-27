@@ -53,6 +53,7 @@ public class Home extends android.support.v4.app.Fragment {
     private SwipeRefreshLayout swipe;
     private FloatingActionButton fab;
     private ArrayList<String> interests = new ArrayList<>();
+    private CollectionReference notificationRef = db.collection("notifications");
 
     @Nullable
     @Override

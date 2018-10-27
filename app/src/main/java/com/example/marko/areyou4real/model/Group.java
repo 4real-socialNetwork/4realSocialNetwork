@@ -5,6 +5,15 @@ import java.util.ArrayList;
 public class Group {
     private String groupName;
     private ArrayList<String> listOfUsersInGroup = new ArrayList<>();
+    private String groupId;
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
 
     public Group(String groupName, ArrayList<String> listOfUsersInGroup) {
 

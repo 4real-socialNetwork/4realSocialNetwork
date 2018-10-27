@@ -1,6 +1,7 @@
 package com.example.marko.areyou4real.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,8 +13,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.marko.areyou4real.InsideGroup;
+import com.example.marko.areyou4real.OtherUserProfile;
 import com.example.marko.areyou4real.R;
 import com.example.marko.areyou4real.User;
+import com.example.marko.areyou4real.UserProfile;
 
 import java.util.ArrayList;
 
@@ -22,10 +26,9 @@ public class SearchUserRecyclerViewAdapter extends RecyclerView.Adapter<SearchUs
     ArrayList<User> userList;
     ArrayList<User> userListFull;
 
-    public SearchUserRecyclerViewAdapter(Context mContext, ArrayList<User> userList) {
+    public SearchUserRecyclerViewAdapter(Context mContext) {
         this.mContext = mContext;
-        this.userList = userList;
-        userListFull = new ArrayList<>(userList);
+        this.userList = new ArrayList<>();
     }
 
     @NonNull
@@ -36,12 +39,14 @@ public class SearchUserRecyclerViewAdapter extends RecyclerView.Adapter<SearchUs
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SearchUserRecyclerViewAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final SearchUserRecyclerViewAdapter.ViewHolder holder, final int position) {
         holder.userName.setText(userList.get(position).getName());
         holder.searchUserLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "not yet motherfucker", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(mContext,OtherUserProfile.class);
+                intent.putExtra("userId",userList.get(position).getUserId());
+                mContext.startActivity(intent);
             }
         });
     }

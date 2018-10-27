@@ -41,11 +41,13 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GroupsRecyclerAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull GroupsRecyclerAdapter.MyViewHolder holder, final int position) {
         holder.groupItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, InsideGroup.class);
+                intent.putExtra("GROUP_ID",grupsList.get(position).getGroupId());
+                intent.putExtra("GROUP_NAME",grupsList.get(position).getGroupName());
                 mContext.startActivity(intent);
             }
         });

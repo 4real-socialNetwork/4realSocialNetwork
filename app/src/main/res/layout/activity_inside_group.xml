@@ -8,9 +8,32 @@
     tools:context=".InsideGroup">
 
     <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:id="@+id/toolbar"/>
+        app:titleTextColor="#FFFF"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="16dp"
+        android:text="Users in group :"
+        android:textSize="20sp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="399dp"
+        android:padding="16dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginBottom="32dp"
+        app:srcCompat="@android:drawable/ic_dialog_email" />
 
 </LinearLayout>
