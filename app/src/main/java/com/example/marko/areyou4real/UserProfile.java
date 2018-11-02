@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatSeekBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -59,6 +61,9 @@ public class UserProfile extends AppCompatActivity implements TimePickerDialog.O
     private int interesiWasClicked = 0;
     private int pocetakEventaWasClickerd = 0;
     private int krajEventaWasClicked = 0;
+    private int current_range;
+    private TextView showSeekBar;
+    private AppCompatSeekBar seekBar;
 
 
     @Override
@@ -82,7 +87,12 @@ public class UserProfile extends AppCompatActivity implements TimePickerDialog.O
         btnTimeStart = findViewById(R.id.btnFromTime);
         btnTimeEnd = findViewById(R.id.btnEndTime);
         progressBar = findViewById(R.id.progressBar);
+        seekBar = findViewById(R.id.seekBar);
+        showSeekBar = findViewById(R.id.tvSeekBarShower);
+
+
         updateUI();
+
 
         btnUserInterest.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,6 +150,7 @@ public class UserProfile extends AppCompatActivity implements TimePickerDialog.O
                     userDescription.setText(user.getDescription());
                     tvTimeStart.setText("Eventi od: " + user.getTimeStartHour() + " : " + user.getTimestartMinute());
                     tvTimeEnd.setText("Eventi do: " + user.getTimeStopHour() + " : " + user.getTimeStopMinute());
+                    current_range = user.getRange();
                     for (int i = 0; i < user.getInterests().size(); i++) {
                         if (user.getInterests().get(i) != null) {
                             interest += user.getInterests().get(i) + ",";
@@ -147,6 +158,7 @@ public class UserProfile extends AppCompatActivity implements TimePickerDialog.O
                         }
                     }
                     tvInterests.setText(interest.toLowerCase());
+                    setBar();
                 }
             }
         });
@@ -209,7 +221,7 @@ public class UserProfile extends AppCompatActivity implements TimePickerDialog.O
     private void updateUserProfile() {
 
         if (interesiWasClicked == 1 && pocetakEventaWasClickerd == 1 && krajEventaWasClicked == 1) {
-            usersRef.document(value).update("name", name.getText().toString(), "description",
+            usersRef.document(value).update("range", 10, "name", name.getText().toString(), "description",
                     userDescription.getText().toString(), "interests", updatedInterest
                     , "timeStartHour", startHour, "timeStartMinute", startMinute
                     , "timeStopHour", endHour, "timeStopMinute", endMinute).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -220,9 +232,9 @@ public class UserProfile extends AppCompatActivity implements TimePickerDialog.O
                 }
             });
         } else if (interesiWasClicked == 0 && pocetakEventaWasClickerd == 1 && krajEventaWasClicked == 1) {
-            usersRef.document(value).update("name", name.getText().toString(), "description"
+            usersRef.document(value).update("range", current_range, "name", name.getText().toString(), "description"
                     , userDescription.getText().toString(), "timeStartHour", startHour, "timeStartMinute", startMinute
-                    , "timeStopHour", endHour, "timeStopMinute", endMinute).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    , "timeStopHour", endHour, "timeStopMinute", endMinute, "range", current_range).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     progressBar.setVisibility(View.INVISIBLE);
@@ -230,8 +242,8 @@ public class UserProfile extends AppCompatActivity implements TimePickerDialog.O
                 }
             });
         } else if (interesiWasClicked == 0 && pocetakEventaWasClickerd == 0 && krajEventaWasClicked == 1) {
-            usersRef.document(value).update("name", name.getText().toString(), "description", userDescription.getText().toString(),
-                    "timeStopHour", endHour, "timeStopMinute", endMinute).addOnSuccessListener(new OnSuccessListener<Void>() {
+            usersRef.document(value).update("range", current_range, "name", name.getText().toString(), "description", userDescription.getText().toString(),
+                    "timeStopHour", endHour, "timeStopMinute", endMinute, "range", current_range).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     progressBar.setVisibility(View.INVISIBLE);
@@ -240,7 +252,7 @@ public class UserProfile extends AppCompatActivity implements TimePickerDialog.O
             });
 
         } else if (interesiWasClicked == 0 && pocetakEventaWasClickerd == 0 && krajEventaWasClicked == 0) {
-            usersRef.document(value).update("name", name.getText().toString(), "description", userDescription.getText().toString())
+            usersRef.document(value).update("range", current_range, "name", name.getText().toString(), "description", userDescription.getText().toString())
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
@@ -250,7 +262,7 @@ public class UserProfile extends AppCompatActivity implements TimePickerDialog.O
                     });
 
         } else if (interesiWasClicked == 1 && pocetakEventaWasClickerd == 0 && krajEventaWasClicked == 0) {
-            usersRef.document(value).update("name", name.getText().toString(), "description", userDescription.getText().toString(),
+            usersRef.document(value).update("range", current_range, "name", name.getText().toString(), "description", userDescription.getText().toString(),
                     "interests", updatedInterest).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
@@ -260,7 +272,7 @@ public class UserProfile extends AppCompatActivity implements TimePickerDialog.O
             });
 
         } else if (interesiWasClicked == 0 && pocetakEventaWasClickerd == 1 && krajEventaWasClicked == 0) {
-            usersRef.document(value).update("name", name.getText().toString(), "description", userDescription.getText().toString()
+            usersRef.document(value).update("range", current_range, "name", name.getText().toString(), "description", userDescription.getText().toString()
                     , "timeStartHour", startHour, "timeStartMinute", startMinute).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
@@ -269,7 +281,7 @@ public class UserProfile extends AppCompatActivity implements TimePickerDialog.O
                 }
             });
         } else if (interesiWasClicked == 1 && pocetakEventaWasClickerd == 1 && krajEventaWasClicked == 0) {
-            usersRef.document(value).update("name", name.getText().toString(), "description",
+            usersRef.document(value).update("range", current_range,"name", name.getText().toString(), "description",
                     userDescription.getText().toString(), "interests", updatedInterest
                     , "timeStartHour", startHour, "timeStartMinute", startMinute
             ).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -281,6 +293,29 @@ public class UserProfile extends AppCompatActivity implements TimePickerDialog.O
             });
 
         }
+    }
+
+    public void setBar() {
+        showSeekBar.setText(current_range + " km");
+        seekBar.setProgress(current_range);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                showSeekBar.setText(progress + " km");
+                seekBar.setProgress(progress);
+                current_range = progress;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 }
 

@@ -95,7 +95,7 @@ public class InsideEvent extends AppCompatActivity {
                     tvEventActivity.setText(event.getActivity());
                     tvEventTime.setText("" + event.getStartHour()+" : "+event.getStartMinute());
                     tvEventDescription.setText(event.getEventDescription());
-                    tvEventPlace.setText("Neko mjesto");
+                    tvEventPlace.setText(event.getEventAdress());
                     tvEventPlayersNeeded.setText("" + event.getUsersNeeded());
                     tvEventPlayersEntered.setText("" + event.getUsersEntered());
 
@@ -139,7 +139,7 @@ public class InsideEvent extends AppCompatActivity {
                         tvEventActivity.setText(event.getActivity());
                         tvEventTime.setText("" + event.getStartHour()+" : "+event.getStartMinute());
                         tvEventDescription.setText(event.getEventDescription());
-                        tvEventPlace.setText("Neko mjesto");
+                        tvEventPlace.setText(event.getEventAdress());
                         tvEventPlayersNeeded.setText("" + event.getUsersNeeded());
                         tvEventPlayersEntered.setText("" + event.getUsersEntered());
 

@@ -17,13 +17,23 @@ public class Event {
     }
 
     private int startMinute;
-    private int latitude;
-    private int langitude;
+    private double eventLat;
+    private double eventLng;
     private int usersNeeded;
     private int usersEntered;
     private String eventId;
     private String idOfTheUserWhoCreatedIt;
     private ArrayList<String> listOfUsersParticipatingInEvent = new ArrayList<>();
+
+    public String getEventAdress() {
+        return eventAdress;
+    }
+
+    public void setEventAdress(String eventAdress) {
+        this.eventAdress = eventAdress;
+    }
+
+    private String eventAdress;
 
     public ArrayList<String> getListOfUsersParticipatingInEvent() {
         return listOfUsersParticipatingInEvent;
@@ -53,16 +63,17 @@ public class Event {
         this.eventDescription = eventDescription;
     }
 
-    public Event(String idOfTheUserWhoCreatedIt, String name, String activity, int startHour,int startMinute, int latitude, int langitude, int usersNeeded, String eventDescription) {
+    public Event(String idOfTheUserWhoCreatedIt, String name, String activity, int startHour, int startMinute, double eventLat, double eventLng, int usersNeeded, String eventDescription, String eventAdress) {
         this.idOfTheUserWhoCreatedIt = idOfTheUserWhoCreatedIt;
         this.name = name;
         this.activity = activity;
         this.startHour = startHour;
         this.startMinute = startMinute;
-        this.latitude = latitude;
-        this.langitude = langitude;
+        this.eventLat = eventLat;
+        this.eventLng = eventLng;
         this.usersNeeded = usersNeeded;
         this.eventDescription = eventDescription;
+        this.eventAdress = eventAdress;
 
     }
 
@@ -86,24 +97,25 @@ public class Event {
         return startHour;
     }
 
-    public void setStartHour(double time) {
+
+    public void setStartHour(int startHour) {
         this.startHour = startHour;
     }
 
-    public int getLatitude() {
-        return latitude;
+    public double getEventLat() {
+        return eventLat;
     }
 
-    public void setLatitude(int latitude) {
-        this.latitude = latitude;
+    public void setEventLat(double eventLat) {
+        this.eventLat = eventLat;
     }
 
-    public int getLangitude() {
-        return langitude;
+    public double getEventLng() {
+        return eventLng;
     }
 
-    public void setLangitude(int langitude) {
-        this.langitude = langitude;
+    public void setEventLng(double eventLng) {
+        this.eventLng = eventLng;
     }
 
     public int getUsersNeeded() {

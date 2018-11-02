@@ -21,6 +21,24 @@ public class User {
     int timeStopHour;
     int timeStopMinutes;
     int range;
+    double userLat;
+    double userLong;
+
+    public double getUserLat() {
+        return userLat;
+    }
+
+    public void setUserLat(double userLat) {
+        this.userLat = userLat;
+    }
+
+    public double getUserLong() {
+        return userLong;
+    }
+
+    public void setUserLong(double userLong) {
+        this.userLong = userLong;
+    }
 
     public int getTimeStartHour() {
         return timeStartHour;

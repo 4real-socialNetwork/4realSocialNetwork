@@ -1,12 +1,17 @@
 package com.example.marko.areyou4real.fragments;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +26,8 @@ import com.example.marko.areyou4real.R;
 import com.example.marko.areyou4real.User;
 import com.example.marko.areyou4real.adapter.EventRecyclerAdapter;
 import com.example.marko.areyou4real.model.Event;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -39,6 +46,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Executor;
+
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 
 public class Home extends android.support.v4.app.Fragment {
@@ -53,7 +63,10 @@ public class Home extends android.support.v4.app.Fragment {
     private SwipeRefreshLayout swipe;
     private FloatingActionButton fab;
     private ArrayList<String> interests = new ArrayList<>();
-    private CollectionReference notificationRef = db.collection("notifications");
+    private double userLat;
+    private double userLng;
+    private double userRange;
+
 
     @Nullable
     @Override
@@ -118,8 +131,11 @@ public class Home extends android.support.v4.app.Fragment {
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     for (DocumentSnapshot dc : task.getResult()) {
                         Event event = dc.toObject(Event.class);
-                        mAdapter.addItem(event);
-                        mAdapter.notifyDataSetChanged();
+                        if(distance(userLat,userLng,event.getEventLat(),event.getEventLng(),'K')<=userRange){
+                            mAdapter.addItem(event);
+                            mAdapter.notifyDataSetChanged();
+                        }
+
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -151,6 +167,9 @@ public class Home extends android.support.v4.app.Fragment {
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (DocumentSnapshot dc : queryDocumentSnapshots) {
                     User user = dc.toObject(User.class);
+                    userLat = user.getUserLat();
+                    userLng = user.getUserLong();
+                    userRange = user.getRange();
                     ArrayList<String> list = new ArrayList<>(user.getInterests());
                     interests.addAll(list);
                 }
@@ -165,5 +184,25 @@ public class Home extends android.support.v4.app.Fragment {
 
     }
 
+    private double distance(double lat1, double lon1, double lat2, double lon2, char unit) {
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+        if (unit == 'K') {
+            dist = dist * 1.609344;
+        } else if (unit == 'N') {
+            dist = dist * 0.8684;
+        }
+        return (dist);
+    }
+    private double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    private double rad2deg(double rad) {
+        return (rad * 180.0 / Math.PI);
+    }
 
 }

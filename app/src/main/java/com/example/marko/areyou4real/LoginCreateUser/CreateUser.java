@@ -163,7 +163,7 @@ public class CreateUser extends AppCompatActivity implements TimePickerDialog.On
                         @Override
                         public void onSuccess(AuthResult authResult) {
 
-                            User user = new User(FirebaseAuth.getInstance().getUid(), ime, prezime, mail, opis, selectedItems, udaljenost, startTimeHour,startTimeMinutes, endTimeHour,endTimeMinutes);
+                            User user = new User(FirebaseAuth.getInstance().getUid(), ime, prezime, mail, opis, selectedItems, udaljenost, startTimeHour, startTimeMinutes, endTimeHour, endTimeMinutes);
                             mUsersRef.add(user);
 
                             Toast.makeText(CreateUser.this, "Račun kreiran", Toast.LENGTH_SHORT).show();
