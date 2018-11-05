@@ -66,6 +66,8 @@ public class Home extends android.support.v4.app.Fragment {
     private double userLat;
     private double userLng;
     private double userRange;
+     String userDocId ="";
+
 
 
     @Nullable
@@ -166,6 +168,7 @@ public class Home extends android.support.v4.app.Fragment {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (DocumentSnapshot dc : queryDocumentSnapshots) {
+                    userDocId = dc.getId();
                     User user = dc.toObject(User.class);
                     userLat = user.getUserLat();
                     userLng = user.getUserLong();

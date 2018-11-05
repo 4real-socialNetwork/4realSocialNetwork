@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.example.marko.areyou4real.MainActivity;
 import com.example.marko.areyou4real.R;
 import com.example.marko.areyou4real.User;
+import com.example.marko.areyou4real.adapter.TinyDB;
 import com.example.marko.areyou4real.dialogs.InterestDialog;
 import com.example.marko.areyou4real.fragments.TimePickerFragment;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -29,6 +30,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -62,6 +64,7 @@ public class CreateUser extends AppCompatActivity implements TimePickerDialog.On
     private TextView tvShowInterest;
     private TextView tvStartTimeDisplay;
     private TextView tvEndTimeDisplay;
+    public TinyDB tinyDB ;
 
     private int current_range = 5;
     //tag putem kojeg saznajemo koji timepicker se koristi :)
@@ -164,13 +167,21 @@ public class CreateUser extends AppCompatActivity implements TimePickerDialog.On
                         public void onSuccess(AuthResult authResult) {
 
                             User user = new User(FirebaseAuth.getInstance().getUid(), ime, prezime, mail, opis, selectedItems, udaljenost, startTimeHour, startTimeMinutes, endTimeHour, endTimeMinutes);
-                            mUsersRef.add(user);
+                            mUsersRef.add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                @Override
+                                public void onSuccess(DocumentReference documentReference) {
+                                    tinyDB = new TinyDB(CreateUser.this);
+                                    tinyDB.putString("USERDOCREF",documentReference.getId());
+                                    Toast.makeText(mContext, tinyDB.getString("USERDOCREF"), Toast.LENGTH_SHORT).show();
+                                  //  Toast.makeText(CreateUser.this, "Račun kreiran", Toast.LENGTH_SHORT).show();
+                                    progressBar.setVisibility(View.INVISIBLE);
+                                    Intent intent = new Intent(mContext, MainActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            });
 
-                            Toast.makeText(CreateUser.this, "Račun kreiran", Toast.LENGTH_SHORT).show();
-                            progressBar.setVisibility(View.INVISIBLE);
-                            Intent intent = new Intent(mContext, MainActivity.class);
-                            startActivity(intent);
-                            finish();
+
 
                         }
                     }).addOnFailureListener(new OnFailureListener() {

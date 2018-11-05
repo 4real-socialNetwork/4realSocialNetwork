@@ -9,28 +9,22 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.marko.areyou4real.adapter.PlaceAutocompleteAdapter;
-import com.example.marko.areyou4real.fragments.CreateEvent;
 import com.example.marko.areyou4real.model.PlaceInfo;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -55,7 +49,6 @@ import com.google.android.gms.tasks.Task;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
@@ -80,10 +73,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleApiClient mGoogleApiClient;
     private GeoDataClient mGeoDataClient;
     private PlaceDetectionClient mPlaceDetectionClient;
-    private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(new LatLng(-40,-168),new LatLng(71,136));
-    private PlaceInfo mPlace ;
-
-
+    private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(new LatLng(-40, -168), new LatLng(71, 136));
+    private PlaceInfo mPlace;
 
 
     @Override
@@ -209,11 +200,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void init() {
-        mGeoDataClient = Places.getGeoDataClient(this, null);
+        mGeoDataClient = Places.getGeoDataClient(this);
 
 
-
-        mPlaceAutoCompleteAdapter = new PlaceAutocompleteAdapter(this,mGeoDataClient,LAT_LNG_BOUNDS,null );
+        mPlaceAutoCompleteAdapter = new PlaceAutocompleteAdapter(this, mGeoDataClient, LAT_LNG_BOUNDS, null);
 
         mSearchText.setAdapter(mPlaceAutoCompleteAdapter);
         mSearchText.setOnItemClickListener(autoCompleteClickListener);
@@ -259,14 +249,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-
     private void sendData() {
         if ((eventLat != 0) && (eventLng != 0)) {
             Intent intent = new Intent();
-            intent.putExtra("ADDRESS",eventAddress);
-            intent.putExtra("LAT",eventLat);
-            intent.putExtra("LNG",eventLng);
-            setResult(RESULT_OK,intent);
+            intent.putExtra("ADDRESS", eventAddress);
+            intent.putExtra("LAT", eventLat);
+            intent.putExtra("LNG", eventLng);
+            setResult(RESULT_OK, intent);
             finish();
 
         } else {
@@ -297,10 +286,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private OnCompleteListener<PlaceBufferResponse> mUpdatePlaceDetailsCallback = new OnCompleteListener<PlaceBufferResponse>() {
         @Override
         public void onComplete(@NonNull Task<PlaceBufferResponse> task) {
-            if(task.isSuccessful()){
+            if (task.isSuccessful()) {
                 PlaceBufferResponse places = task.getResult();
                 final Place myPlace = places.get(0);
-                try{
+                try {
                     mPlace = new PlaceInfo();
                     mPlace.setName(myPlace.getName().toString());
                     mPlace.setAddress(myPlace.getAddress().toString());
@@ -310,10 +299,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mPlace.setRating(myPlace.getRating());
                     mPlace.setPhoneNumber(myPlace.getPhoneNumber().toString());
                     mPlace.setWebsiteUri(myPlace.getWebsiteUri());
-                }catch (NullPointerException e){
-                    Log.e(TAG,e.getMessage());
+                } catch (NullPointerException e) {
+                    Log.e(TAG, e.getMessage());
                 }
-                moveCamera(myPlace.getLatLng(),DEFAULT_ZOOM,mPlace.getName());
+                moveCamera(myPlace.getLatLng(), DEFAULT_ZOOM, mPlace.getName());
                 LatLng latLng = myPlace.getLatLng();
                 eventAddress = myPlace.getAddress().toString();
                 eventLat = latLng.latitude;
@@ -321,8 +310,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 hideKeyboard(MapsActivity.this);
                 places.release();
 
-            }else{
-                Log.e(TAG,"Place not Found");
+            } else {
+                Log.e(TAG, "Place not Found");
             }
         }
     };
@@ -337,7 +326,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
-
 
 
 }

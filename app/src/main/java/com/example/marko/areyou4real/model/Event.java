@@ -1,5 +1,7 @@
 package com.example.marko.areyou4real.model;
 
+import com.example.marko.areyou4real.EventChatRoom;
+
 import java.util.ArrayList;
 
 public class Event {
@@ -7,6 +9,10 @@ public class Event {
     private String activity;
     private String eventDescription;
     private int startHour;
+
+
+
+
 
     public int getStartMinute() {
         return startMinute;

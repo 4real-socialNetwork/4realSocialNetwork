@@ -38,6 +38,7 @@ public class InsideEvent extends AppCompatActivity {
     private Button btnDoSomething;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String eventId;
+    private String eventChatId;
     private CollectionReference eventsRef = db.collection("Events");
     private Intent intent;
     private FloatingActionButton fab;
@@ -45,6 +46,8 @@ public class InsideEvent extends AppCompatActivity {
     private String btnText1 = "delete event";
     private String btnText2 = "exit event";
     private String btnText3 = "join event";
+    private boolean isUserInEvent = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +69,17 @@ public class InsideEvent extends AppCompatActivity {
         tvEventPlayersNeeded = findViewById(R.id.tvPlayersNeeded);
         tvEventPlayersEntered = findViewById(R.id.tvPlayersEntered);
         btnDoSomething = findViewById(R.id.btnDoSomething);
+
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(InsideEvent.this, EventChatRoom.class);
+                intent.putExtra("EVENTID", eventId);
+                startActivity(intent);
+            }
+        });
 
     }
 
@@ -93,7 +107,7 @@ public class InsideEvent extends AppCompatActivity {
                     Event event = documentSnapshot.toObject(Event.class);
                     tvEventName.setText(event.getName());
                     tvEventActivity.setText(event.getActivity());
-                    tvEventTime.setText("" + event.getStartHour()+" : "+event.getStartMinute());
+                    tvEventTime.setText("" + event.getStartHour() + " : " + event.getStartMinute());
                     tvEventDescription.setText(event.getEventDescription());
                     tvEventPlace.setText(event.getEventAdress());
                     tvEventPlayersNeeded.setText("" + event.getUsersNeeded());
@@ -101,12 +115,18 @@ public class InsideEvent extends AppCompatActivity {
 
                     if (userId.equals(event.getIdOfTheUserWhoCreatedIt())) {
                         btnDoSomething.setText(btnText1);
+                        fab.setVisibility(View.VISIBLE);
+                        fab.setClickable(true);
 
                     } else if (!(event.getListOfUsersParticipatingInEvent().contains(userId))) {
                         btnDoSomething.setText(btnText3);
+                        fab.setVisibility(View.INVISIBLE);
+                        fab.setClickable(false);
 
                     } else {
                         btnDoSomething.setText(btnText2);
+                        fab.setVisibility(View.VISIBLE);
+                        fab.setClickable(true);
                     }
                 } catch (NullPointerException exception) {
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -126,41 +146,36 @@ public class InsideEvent extends AppCompatActivity {
 
         intent = getIntent();
         eventId = intent.getStringExtra("EVENT_ID");
+        eventChatId = intent.getStringExtra("CHAT_ID");
 
-        eventsRef.whereEqualTo("eventId", eventId)
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        eventsRef.document(eventId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (DocumentSnapshot dc : task.getResult()) {
-                        Event event = dc.toObject(Event.class);
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Event event = documentSnapshot.toObject(Event.class);
+                tvEventName.setText(event.getName());
+                tvEventActivity.setText(event.getActivity());
+                tvEventTime.setText("" + event.getStartHour() + " : " + event.getStartMinute());
+                tvEventDescription.setText(event.getEventDescription());
+                tvEventPlace.setText(event.getEventAdress());
+                tvEventPlayersNeeded.setText("" + event.getUsersNeeded());
+                tvEventPlayersEntered.setText("" + event.getUsersEntered());
 
-                        tvEventName.setText(event.getName());
-                        tvEventActivity.setText(event.getActivity());
-                        tvEventTime.setText("" + event.getStartHour()+" : "+event.getStartMinute());
-                        tvEventDescription.setText(event.getEventDescription());
-                        tvEventPlace.setText(event.getEventAdress());
-                        tvEventPlayersNeeded.setText("" + event.getUsersNeeded());
-                        tvEventPlayersEntered.setText("" + event.getUsersEntered());
+                if (userId.equals(event.getIdOfTheUserWhoCreatedIt())) {
+                    btnDoSomething.setText(btnText1);
+                    deleteEvent();
 
-                        if (userId.equals(event.getIdOfTheUserWhoCreatedIt())) {
-                            btnDoSomething.setText(btnText1);
-                            deleteEvent();
 
-                        } else if (!(event.getListOfUsersParticipatingInEvent().contains(userId))) {
-                            btnDoSomething.setText(btnText3);
-                            if (event.getUsersEntered()>=event.getUsersNeeded()){
-                                btnDoSomething.setText("Event full");
-                            }else{
-                                joinEvent();
-
-                            }
-                        } else {
-                            btnDoSomething.setText(btnText2);
-                            exitEvent();
-                        }
+                } else if (!(event.getListOfUsersParticipatingInEvent().contains(userId))) {
+                    btnDoSomething.setText(btnText3);
+                    if (event.getUsersEntered() >= event.getUsersNeeded()) {
+                        btnDoSomething.setText("Event full");
+                    } else {
+                        joinEvent();
 
                     }
+                } else {
+                    btnDoSomething.setText(btnText2);
+                    exitEvent();
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -168,8 +183,6 @@ public class InsideEvent extends AppCompatActivity {
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(InsideEvent.this, e.toString(), Toast.LENGTH_SHORT).show();
             }
-
-
         });
 
 
@@ -193,6 +206,8 @@ public class InsideEvent extends AppCompatActivity {
                                     eventsRef.document(eventId).set(event);
                                     btnDoSomething.setText(btnText2);
                                     Toast.makeText(InsideEvent.this, "event joined", Toast.LENGTH_SHORT).show();
+                                    fab.setVisibility(View.VISIBLE);
+                                    fab.setClickable(true);
                                 }
 
                             }
@@ -226,6 +241,8 @@ public class InsideEvent extends AppCompatActivity {
                                     public void onComplete(@NonNull Task<Void> task) {
                                         Toast.makeText(InsideEvent.this, "event exited", Toast.LENGTH_SHORT).show();
                                         btnDoSomething.setText(btnText3);
+                                        fab.setVisibility(View.INVISIBLE);
+                                        fab.setClickable(false);
                                     }
                                 });
                             }

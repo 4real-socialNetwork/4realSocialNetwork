@@ -2,12 +2,10 @@ package com.example.marko.areyou4real.fragments;
 
 
 import android.app.Dialog;
-import android.app.Fragment;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +25,7 @@ import com.example.marko.areyou4real.MainActivity;
 import com.example.marko.areyou4real.MapsActivity;
 import com.example.marko.areyou4real.R;
 import com.example.marko.areyou4real.model.Event;
+import com.example.marko.areyou4real.model.TextMessage;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -37,6 +36,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 public class CreateEvent extends AppCompatActivity implements AdapterView.OnItemSelectedListener, TimePickerDialog.OnTimeSetListener {
 
@@ -66,6 +70,9 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
     private String eventAddress = "";
     //user location;
     private static final int ERROR_DIALOG_REQUEST = 9001;
+    private ArrayList<String> usersInEventChat = new ArrayList<>();
+    public String mTextMessageId;
+
 
 
     @Override
@@ -134,8 +141,7 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 Toast.makeText(CreateEvent.this, "Event created", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(mContext, MainActivity.class);
-                startActivity(intent);
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -149,10 +155,13 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
                     docRef = task.getResult();
                     docId = docRef.getId();
                     docRef.update("eventId", docId);
+                    createChat();
+
 
                 }
             }
         });
+
     }
 
     private void setToolbar() {
@@ -221,4 +230,20 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
             }
         }
     }
+
+    public void createChat(){
+        usersInEventChat.add(FirebaseAuth.getInstance().getUid());
+        eventsRef.document(docId).collection("chatRoom").add(new TextMessage("Marko","neki text","some")).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                mTextMessageId = documentReference.getId();
+                eventsRef.document(docId).collection("chatRoom").document(mTextMessageId)
+                        .update("eventChatId",mTextMessageId);
+                Intent intent = new Intent(mContext, MainActivity.class);
+                startActivity(intent);
+
+            }
+        });
+    }
+
 }
