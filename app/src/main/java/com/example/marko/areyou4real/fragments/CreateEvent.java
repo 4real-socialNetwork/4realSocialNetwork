@@ -233,7 +233,7 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
 
     public void createChat(){
         usersInEventChat.add(FirebaseAuth.getInstance().getUid());
-        eventsRef.document(docId).collection("chatRoom").add(new TextMessage("Marko","neki text","some")).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+        eventsRef.document(docId).collection("chatRoom").add(new TextMessage("","","")).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 mTextMessageId = documentReference.getId();

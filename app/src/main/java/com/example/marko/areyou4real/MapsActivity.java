@@ -70,9 +70,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String eventAddress = "";
     private Button btnSaveLocation;
     private PlaceAutocompleteAdapter mPlaceAutoCompleteAdapter;
-    private GoogleApiClient mGoogleApiClient;
     private GeoDataClient mGeoDataClient;
-    private PlaceDetectionClient mPlaceDetectionClient;
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(new LatLng(-40, -168), new LatLng(71, 136));
     private PlaceInfo mPlace;
 
@@ -169,6 +167,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         try {
             if (mLocationPermissionGranted) {
                 final Task location = mFusedLocationProviderClient.getLastLocation();
+
                 location.addOnCompleteListener(new OnCompleteListener() {
                     @Override
                     public void onComplete(@NonNull Task task) {

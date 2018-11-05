@@ -151,33 +151,41 @@ public class InsideEvent extends AppCompatActivity {
         eventsRef.document(eventId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Event event = documentSnapshot.toObject(Event.class);
-                tvEventName.setText(event.getName());
-                tvEventActivity.setText(event.getActivity());
-                tvEventTime.setText("" + event.getStartHour() + " : " + event.getStartMinute());
-                tvEventDescription.setText(event.getEventDescription());
-                tvEventPlace.setText(event.getEventAdress());
-                tvEventPlayersNeeded.setText("" + event.getUsersNeeded());
-                tvEventPlayersEntered.setText("" + event.getUsersEntered());
+                try {
+                    Event event = documentSnapshot.toObject(Event.class);
+                    tvEventName.setText(event.getName());
+                    tvEventActivity.setText(event.getActivity());
+                    tvEventTime.setText("" + event.getStartHour() + " : " + event.getStartMinute());
+                    tvEventDescription.setText(event.getEventDescription());
+                    tvEventPlace.setText(event.getEventAdress());
+                    tvEventPlayersNeeded.setText("" + event.getUsersNeeded());
+                    tvEventPlayersEntered.setText("" + event.getUsersEntered());
 
-                if (userId.equals(event.getIdOfTheUserWhoCreatedIt())) {
-                    btnDoSomething.setText(btnText1);
-                    deleteEvent();
+                    if (userId.equals(event.getIdOfTheUserWhoCreatedIt())) {
+                        btnDoSomething.setText(btnText1);
+                        deleteEvent();
 
 
-                } else if (!(event.getListOfUsersParticipatingInEvent().contains(userId))) {
-                    btnDoSomething.setText(btnText3);
-                    if (event.getUsersEntered() >= event.getUsersNeeded()) {
-                        btnDoSomething.setText("Event full");
+                    } else if (!(event.getListOfUsersParticipatingInEvent().contains(userId))) {
+                        btnDoSomething.setText(btnText3);
+                        if (event.getUsersEntered() >= event.getUsersNeeded()) {
+                            btnDoSomething.setText("Event full");
+                        } else {
+                            joinEvent();
+
+                        }
                     } else {
-                        joinEvent();
-
+                        btnDoSomething.setText(btnText2);
+                        exitEvent();
                     }
-                } else {
-                    btnDoSomething.setText(btnText2);
-                    exitEvent();
+
+                } catch (NullPointerException e) {
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
+                    Toast.makeText(InsideEvent.this, "yes", Toast.LENGTH_SHORT).show();
                 }
             }
+
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {

@@ -14,7 +14,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,10 +24,14 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.Toast;
 
+import com.example.marko.areyou4real.MyEvents;
 import com.example.marko.areyou4real.R;
 import com.example.marko.areyou4real.User;
 import com.example.marko.areyou4real.adapter.EventRecyclerAdapter;
+import com.example.marko.areyou4real.adapter.MyEventsAdapter;
+import com.example.marko.areyou4real.adapter.TinyDB;
 import com.example.marko.areyou4real.model.Event;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -41,6 +47,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -66,8 +73,9 @@ public class Home extends android.support.v4.app.Fragment {
     private double userLat;
     private double userLng;
     private double userRange;
-     String userDocId ="";
-
+    String userDocId = "";
+    TinyDB tinyDB;
+    private MyEventsAdapter myEventsAdapter;
 
 
     @Nullable
@@ -78,12 +86,16 @@ public class Home extends android.support.v4.app.Fragment {
         swipe = view.findViewById(R.id.swipee);
         fab = view.findViewById(R.id.fab);
 
+        setUpMyEventsRecyclerView(view);
+
         mRecycleView = view.findViewById(R.id.homeRecyclerView);
         mRecycleView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(mContext);
         mAdapter = new EventRecyclerAdapter(mContext);
         mRecycleView.setAdapter(mAdapter);
         mRecycleView.setLayoutManager(mLayoutManager);
+        SnapHelper helper = new LinearSnapHelper();
+        helper.attachToRecyclerView(mRecycleView);
 
         mAdapter.notifyDataSetChanged();
         setInterests();
@@ -133,7 +145,7 @@ public class Home extends android.support.v4.app.Fragment {
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     for (DocumentSnapshot dc : task.getResult()) {
                         Event event = dc.toObject(Event.class);
-                        if(distance(userLat,userLng,event.getEventLat(),event.getEventLng(),'K')<=userRange){
+                        if (distance(userLat, userLng, event.getEventLat(), event.getEventLng(), 'K') <= userRange) {
                             mAdapter.addItem(event);
                             mAdapter.notifyDataSetChanged();
                         }
@@ -175,6 +187,8 @@ public class Home extends android.support.v4.app.Fragment {
                     userRange = user.getRange();
                     ArrayList<String> list = new ArrayList<>(user.getInterests());
                     interests.addAll(list);
+                    tinyDB = new TinyDB(getContext());
+                    tinyDB.putString("USERDOCREF", userDocId);
                 }
                 loadEvents();
             }
@@ -200,6 +214,7 @@ public class Home extends android.support.v4.app.Fragment {
         }
         return (dist);
     }
+
     private double deg2rad(double deg) {
         return (deg * Math.PI / 180.0);
     }
@@ -208,4 +223,34 @@ public class Home extends android.support.v4.app.Fragment {
         return (rad * 180.0 / Math.PI);
     }
 
+    private void setUpMyEventsRecyclerView(View view) {
+        Query query = eventsRef.whereArrayContains("listOfUsersParticipatingInEvent", userId)
+                .orderBy("name", Query.Direction.DESCENDING)
+                .limit(50);
+        FirestoreRecyclerOptions<Event> firestoreRecyclerOptions = new FirestoreRecyclerOptions
+                .Builder<Event>()
+                .setQuery(query, Event.class)
+                .build();
+
+        myEventsAdapter = new MyEventsAdapter(firestoreRecyclerOptions,mContext);
+
+        RecyclerView recyclerView = view.findViewById(R.id.myEventsRecycler);
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(myEventsAdapter);
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        myEventsAdapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        myEventsAdapter.stopListening();
+    }
 }

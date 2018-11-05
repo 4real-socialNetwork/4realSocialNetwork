@@ -86,27 +86,6 @@ public class MyEvents extends AppCompatActivity {
         mAdapter.notifyDataSetChanged();
     }
 
-    public void loadEvents() {
-        eventsRef
-                .whereEqualTo("idOfTheUserWhoCreatedIt", userId)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        for (DocumentSnapshot document : queryDocumentSnapshots) {
-                            Event event = document.toObject(Event.class);
-                            mAdapter.addItem(event);
-                            mAdapter.notifyDataSetChanged();
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(mContext, "error", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

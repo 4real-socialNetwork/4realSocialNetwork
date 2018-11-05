@@ -43,11 +43,15 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
 
     @Override
     public void onBindViewHolder(@NonNull EventRecyclerAdapter.MyViewHolder holder, int position) {
-        String name = eventList.get(position).getName();
-        String place = eventList.get(position).getEventDescription();
+        String name = eventList.get(position).getActivity();
+        String place = "Zagreb";
+        String usersNeeded = eventList.get(position).getUsersNeeded()+"";
+        String timeOfEvent = eventList.get(position).getStartHour()+":"+eventList.get(position).getStartMinute();
         final String eventId = eventList.get(position).getEventId();
         holder.sport.setText(name);
         holder.place.setText(place);
+        holder.usersNeeded.setText(usersNeeded);
+        holder.eventTime.setText(timeOfEvent);
 
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,12 +72,16 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
         RelativeLayout relativeLayout;
         TextView sport;
         TextView place;
+        TextView usersNeeded;
+        TextView eventTime;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             this.place = itemView.findViewById(R.id.tvEventName);
             this.relativeLayout = itemView.findViewById(R.id.home_event_item);
             this.sport = itemView.findViewById(R.id.tvPlace);
+            this.usersNeeded = itemView.findViewById(R.id.tvPlayersNeeded);
+            this.eventTime = itemView.findViewById(R.id.tvEventStart);
 
         }
     }

@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.marko.areyou4real.LoginCreateUser.LoginActivity;
+import com.example.marko.areyou4real.fragments.CreateEvent;
 import com.example.marko.areyou4real.fragments.GroupsFragment;
 import com.example.marko.areyou4real.fragments.Home;
 import com.example.marko.areyou4real.adapter.SectionPagerAdapter;
@@ -102,12 +103,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Location> task) {
                 if(task!=null){
-                    try{
+
                         userLat = task.getResult().getLatitude();
                         userLng = task.getResult().getLongitude();
-                    }catch (NullPointerException e){
-                        Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
-                    }
+
 
                 }
             }
@@ -129,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
 
             return false;
         } else if (item.getItemId() == R.id.myEvents) {
-            Intent intent = new Intent(MainActivity.this, MyEvents.class);
+            Intent intent = new Intent(MainActivity.this, CreateEvent.class);
             startActivity(intent);
         } else if (item.getItemId() == R.id.menuSignOut) {
             signOut();
