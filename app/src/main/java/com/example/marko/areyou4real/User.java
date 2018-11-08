@@ -23,6 +23,15 @@ public class User {
     int range;
     double userLat;
     double userLong;
+    String userToken;
+
+    public String getUserToken() {
+        return userToken;
+    }
+
+    public void setUserToken(String userToken) {
+        this.userToken = userToken;
+    }
 
     public double getUserLat() {
         return userLat;
@@ -155,7 +164,7 @@ public class User {
         this.userId = userId;
     }
 
-    public User(String userId, String name, String surname, String email, String description,
+    public User(String userId,String userToken, String name, String surname, String email, String description,
                 ArrayList<String> interests, int range, int timeStartHour,
                 int timeStartMinutes, int timeStopHour, int timeStopMinutes) {
         this.userId = userId;
@@ -169,6 +178,7 @@ public class User {
         this.timeStartMinutes = timeStartMinutes;
         this.timeStopHour = timeStopHour;
         this.timeStopMinutes = timeStopMinutes;
+        this.userToken = userToken;
     }
 
     public void gradeUser(int grade) {

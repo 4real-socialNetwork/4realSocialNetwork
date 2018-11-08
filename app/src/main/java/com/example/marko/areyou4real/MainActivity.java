@@ -21,10 +21,12 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.marko.areyou4real.LoginCreateUser.LoginActivity;
+import com.example.marko.areyou4real.adapter.TinyDB;
 import com.example.marko.areyou4real.fragments.CreateEvent;
 import com.example.marko.areyou4real.fragments.GroupsFragment;
 import com.example.marko.areyou4real.fragments.Home;
 import com.example.marko.areyou4real.adapter.SectionPagerAdapter;
+import com.example.marko.areyou4real.model.Event;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GoogleApiAvailabilityLight;
@@ -40,6 +42,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -60,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference colRef = db.collection("Users");
     private String userDocumentId = "";
+    private String serverKey ="";
+    private TinyDB tinyDB ;
+
 
 
     @Override
@@ -73,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         client = LocationServices.getFusedLocationProviderClient(MainActivity.this);
         getLocationPermission();
         getUserDocumentId();
+        getServerKey();
 
 
         mPageAdapter = new SectionPagerAdapter(getSupportFragmentManager());
@@ -99,14 +106,18 @@ public class MainActivity extends AppCompatActivity {
 
             return;
         }
+
+
         client.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
             @Override
             public void onComplete(@NonNull Task<Location> task) {
-                if(task!=null){
-
+                if (task != null) {
+                    if (task.getResult() == null) {
+                        getLastKnownLocation();
+                    } else {
                         userLat = task.getResult().getLatitude();
                         userLng = task.getResult().getLongitude();
-
+                    }
 
                 }
             }
@@ -192,20 +203,21 @@ public class MainActivity extends AppCompatActivity {
                 .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for (DocumentSnapshot dc : queryDocumentSnapshots){
-                   userDocumentId = queryDocumentSnapshots.getDocuments().get(0).getId();
-                   updateUserLocation();
+                for (DocumentSnapshot dc : queryDocumentSnapshots) {
+                    userDocumentId = queryDocumentSnapshots.getDocuments().get(0).getId();
+                    updateUserLocation();
 
                 }
             }
         });
 
     }
-    private void updateUserLocation(){
-        colRef.document(userDocumentId).update("userLat",userLat,"userLong",userLng).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+    private void updateUserLocation() {
+        colRef.document(userDocumentId).update("userLat", userLat, "userLong", userLng).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     Log.d(TAG, "onComplete: task complete");
                 }
             }
@@ -217,5 +229,34 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         getLastKnownLocation();
+    }
+
+    private void getAllUserTokens(){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference eventsRef = db.collection("Events");
+        Query query = eventsRef.whereArrayContains("listOfUsersParticipatingInEvent",FirebaseAuth.getInstance().getUid());
+        query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (DocumentSnapshot dc : queryDocumentSnapshots){
+                    Event event = dc.toObject(Event.class);
+
+                }
+            }
+        });
+    }
+    private void getServerKey(){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference server = db.collection("Server");
+        server.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (DocumentSnapshot dc : queryDocumentSnapshots){
+                     serverKey = dc.toString();
+                     tinyDB =  new TinyDB(MainActivity.this);
+                     tinyDB.putString("SERVERKEY",serverKey);
+                }
+            }
+        });
     }
 }

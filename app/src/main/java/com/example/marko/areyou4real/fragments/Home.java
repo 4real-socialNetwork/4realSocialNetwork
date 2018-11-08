@@ -25,6 +25,7 @@ import android.view.animation.LayoutAnimationController;
 import android.widget.Toast;
 
 import com.example.marko.areyou4real.MyEvents;
+import com.example.marko.areyou4real.MyFirebaseMessagingService;
 import com.example.marko.areyou4real.R;
 import com.example.marko.areyou4real.User;
 import com.example.marko.areyou4real.adapter.EventRecyclerAdapter;
@@ -76,6 +77,9 @@ public class Home extends android.support.v4.app.Fragment {
     String userDocId = "";
     TinyDB tinyDB;
     private MyEventsAdapter myEventsAdapter;
+    private MyFirebaseMessagingService myFirebaseMessagingService = new MyFirebaseMessagingService();
+    String userToken = "";
+
 
 
     @Nullable
@@ -94,8 +98,7 @@ public class Home extends android.support.v4.app.Fragment {
         mAdapter = new EventRecyclerAdapter(mContext);
         mRecycleView.setAdapter(mAdapter);
         mRecycleView.setLayoutManager(mLayoutManager);
-        SnapHelper helper = new LinearSnapHelper();
-        helper.attachToRecyclerView(mRecycleView);
+
 
         mAdapter.notifyDataSetChanged();
         setInterests();
@@ -185,12 +188,16 @@ public class Home extends android.support.v4.app.Fragment {
                     userLat = user.getUserLat();
                     userLng = user.getUserLong();
                     userRange = user.getRange();
+                    userToken = user.getUserToken();
                     ArrayList<String> list = new ArrayList<>(user.getInterests());
                     interests.addAll(list);
                     tinyDB = new TinyDB(getContext());
                     tinyDB.putString("USERDOCREF", userDocId);
+                    tinyDB.putString("USERTOKEN",userToken);
                 }
                 loadEvents();
+                updateUserToken();
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -227,6 +234,7 @@ public class Home extends android.support.v4.app.Fragment {
         Query query = eventsRef.whereArrayContains("listOfUsersParticipatingInEvent", userId)
                 .orderBy("name", Query.Direction.DESCENDING)
                 .limit(50);
+
         FirestoreRecyclerOptions<Event> firestoreRecyclerOptions = new FirestoreRecyclerOptions
                 .Builder<Event>()
                 .setQuery(query, Event.class)
@@ -252,5 +260,18 @@ public class Home extends android.support.v4.app.Fragment {
     public void onStop() {
         super.onStop();
         myEventsAdapter.stopListening();
+    }
+    private void updateUserToken(){
+        String newToken = myFirebaseMessagingService.getUserToken();
+        if(!newToken.equals("")){
+            userRef.document(userDocId).update("userToken",newToken).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Toast.makeText(mContext, "tokenUpdated", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }else {
+            return;
+        }
     }
 }

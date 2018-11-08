@@ -14,7 +14,13 @@ import com.example.marko.areyou4real.model.TextMessage;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 public class TextMessageAdapter extends FirestoreRecyclerAdapter<TextMessage, TextMessageAdapter.TextMessageHolder> {
+
+    private SimpleDateFormat sdf;
+
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
      * FirestoreRecyclerOptions} for configuration options.
@@ -23,6 +29,7 @@ public class TextMessageAdapter extends FirestoreRecyclerAdapter<TextMessage, Te
      */
     public TextMessageAdapter(@NonNull FirestoreRecyclerOptions<TextMessage> options) {
         super(options);
+        sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
     }
 
 
@@ -31,7 +38,7 @@ public class TextMessageAdapter extends FirestoreRecyclerAdapter<TextMessage, Te
         try{
             holder.mSenderName.setText(model.getName());
             holder.mSenderMessage.setText(model.getMessage());
-            holder.mSenderTime.setText( ""+model.getTimestamp().getHours()+"."+model.getTimestamp().getMinutes());
+            holder.mSenderTime.setText(sdf.format(model.getTimestamp()));
         }catch (NullPointerException e){
         }
 

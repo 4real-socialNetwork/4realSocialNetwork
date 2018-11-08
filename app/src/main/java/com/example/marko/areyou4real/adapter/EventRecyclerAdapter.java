@@ -3,6 +3,7 @@ package com.example.marko.areyou4real.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,7 +70,7 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        RelativeLayout relativeLayout;
+        ConstraintLayout relativeLayout;
         TextView sport;
         TextView place;
         TextView usersNeeded;
