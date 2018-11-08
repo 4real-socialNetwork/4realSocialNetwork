@@ -261,6 +261,7 @@ public class Home extends android.support.v4.app.Fragment {
         super.onStop();
         myEventsAdapter.stopListening();
     }
+
     private void updateUserToken(){
         String newToken = myFirebaseMessagingService.getUserToken();
         if(!newToken.equals("")){

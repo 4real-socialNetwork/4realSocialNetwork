@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import com.example.marko.areyou4real.MainActivity;
 import com.example.marko.areyou4real.R;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -43,11 +45,27 @@ public class LoginActivity extends AppCompatActivity {
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_REQUEST_PERMISSION_RESULT = 1234;
     private boolean mLocationPermissionGranted = false;
+    private int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
+        int result = googleAPI.isGooglePlayServicesAvailable(this);
+
+        if(result != ConnectionResult.SUCCESS) {
+            if(googleAPI.isUserResolvableError(result)) {
+                //prompt the dialog to update google play
+                googleAPI.getErrorDialog(this,result,PLAY_SERVICES_RESOLUTION_REQUEST).show();
+
+            }
+        }
+        else{
+            //google play up to date
+        }
 
         mAuth = FirebaseAuth.getInstance();
 
