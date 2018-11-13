@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            ;
         };
 
 
@@ -98,8 +97,8 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         client = LocationServices.getFusedLocationProviderClient(MainActivity.this);
-        createLocationRequest();
         getLocationPermission();
+        createLocationRequest();
         getUserDocumentId();
         getServerKey();
 

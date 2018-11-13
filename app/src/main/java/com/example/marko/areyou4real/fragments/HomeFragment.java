@@ -53,6 +53,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
     private SwipeRefreshLayout swipe;
     private FloatingActionButton fab;
     private ArrayList<String> interests = new ArrayList<>();
+    private ArrayList<Event> eventsList = new ArrayList<>();
     private double userLat;
     private double userLng;
     private double userRange;
@@ -66,22 +67,15 @@ public class HomeFragment extends android.support.v4.app.Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.home_layout, container, false);
+        final View view = inflater.inflate(R.layout.home_layout, container, false);
         mContext = getContext();
         swipe = view.findViewById(R.id.swipee);
         fab = view.findViewById(R.id.fab);
 
         setUpMyEventsRecyclerView(view);
+        setInterests(view);
+        setUpAdapter(view);
 
-        mRecycleView = view.findViewById(R.id.homeRecyclerView);
-        mRecycleView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(mContext);
-        mAdapter = new EventRecyclerAdapter(mContext);
-        mRecycleView.setAdapter(mAdapter);
-        mRecycleView.setLayoutManager(mLayoutManager);
-
-
-        mAdapter.notifyDataSetChanged();
 
 
         int resId = R.anim.layout_animation_fall_down;
@@ -106,7 +100,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
                     @Override
                     public void run() {
                         swipe.setRefreshing(false);
-                        setInterests();
+                        setInterests(view);
                         runLayoutAnimation(mRecycleView);
 
                     }
@@ -119,9 +113,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
     }
 
 
-    public void loadEvents() {
-        mAdapter.clearAll();
-        mAdapter.notifyDataSetChanged();
+    public void loadEvents(final View view) {
         for (String item : interests) {
             eventsRef.whereEqualTo("activity", item)
                     .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -130,9 +122,9 @@ public class HomeFragment extends android.support.v4.app.Fragment {
                     for (DocumentSnapshot dc : task.getResult()) {
                         Event event = dc.toObject(Event.class);
                         if (distance(userLat, userLng, event.getEventLat(), event.getEventLng(), 'K') <= userRange) {
-                            mAdapter.addItem(event);
-                            mAdapter.notifyDataSetChanged();
+                            eventsList.add(event);
                         }
+                        setUpAdapter(view);
 
                     }
                 }
@@ -157,7 +149,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
     }
 
 
-    private void setInterests() {
+    private void setInterests(final View view) {
         interests.clear();
         userRef.whereEqualTo("userId", userId)
                 .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -176,7 +168,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
                     tinyDB.putString("USERDOCREF", userDocId);
                     tinyDB.putString("USERTOKEN", userToken);
                 }
-                loadEvents();
+                loadEvents(view);
                 //updateUserToken();
 
             }
@@ -235,13 +227,25 @@ public class HomeFragment extends android.support.v4.app.Fragment {
     public void onStart() {
         super.onStart();
         myEventsAdapter.startListening();
-        setInterests();
     }
 
     @Override
     public void onStop() {
         super.onStop();
         myEventsAdapter.stopListening();
+    }
+
+    public void setUpAdapter(View view){
+        mRecycleView = view.findViewById(R.id.homeRecyclerView);
+        mRecycleView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(mContext);
+        mAdapter = new EventRecyclerAdapter(mContext,eventsList);
+        mRecycleView.setAdapter(mAdapter);
+        mRecycleView.setLayoutManager(mLayoutManager);
+
+
+        mAdapter.notifyDataSetChanged();
+
     }
 
 

@@ -56,9 +56,6 @@
             android:name=".CreateGroup"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MyEvents"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".OtherUserProfile"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing"/>

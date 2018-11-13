@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +32,7 @@ public class OtherUserProfile extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference usersRef = db.collection("Users");
     private String interests = "";
+    private Button btnAddPlayer;
 
 
     @Override
@@ -44,7 +47,16 @@ public class OtherUserProfile extends AppCompatActivity {
         tvUserName = findViewById(R.id.tvUserName);
         tvUserDescription = findViewById(R.id.tvUserDescription);
         tvUserInterests = findViewById(R.id.tvInterests);
+        btnAddPlayer = findViewById(R.id.btnAddPlayer);
         loadData();
+        btnAddPlayer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnAddPlayer.setText("zahtjev poslan");
+                String thisPlayerId = getIntent().getStringExtra("userId");
+
+            }
+        });
 
 
     }
