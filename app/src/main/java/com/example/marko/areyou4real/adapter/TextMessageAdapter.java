@@ -1,5 +1,6 @@
 package com.example.marko.areyou4real.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import com.example.marko.areyou4real.R;
 import com.example.marko.areyou4real.model.TextMessage;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -20,6 +22,7 @@ import java.util.Locale;
 public class TextMessageAdapter extends FirestoreRecyclerAdapter<TextMessage, TextMessageAdapter.TextMessageHolder> {
 
     private SimpleDateFormat sdf;
+    String currentUserId = FirebaseAuth.getInstance().getUid();
 
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
@@ -35,11 +38,18 @@ public class TextMessageAdapter extends FirestoreRecyclerAdapter<TextMessage, Te
 
     @Override
     protected void onBindViewHolder(@NonNull TextMessageHolder holder, int position, @NonNull TextMessage model) {
-        try{
-            holder.mSenderName.setText(model.getName());
-            holder.mSenderMessage.setText(model.getMessage());
-            holder.mSenderTime.setText(sdf.format(model.getTimestamp()));
-        }catch (NullPointerException e){
+        try {
+            if (currentUserId.equals(model.getUid())) {
+            holder.mCurrentUserMessage.setText(model.getMessage());
+            holder.mCurrentUserTime.setText(sdf.format(model.getTimestamp()));
+
+            }else{
+                holder.mSenderName.setText(model.getName());
+                holder.mSenderMessage.setText(model.getMessage());
+                holder.mSenderTime.setText(sdf.format(model.getTimestamp()));
+            }
+
+        } catch (NullPointerException e) {
         }
 
     }
@@ -47,13 +57,15 @@ public class TextMessageAdapter extends FirestoreRecyclerAdapter<TextMessage, Te
     @NonNull
     @Override
     public TextMessageHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.text_message_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.text_message_item, parent, false);
 
         return new TextMessageHolder(view);
     }
 
     class TextMessageHolder extends RecyclerView.ViewHolder {
         TextView mSenderName;
+        TextView mCurrentUserMessage;
+        TextView mCurrentUserTime;
         TextView mSenderMessage;
         TextView mSenderTime;
 
@@ -62,6 +74,8 @@ public class TextMessageAdapter extends FirestoreRecyclerAdapter<TextMessage, Te
             mSenderName = itemView.findViewById(R.id.tvSenderName);
             mSenderMessage = itemView.findViewById(R.id.tvTextMessage);
             mSenderTime = itemView.findViewById(R.id.tvTimeOfMessage);
+            mCurrentUserMessage = itemView.findViewById(R.id.currentUserMessage);
+            mCurrentUserTime = itemView.findViewById(R.id.tvTimeOfUserMessage);
 
         }
     }

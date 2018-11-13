@@ -16,14 +16,19 @@ public class User {
     ImageView profilePicure;
     String description;
     ArrayList<String> interests;
-    int timeStartHour;
-    int timeStartMinutes;
-    int timeStopHour;
-    int timeStopMinutes;
     int range;
     double userLat;
     double userLong;
     String userToken;
+    ArrayList<String> userFriends;
+
+    public ArrayList<String> getUserFriends() {
+        return userFriends;
+    }
+
+    public void setUserFriends(ArrayList<String> userFriends) {
+        this.userFriends = userFriends;
+    }
 
     public String getUserToken() {
         return userToken;
@@ -49,38 +54,6 @@ public class User {
         this.userLong = userLong;
     }
 
-    public int getTimeStartHour() {
-        return timeStartHour;
-    }
-
-    public void setTimeStartHour(int timeStartHour) {
-        this.timeStartHour = timeStartHour;
-    }
-
-    public int getTimestartMinute() {
-        return timeStartMinutes;
-    }
-
-    public void setTimestartMinute(int timestartMinute) {
-        this.timeStartMinutes = timestartMinute;
-    }
-
-    public int getTimeStopHour() {
-        return timeStopHour;
-    }
-
-    public void setTimeStopHour(int timeStopHour) {
-        this.timeStopHour = timeStopHour;
-    }
-
-
-    public int getTimeStopMinute() {
-        return timeStopMinutes;
-    }
-
-    public void setTimeStopMinute(int timeStopMinute) {
-        this.timeStopMinutes = timeStopMinute;
-    }
 
     public User() {
     }
@@ -164,9 +137,8 @@ public class User {
         this.userId = userId;
     }
 
-    public User(String userId,String userToken, String name, String surname, String email, String description,
-                ArrayList<String> interests, int range, int timeStartHour,
-                int timeStartMinutes, int timeStopHour, int timeStopMinutes) {
+    public User(String userId, String userToken, String name, String surname, String email, String description,
+                ArrayList<String> interests, int range,ArrayList<String> userFriends) {
         this.userId = userId;
         this.name = name;
         this.surname = surname;
@@ -174,11 +146,8 @@ public class User {
         this.description = description;
         this.interests = interests;
         this.range = range;
-        this.timeStartHour = timeStartHour;
-        this.timeStartMinutes = timeStartMinutes;
-        this.timeStopHour = timeStopHour;
-        this.timeStopMinutes = timeStopMinutes;
         this.userToken = userToken;
+        this.userFriends = userFriends;
     }
 
     public void gradeUser(int grade) {

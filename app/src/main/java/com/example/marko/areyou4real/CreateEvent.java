@@ -1,4 +1,4 @@
-package com.example.marko.areyou4real.fragments;
+package com.example.marko.areyou4real;
 
 
 import android.app.Dialog;
@@ -21,9 +21,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.example.marko.areyou4real.MainActivity;
-import com.example.marko.areyou4real.MapsActivity;
-import com.example.marko.areyou4real.R;
+import com.example.marko.areyou4real.fragments.TimePickerFragment;
 import com.example.marko.areyou4real.model.Event;
 import com.example.marko.areyou4real.model.TextMessage;
 import com.google.android.gms.common.ConnectionResult;
@@ -36,11 +34,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
-import java.util.Map;
 
 public class CreateEvent extends AppCompatActivity implements AdapterView.OnItemSelectedListener, TimePickerDialog.OnTimeSetListener {
 
@@ -70,7 +63,6 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
     private String eventAddress = "";
     //user location;
     private static final int ERROR_DIALOG_REQUEST = 9001;
-    private ArrayList<String> usersInEventChat = new ArrayList<>();
     public String mTextMessageId;
 
 
@@ -232,7 +224,6 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
     }
 
     public void createChat(){
-        usersInEventChat.add(FirebaseAuth.getInstance().getUid());
         eventsRef.document(docId).collection("chatRoom").add(new TextMessage("","","")).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {

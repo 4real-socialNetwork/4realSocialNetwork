@@ -26,9 +26,9 @@ public class SearchUserRecyclerViewAdapter extends RecyclerView.Adapter<SearchUs
     ArrayList<User> userList;
     ArrayList<User> userListFull;
 
-    public SearchUserRecyclerViewAdapter(Context mContext) {
+    public SearchUserRecyclerViewAdapter(Context mContext,ArrayList<User> userList) {
         this.mContext = mContext;
-        this.userList = new ArrayList<>();
+        this.userList = userList;
     }
 
     @NonNull
@@ -102,6 +102,11 @@ public class SearchUserRecyclerViewAdapter extends RecyclerView.Adapter<SearchUs
             this.userName = itemView.findViewById(R.id.tvUserName);
             this.searchUserLinearLayout = itemView.findViewById(R.id.searchListItemRLinearLayout);
         }
+    }
+
+    public void filterList(ArrayList<User> filteredList){
+        userList = filteredList;
+        notifyDataSetChanged();
     }
 
 

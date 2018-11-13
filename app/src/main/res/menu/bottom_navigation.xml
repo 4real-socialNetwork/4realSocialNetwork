@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/nav_home"
+        android:title=""
+        >
+    </item>
+
+    <item
+        android:id="@+id/nav_search_user"
+        android:icon="@drawable/nav_search"
+        android:title="">
+
+    </item>
+    <item
+        android:id="@+id/nav_places"
+        android:icon="@drawable/nav_places"
+        android:title="">
+
+    </item>
+    <item
+        android:id="@+id/nav_user_profile"
+        android:icon="@drawable/nav_user_profile"
+        android:title="">
+
+    </item>
+    <item
+        android:id="@+id/nav_notification"
+        android:icon="@drawable/nav_notification"
+        android:title="">
+
+    </item>
+
+</menu>

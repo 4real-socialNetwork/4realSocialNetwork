@@ -1,22 +1,15 @@
 package com.example.marko.areyou4real.fragments;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SnapHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,42 +17,31 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.Toast;
 
-import com.example.marko.areyou4real.MyEvents;
-import com.example.marko.areyou4real.MyFirebaseMessagingService;
+import com.example.marko.areyou4real.CreateEvent;
 import com.example.marko.areyou4real.R;
 import com.example.marko.areyou4real.User;
 import com.example.marko.areyou4real.adapter.EventRecyclerAdapter;
 import com.example.marko.areyou4real.adapter.MyEventsAdapter;
 import com.example.marko.areyou4real.adapter.TinyDB;
 import com.example.marko.areyou4real.model.Event;
+import com.example.marko.areyou4real.service.MyFirebaseMessagingService;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.Executor;
-
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 
-public class Home extends android.support.v4.app.Fragment {
+
+public class HomeFragment extends android.support.v4.app.Fragment {
     private RecyclerView mRecycleView;
     private EventRecyclerAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -81,7 +63,6 @@ public class Home extends android.support.v4.app.Fragment {
     String userToken = "";
 
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -101,7 +82,6 @@ public class Home extends android.support.v4.app.Fragment {
 
 
         mAdapter.notifyDataSetChanged();
-        setInterests();
 
 
         int resId = R.anim.layout_animation_fall_down;
@@ -141,6 +121,7 @@ public class Home extends android.support.v4.app.Fragment {
 
     public void loadEvents() {
         mAdapter.clearAll();
+        mAdapter.notifyDataSetChanged();
         for (String item : interests) {
             eventsRef.whereEqualTo("activity", item)
                     .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -193,10 +174,10 @@ public class Home extends android.support.v4.app.Fragment {
                     interests.addAll(list);
                     tinyDB = new TinyDB(getContext());
                     tinyDB.putString("USERDOCREF", userDocId);
-                    tinyDB.putString("USERTOKEN",userToken);
+                    tinyDB.putString("USERTOKEN", userToken);
                 }
                 loadEvents();
-                updateUserToken();
+                //updateUserToken();
 
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -240,7 +221,7 @@ public class Home extends android.support.v4.app.Fragment {
                 .setQuery(query, Event.class)
                 .build();
 
-        myEventsAdapter = new MyEventsAdapter(firestoreRecyclerOptions,mContext);
+        myEventsAdapter = new MyEventsAdapter(firestoreRecyclerOptions, mContext);
 
         RecyclerView recyclerView = view.findViewById(R.id.myEventsRecycler);
         recyclerView.setHasFixedSize(true);
@@ -254,6 +235,7 @@ public class Home extends android.support.v4.app.Fragment {
     public void onStart() {
         super.onStart();
         myEventsAdapter.startListening();
+        setInterests();
     }
 
     @Override
@@ -262,17 +244,6 @@ public class Home extends android.support.v4.app.Fragment {
         myEventsAdapter.stopListening();
     }
 
-    private void updateUserToken(){
-        String newToken = myFirebaseMessagingService.getUserToken();
-        if(!newToken.equals("")){
-            userRef.document(userDocId).update("userToken",newToken).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    Toast.makeText(mContext, "tokenUpdated", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }else {
-            return;
-        }
-    }
+
+
 }

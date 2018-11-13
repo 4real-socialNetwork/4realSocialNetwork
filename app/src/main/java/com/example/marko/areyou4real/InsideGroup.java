@@ -3,12 +3,14 @@ package com.example.marko.areyou4real;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,12 +38,12 @@ public class InsideGroup extends AppCompatActivity {
     private SearchUserRecyclerViewAdapter mAdapter;
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
-    private Intent intent ;
+    private Intent intent;
     private String groupId = "";
     private ArrayList<String> usersInArray = new ArrayList<>();
-    private String groupName ="";
-
-
+    private String groupName = "";
+    private FloatingActionButton fab;
+    private ArrayList<User> userList= new ArrayList<>();
 
 
     @Override
@@ -50,7 +52,15 @@ public class InsideGroup extends AppCompatActivity {
         setContentView(R.layout.activity_inside_group);
         intent = getIntent();
         groupName = intent.getStringExtra("GROUP_NAME");
-
+        fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(InsideGroup.this, GroupChatRoom.class);
+                intent.putExtra("GROUPID", groupId);
+                startActivity(intent);
+            }
+        });
 
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -62,10 +72,7 @@ public class InsideGroup extends AppCompatActivity {
         getSupportActionBar().setTitle(groupName);
 
 
-
         loadData();
-
-
 
 
     }
@@ -77,17 +84,18 @@ public class InsideGroup extends AppCompatActivity {
         }
         return true;
     }
-    public void setmAdapter(){
+
+    public void setmAdapter() {
         mRecyclerView = findViewById(R.id.container);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(mContext);
-        mAdapter = new SearchUserRecyclerViewAdapter(mContext);
+        mAdapter = new SearchUserRecyclerViewAdapter(mContext,userList);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter.notifyDataSetChanged();
     }
 
-    private void loadData(){
+    private void loadData() {
         intent = getIntent();
         groupId = intent.getStringExtra("GROUP_ID");
 
@@ -98,15 +106,16 @@ public class InsideGroup extends AppCompatActivity {
                 Group group = documentSnapshot.toObject(Group.class);
                 usersInArray.addAll(group.getListOfUsersInGroup());
                 setmAdapter();
-                for(String value : usersInArray){
-                    userRef.whereEqualTo("userId",value)
+                for (String value : usersInArray) {
+                    userRef.whereEqualTo("userId", value)
                             .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if(task.isSuccessful()){
-                                for (DocumentSnapshot dc : task.getResult()){
+                            if (task.isSuccessful()) {
+                                for (DocumentSnapshot dc : task.getResult()) {
                                     User user = dc.toObject(User.class);
-                                    mAdapter.addUser(user);
+                                    userList.add(user);
+                                    mAdapter.notifyDataSetChanged();
                                 }
                             }
                         }
@@ -119,7 +128,6 @@ public class InsideGroup extends AppCompatActivity {
                 Toast.makeText(mContext, e.toString(), Toast.LENGTH_SHORT).show();
             }
         });
-
 
 
     }

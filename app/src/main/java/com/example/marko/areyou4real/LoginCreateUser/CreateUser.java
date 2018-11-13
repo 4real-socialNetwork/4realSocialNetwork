@@ -21,7 +21,6 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.marko.areyou4real.MainActivity;
-import com.example.marko.areyou4real.MyFirebaseMessagingService;
 import com.example.marko.areyou4real.R;
 import com.example.marko.areyou4real.User;
 import com.example.marko.areyou4real.adapter.TinyDB;
@@ -40,7 +39,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 
 import java.util.ArrayList;
 
-public class CreateUser extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
+public class CreateUser extends AppCompatActivity {
 
     private static final String TAG = "CreateUser";
 
@@ -60,22 +59,13 @@ public class CreateUser extends AppCompatActivity implements TimePickerDialog.On
     private ProgressBar progressBar;
     private TextView showSeekBar;
     private ArrayList<String> selectedItems = new ArrayList<>();
-    private Button btnTimeFrom;
-    private int startTimeHour;
-    private int endTimeHour;
-    private int startTimeMinutes;
-    private int endTimeMinutes;
-    private Button btnTimeTo;
     private TextView tvShowInterest;
-    private TextView tvStartTimeDisplay;
-    private TextView tvEndTimeDisplay;
-    public TinyDB tinyDB ;
+    public TinyDB tinyDB;
     String mToken = "";
 
 
     private int current_range = 5;
-    //tag putem kojeg saznajemo koji timepicker se koristi :)
-    private int witchTimePicker = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,11 +82,7 @@ public class CreateUser extends AppCompatActivity implements TimePickerDialog.On
         btnCreateAccount = findViewById(R.id.btnCreateAcc);
         progressBar = findViewById(R.id.progressBarUser);
         showSeekBar = findViewById(R.id.tvSeekBarShower);
-        btnTimeFrom = findViewById(R.id.btnFromTime);
-        btnTimeTo = findViewById(R.id.btnEndTime);
         tvShowInterest = findViewById(R.id.tvShowInterest);
-        tvStartTimeDisplay = findViewById(R.id.tvStartTimeDisplay);
-        tvEndTimeDisplay = findViewById(R.id.tvEndTimeDisplay);
 
         showSeekBar.setText(current_range + " km");
         seekBar.setProgress(current_range);
@@ -118,23 +104,6 @@ public class CreateUser extends AppCompatActivity implements TimePickerDialog.On
             }
         });
 
-        btnTimeFrom.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                witchTimePicker = 0;
-                DialogFragment timePicker = new TimePickerFragment();
-                timePicker.show(getSupportFragmentManager(), "Time picker");
-            }
-        });
-
-        btnTimeTo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                witchTimePicker = 1;
-                DialogFragment timePicker = new TimePickerFragment();
-                timePicker.show(getSupportFragmentManager(), "Time picker 2");
-            }
-        });
 
         btnCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,10 +126,10 @@ public class CreateUser extends AppCompatActivity implements TimePickerDialog.On
         if (!validateForm()) {
             return;
         }
-        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(CreateUser.this,  new OnSuccessListener<InstanceIdResult>() {
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(CreateUser.this, new OnSuccessListener<InstanceIdResult>() {
             @Override
             public void onSuccess(InstanceIdResult instanceIdResult) {
-                 mToken = instanceIdResult.getToken();
+                mToken = instanceIdResult.getToken();
 
             }
         });
@@ -179,21 +148,20 @@ public class CreateUser extends AppCompatActivity implements TimePickerDialog.On
                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult authResult) {
-                            User user = new User(FirebaseAuth.getInstance().getUid(),mToken, ime, prezime, mail, opis, selectedItems, udaljenost, startTimeHour, startTimeMinutes, endTimeHour, endTimeMinutes);
+                            User user = new User(FirebaseAuth.getInstance().getUid(), mToken, ime, prezime, mail, opis, selectedItems, udaljenost,null);
                             mUsersRef.add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
                                     tinyDB = new TinyDB(CreateUser.this);
-                                    tinyDB.putString("USERDOCREF",documentReference.getId());
+                                    tinyDB.putString("USERDOCREF", documentReference.getId());
                                     Toast.makeText(mContext, tinyDB.getString("USERDOCREF"), Toast.LENGTH_SHORT).show();
-                                  //  Toast.makeText(CreateUser.this, "Račun kreiran", Toast.LENGTH_SHORT).show();
+                                    //  Toast.makeText(CreateUser.this, "Račun kreiran", Toast.LENGTH_SHORT).show();
                                     progressBar.setVisibility(View.INVISIBLE);
                                     Intent intent = new Intent(mContext, MainActivity.class);
                                     startActivity(intent);
                                     finish();
                                 }
                             });
-
 
 
                         }
@@ -258,15 +226,6 @@ public class CreateUser extends AppCompatActivity implements TimePickerDialog.On
         } else {
             description.setError(null);
         }
-        if (TextUtils.isEmpty(tvStartTimeDisplay.getText().toString())) {
-            tvStartTimeDisplay.setError("Obavezno ispuniti");
-            result = false;
-            progressBar.setVisibility(View.INVISIBLE);
-
-
-        } else {
-            tvStartTimeDisplay.setError(null);
-        }
 
         return result;
     }
@@ -303,25 +262,6 @@ public class CreateUser extends AppCompatActivity implements TimePickerDialog.On
         }
         return true;
     }
-
-
-    @Override
-    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        TextView timeStart = findViewById(R.id.tvStartTimeDisplay);
-        TextView timeEnd = findViewById(R.id.tvEndTimeDisplay);
-        if (witchTimePicker == 0) {
-            startTimeHour = hourOfDay;
-            startTimeMinutes = minute;
-            timeStart.setText(startTimeHour + " : " + startTimeMinutes);
-        } else if (witchTimePicker == 1) {
-            endTimeHour = hourOfDay;
-            endTimeMinutes = minute;
-            timeEnd.setText(endTimeHour + " : " + endTimeMinutes);
-        }
-
-
-    }
-
 
 
 }

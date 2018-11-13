@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -15,19 +14,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <service android:name=".MyFirebaseMessagingService">
+        <service android:name=".service.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-
         </service>
-
 
         <activity
             android:name=".LoginCreateUser.LoginActivity"
             android:screenOrientation="portrait">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,29 +32,46 @@
         <activity
             android:name=".LoginCreateUser.CreateUser"
             android:noHistory="true" />
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".InsideEvent"
+        <activity
+            android:name=".InsideEvent"
             android:screenOrientation="portrait">
-
             <intent-filter>
-                <action android:name="OPEN_NOTIFICATION"/>
+                <action android:name="OPEN_NOTIFICATION" />
             </intent-filter>
-
         </activity>
-        <activity android:name=".fragments.CreateEvent"
+        <activity
+            android:name=".CreateEvent"
             android:screenOrientation="portrait" />
-        <activity android:name=".UserProfile"
+        <activity
+            android:name=".UserProfile"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing"/>
+        <activity
+            android:name=".InsideGroup"
             android:screenOrientation="portrait" />
-        <activity android:name=".InsideGroup"
+        <activity
+            android:name=".CreateGroup"
             android:screenOrientation="portrait" />
-        <activity android:name=".CreateGroup"
+        <activity
+            android:name=".MyEvents"
             android:screenOrientation="portrait" />
-        <activity android:name=".MyEvents"
+        <activity
+            android:name=".OtherUserProfile"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing"/>
+        <activity
+            android:name=".NotificationsActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing"/>
+        <activity
+        android:name=".PlacesActivity"
+        android:screenOrientation="portrait" />
+        <activity
+            android:name=".GroupChatRoom"
             android:screenOrientation="portrait" />
-        <activity android:name=".OtherUserProfile"
-            android:screenOrientation="portrait" />
-
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -76,8 +88,11 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
-        <activity android:name=".EventChatRoom"></activity>
-
+        <activity android:name=".EventChatRoom"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".SearchUserActivity"
+            android:windowSoftInputMode="adjustNothing"
+            android:screenOrientation="portrait"/>
 
     </application>
 

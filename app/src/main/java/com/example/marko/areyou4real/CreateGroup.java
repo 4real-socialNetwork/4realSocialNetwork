@@ -18,8 +18,10 @@ import android.widget.Toast;
 
 import com.example.marko.areyou4real.adapter.UsersAdapter;
 import com.example.marko.areyou4real.model.Group;
+import com.example.marko.areyou4real.model.TextMessage;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -53,6 +55,7 @@ public class CreateGroup extends AppCompatActivity {
 
     private List<User> mNewGroup = new ArrayList<>();
 
+
     private Context mContext = CreateGroup.this;
 
     private FirebaseFirestore mInstance = FirebaseFirestore.getInstance();
@@ -61,6 +64,8 @@ public class CreateGroup extends AppCompatActivity {
     private DocumentReference docRef;
 
     private String groupId = "";
+
+    private String mTextMessageId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +140,8 @@ public class CreateGroup extends AppCompatActivity {
                     docRef = task.getResult();
                     groupId = docRef.getId();
                     docRef.update("groupId",groupId);
+                    createChat();
+
                     }
                     }
                 });
@@ -216,4 +223,18 @@ public class CreateGroup extends AppCompatActivity {
         }
         return true;
     }
-}
+    private void createChat(){
+        mGroupsRef.document(groupId).collection("chatRoom").add(new TextMessage("","","")).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                mTextMessageId = documentReference.getId();
+                mGroupsRef.document(groupId).collection("chatRoom").document(mTextMessageId)
+                        .update("eventChatId",mTextMessageId);
+                Intent intent = new Intent(mContext, MainActivity.class);
+                startActivity(intent);
+
+            }
+        });
+    }
+    }
+

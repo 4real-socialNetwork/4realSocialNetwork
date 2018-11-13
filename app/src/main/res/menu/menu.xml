@@ -1,24 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/profileMenu"
-        android:focusableInTouchMode="false"
-        android:title="Profil"
-        app:showAsAction="never">
 
 
-    </item>
+
     <item
         android:id="@+id/myEvents"
         android:focusableInTouchMode="false"
         android:title="Moji eventi"
-        app:showAsAction="never"></item>
+        android:icon="@drawable/event"
+        app:showAsAction="always"></item>
 
-    <item
-        android:id="@+id/menuSignOut"
-        android:focusableInTouchMode="false"
-        android:title="Odjava"
-        app:showAsAction="never"></item>
+
 
 </menu>
