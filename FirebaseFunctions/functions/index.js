@@ -6,7 +6,7 @@ admin.initializeApp();
 var db = admin.firestore();
 
 //const firestore = admin.firestore;
-//const settings = {/* your settings... */ timestampsInSnapshots: true};
+//const settings = {/ your settings... / timestampsInSnapshots: true};
 //firestore.settings(settings);
 
 exports.sendPush2 = functions.firestore.document('Events/{eventId}')
@@ -17,22 +17,20 @@ exports.sendPush2 = functions.firestore.document('Events/{eventId}')
         const previousValue = change.before.data();
 
         const usersAfterChange = newValue.usersEntered;
-        console.log("usersAfterChange: ", usersAfterChange);
 
         const usersBeforeChange = previousValue.usersEntered;
-        console.log("usersBeforeChange ", usersBeforeChange);
 
-        const userId = newValue.idOfTheUserWhoCreatedIt;
-        console.log("userId: ", userId);
+        const eventCreatorUserId = newValue.idOfTheUserWhoCreatedIt;
 
-        const listOfUsers = newValue.listOfUsersParticipatingInEvent;
-        console.log("listOfUsers ", listOfUsers);
+        const eventDescription = previous.eventDescription;
+
+        const listOfUsers = previousValue.listOfUsersParticipatingInEvent;
 
         if (usersAfterChange == usersBeforeChange) return null;
 
-        let message1 = "Jedan korisnik je izašao iz vašeg eventa"
-        if (usersAfterChange > usersBeforeChange) {
-            message1 = "Novi korisnik se pridružio Vašem eventu"
+        let messageText = "Novi korisnik se pridružio "
+        if (usersAfterChange < usersBeforeChange) {
+            messageText = "Jedan korisnik je izašao iz "
         }
         let users = [];
         var docRef = db.collection('Users');
@@ -41,28 +39,26 @@ exports.sendPush2 = functions.firestore.document('Events/{eventId}')
                 snapshot.forEach(doc => {
                     console.log(doc.id, '=>', doc.data());
                     users.push(doc.data());
-                    console.log("users inside", users);
                 });
 
-                // ovdje imaš usere pa im radiš što oćeš
                 let tokens = [];
                 for (let user of users) {
-                    //if (listOfUsers.contains(user.userId){
-                    tokens.push(user.userToken)
-                    //}
+                    if (listOfUsers.indexOf(user.userId) > -1){
+                      tokens.push(user.userToken)
+                    }
                 }
-
                 let payload = {
-                    notification: {
-                        title: message1,
-                        body: `Body`,
+                    data: {
+                        data_type : "direct_message",
+                        title: messageText + eventDescription,
+                        message: messageText + eventDescription,
                     }
                 };
 
-                console.log("tokens su: ", tokens);
-				
-				let log = admin.messaging().sendToDevice(tokens, payload);
-				console.log("Result: ", log);
+				        let log = admin.messaging().sendToDevice(tokens, payload);
+				        console.log("Result: ", log);
+
             })
+
         return 0;
     });

@@ -13,9 +13,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.marko.areyou4real.adapter.TinyDB;
+import com.example.marko.areyou4real.model.FriendRequest;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -33,6 +39,12 @@ public class OtherUserProfile extends AppCompatActivity {
     private CollectionReference usersRef = db.collection("Users");
     private String interests = "";
     private Button btnAddPlayer;
+    private DocumentReference thisUserDocRef;
+    private User otherUser;
+    private String currentUserName ="";
+    private TinyDB tinyDB ;
+    String currentUserDocId = "";
+    private DocumentReference currentUserDocRef ;
 
 
     @Override
@@ -49,11 +61,13 @@ public class OtherUserProfile extends AppCompatActivity {
         tvUserInterests = findViewById(R.id.tvInterests);
         btnAddPlayer = findViewById(R.id.btnAddPlayer);
         loadData();
+        getCurrentUserName();
+
         btnAddPlayer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 btnAddPlayer.setText("zahtjev poslan");
-                String thisPlayerId = getIntent().getStringExtra("userId");
+                sendPlayerRequest();
 
             }
         });
@@ -70,11 +84,12 @@ public class OtherUserProfile extends AppCompatActivity {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (DocumentSnapshot dc : queryDocumentSnapshots) {
-                    User user = dc.toObject(User.class);
-                    tvUserName.setText(user.getName());
-                    tvUserDescription.setText(user.getDescription());
-                    for (String value : user.getInterests()) {
-                        if (value == user.getInterests().get(user.getInterests().size() - 1)) {
+                    otherUser = dc.toObject(User.class);
+                     thisUserDocRef = dc.getReference();
+                    tvUserName.setText(otherUser.getName());
+                    tvUserDescription.setText(otherUser.getDescription());
+                    for (String value : otherUser.getInterests()) {
+                        if (value == otherUser.getInterests().get(otherUser.getInterests().size() - 1)) {
                             interests += value+".";
                         } else {
                             interests += value + ", ";
@@ -84,6 +99,7 @@ public class OtherUserProfile extends AppCompatActivity {
                     tvUserInterests.setText(interests);
 
                 }
+                checkIfFriendRequestIsSent();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -101,5 +117,48 @@ public class OtherUserProfile extends AppCompatActivity {
             finish();
         }
         return true;
+    }
+    private void sendPlayerRequest(){
+        String userFriendGroupId = new TinyDB(OtherUserProfile.this).getString("FRIENDSGROUPID");
+        thisUserDocRef.collection("FriendRequest").add(new FriendRequest(FirebaseAuth.getInstance().getUid(),false,currentUserName,currentUserDocRef,"",userFriendGroupId))
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Toast.makeText(OtherUserProfile.this, "Zahtjev poslan", Toast.LENGTH_SHORT).show();
+                        documentReference.update("friendRequestRef",documentReference.getId());
+                    }
+                });
+    }
+
+    private void checkIfFriendRequestIsSent(){
+        thisUserDocRef.collection("FriendRequest").whereEqualTo("senderId",FirebaseAuth.getInstance().getUid())
+                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (DocumentSnapshot dc : queryDocumentSnapshots){
+                    FriendRequest fr = dc.toObject(FriendRequest.class);
+
+                    if (fr.getSenderId().equals(FirebaseAuth.getInstance().getUid())&&(fr.isAccepted())==false){
+                        btnAddPlayer.setText("Zahtjev poslan");
+                        btnAddPlayer.setClickable(false);
+                    }else if (fr.getSenderId().equals(FirebaseAuth.getInstance().getUid())&&(fr.isAccepted())!=false){
+                        btnAddPlayer.setText("Prijatelji ste");
+                    }
+
+                }
+            }
+        });
+    }
+    private void getCurrentUserName(){
+        TinyDB tinyDB = new TinyDB(OtherUserProfile.this);
+        currentUserDocId = tinyDB.getString("USERDOCREF");
+        FirebaseFirestore.getInstance().collection("Users").document(currentUserDocId).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                         currentUserName = task.getResult().toObject(User.class).getName();
+                        currentUserDocRef = task.getResult().getReference();
+                    }
+                });
     }
 }

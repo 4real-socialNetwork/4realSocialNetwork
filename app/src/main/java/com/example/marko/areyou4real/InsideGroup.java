@@ -114,8 +114,11 @@ public class InsideGroup extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 for (DocumentSnapshot dc : task.getResult()) {
                                     User user = dc.toObject(User.class);
-                                    userList.add(user);
-                                    mAdapter.notifyDataSetChanged();
+                                    if(!user.getUserId().equals(FirebaseAuth.getInstance().getUid())){
+                                        userList.add(user);
+                                        mAdapter.notifyDataSetChanged();
+                                    }
+
                                 }
                             }
                         }

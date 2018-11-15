@@ -21,6 +21,7 @@ import com.example.marko.areyou4real.adapter.SearchUserRecyclerViewAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -33,7 +34,7 @@ import java.util.List;
 
 public class SearchUserActivity extends AppCompatActivity {
     private static final int ACTIVITY_NUM = 1;
-    private RecyclerView mRecyclerView ;
+    private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private EditText mUserSearch;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -62,7 +63,7 @@ public class SearchUserActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-            filter(s.toString());
+                filter(s.toString());
             }
         });
 
@@ -70,37 +71,42 @@ public class SearchUserActivity extends AppCompatActivity {
     }
 
 
-    private void setUpBottomNavigationView(){
-        BottomNavigationViewEx bottomNavigationViewEx =findViewById(R.id.bottomNavigation);
+    private void setUpBottomNavigationView() {
+        BottomNavigationViewEx bottomNavigationViewEx = findViewById(R.id.bottomNavigation);
         BottomNavigationViewHelper.setUpBottomNavigationView(bottomNavigationViewEx);
-        BottomNavigationViewHelper.enableNavigation(SearchUserActivity.this,bottomNavigationViewEx);
-        Menu menu  = bottomNavigationViewEx.getMenu();
+        BottomNavigationViewHelper.enableNavigation(SearchUserActivity.this, bottomNavigationViewEx);
+        Menu menu = bottomNavigationViewEx.getMenu();
         MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
         menuItem.setChecked(true);
     }
+
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(this,MainActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
-    public void setUpAdapter(){
+
+    public void setUpAdapter() {
         mContext = SearchUserActivity.this;
-        mAdapter = new SearchUserRecyclerViewAdapter(mContext,userList);
+        mAdapter = new SearchUserRecyclerViewAdapter(mContext, userList);
         RecyclerView recyclerView = findViewById(R.id.container);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(mAdapter);
     }
-    private void getUsers(){
+
+    private void getUsers() {
         usersRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for (DocumentSnapshot dc : queryDocumentSnapshots){
-                   User user = dc.toObject(User.class);
-                    userList.add(user);
+                for (DocumentSnapshot dc : queryDocumentSnapshots) {
+                    User user = dc.toObject(User.class);
+                    if (!user.getUserId().equals(FirebaseAuth.getInstance().getUid())) {
+                        userList.add(user);
+                    }
                 }
                 setUpAdapter();
             }
@@ -111,10 +117,11 @@ public class SearchUserActivity extends AppCompatActivity {
             }
         });
     }
-    private void filter(String text){
+
+    private void filter(String text) {
         ArrayList<User> filteredList = new ArrayList<>();
-        for (User user : userList){
-            if (user.getName().toLowerCase().contains(text.toLowerCase())){
+        for (User user : userList) {
+            if (user.getName().toLowerCase().contains(text.toLowerCase())) {
                 filteredList.add(user);
             }
         }

@@ -26,8 +26,12 @@ import com.example.marko.areyou4real.User;
 import com.example.marko.areyou4real.adapter.TinyDB;
 import com.example.marko.areyou4real.dialogs.InterestDialog;
 import com.example.marko.areyou4real.fragments.TimePickerFragment;
+import com.example.marko.areyou4real.model.FriendRequest;
+import com.example.marko.areyou4real.model.Group;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -61,7 +65,9 @@ public class CreateUser extends AppCompatActivity {
     private ArrayList<String> selectedItems = new ArrayList<>();
     private TextView tvShowInterest;
     public TinyDB tinyDB;
-    String mToken = "";
+    public String mToken = "";
+    private ArrayList<String> friendsList = new ArrayList<>();
+
 
 
     private int current_range = 5;
@@ -141,21 +147,25 @@ public class CreateUser extends AppCompatActivity {
         final String prezime = surname.getText().toString().trim();
         final String opis = description.getText().toString().trim();
         final int udaljenost = seekBar.getProgress();
-
+//sjebano s ovim djelom di stvaras uzera
 
         if (mail.contentEquals("@") || pass.length() > 6) {
             mAuth.createUserWithEmailAndPassword(mail, pass)
                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult authResult) {
-                            User user = new User(FirebaseAuth.getInstance().getUid(), mToken, ime, prezime, mail, opis, selectedItems, udaljenost,null);
+                            User user = new User(FirebaseAuth.getInstance().getUid(), mToken, ime, prezime, mail, opis, selectedItems, udaljenost,friendsList);
                             mUsersRef.add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
-                                public void onSuccess(DocumentReference documentReference) {
-                                    tinyDB = new TinyDB(CreateUser.this);
-                                    tinyDB.putString("USERDOCREF", documentReference.getId());
-                                    Toast.makeText(mContext, tinyDB.getString("USERDOCREF"), Toast.LENGTH_SHORT).show();
-                                    //  Toast.makeText(CreateUser.this, "Račun kreiran", Toast.LENGTH_SHORT).show();
+                                public void onSuccess(final DocumentReference documentReference) {
+                                    friendsList.add(FirebaseAuth.getInstance().getUid());
+                                    db.collection("Groups").add(new Group("Prijatelji",friendsList,"",mAuth.getUid(),true)).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentReference> task) {
+                                            db.collection("Groups").document(task.getResult().getId()).update("groupId",task.getResult().getId());
+
+                                        }
+                                    });
                                     progressBar.setVisibility(View.INVISIBLE);
                                     Intent intent = new Intent(mContext, MainActivity.class);
                                     startActivity(intent);

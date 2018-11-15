@@ -6,6 +6,33 @@ public class Group {
     private String groupName;
     private ArrayList<String> listOfUsersInGroup = new ArrayList<>();
     private String groupId;
+    private String groupAdmin;
+    private boolean firstGroup;
+
+    public boolean isFirstGroup() {
+        return firstGroup;
+    }
+
+    public void setFirstGroup(boolean firstGroup) {
+        this.firstGroup = firstGroup;
+    }
+
+    public Group(String groupName, ArrayList<String> listOfUsersInGroup, String groupId, String groupAdmin, boolean firstGroup) {
+        this.groupName = groupName;
+        this.listOfUsersInGroup = listOfUsersInGroup;
+        this.groupId = groupId;
+        this.groupAdmin = groupAdmin;
+        this.firstGroup = firstGroup;
+
+    }
+
+    public String getGroupAdmin() {
+        return groupAdmin;
+    }
+
+    public void setGroupAdmin(String groupAdmin) {
+        this.groupAdmin = groupAdmin;
+    }
 
     public String getGroupId() {
         return groupId;
@@ -15,11 +42,6 @@ public class Group {
         this.groupId = groupId;
     }
 
-    public Group(String groupName, ArrayList<String> listOfUsersInGroup) {
-
-        this.groupName = groupName;
-        this.listOfUsersInGroup = listOfUsersInGroup;
-    }
 
     public Group() {
     }

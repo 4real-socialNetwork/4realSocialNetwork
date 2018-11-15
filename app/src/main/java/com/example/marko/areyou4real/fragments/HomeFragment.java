@@ -24,7 +24,7 @@ import com.example.marko.areyou4real.adapter.EventRecyclerAdapter;
 import com.example.marko.areyou4real.adapter.MyEventsAdapter;
 import com.example.marko.areyou4real.adapter.TinyDB;
 import com.example.marko.areyou4real.model.Event;
-import com.example.marko.areyou4real.service.MyFirebaseMessagingService;
+import com.example.marko.areyou4real.model.Group;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -50,6 +50,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
     private String userId = FirebaseAuth.getInstance().getUid();
     private CollectionReference eventsRef = db.collection("Events");
     private CollectionReference userRef = db.collection("Users");
+    private CollectionReference groupsRef = db.collection("Groups");
     private SwipeRefreshLayout swipe;
     private FloatingActionButton fab;
     private ArrayList<String> interests = new ArrayList<>();
@@ -60,9 +61,8 @@ public class HomeFragment extends android.support.v4.app.Fragment {
     String userDocId = "";
     TinyDB tinyDB;
     private MyEventsAdapter myEventsAdapter;
-    private MyFirebaseMessagingService myFirebaseMessagingService = new MyFirebaseMessagingService();
     String userToken = "";
-
+    String firstGroupId ="";
 
     @Nullable
     @Override
@@ -108,12 +108,14 @@ public class HomeFragment extends android.support.v4.app.Fragment {
             }
         });
 
+        getUserFirstGroup();
 
         return view;
     }
 
 
     public void loadEvents(final View view) {
+        eventsList.clear();
         for (String item : interests) {
             eventsRef.whereEqualTo("activity", item)
                     .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -247,7 +249,30 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         mAdapter.notifyDataSetChanged();
 
     }
+    private void getUserFirstGroup(){
+        if(firstGroupId.equals("")){
+            groupsRef.whereEqualTo("groupAdmin",FirebaseAuth.getInstance().getUid())
+                    .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    for (DocumentSnapshot dc : task.getResult()){
+                        try{
+                            if (dc.toObject(Group.class).isFirstGroup()){
+                                firstGroupId = dc.toObject(Group.class).getGroupId();
+                                tinyDB.putString("FIRSTGROUPID", firstGroupId);
+                                Toast.makeText(mContext, "group id got", Toast.LENGTH_SHORT).show();
+                            }else {
+                                Toast.makeText(mContext, "not working", Toast.LENGTH_SHORT).show();
+                            }
+                        }catch(NullPointerException e){
+                            getUserFirstGroup();
+                        }
 
+                    }
+                }
+            });
+        }
 
+    }
 
 }
