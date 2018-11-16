@@ -298,7 +298,7 @@ public class InsideEvent extends AppCompatActivity {
 
     private void checkTime(Event event) {
 
-        if (eventCreatorId.equals(userId)&&event.getEventStart() < 18000000 + Calendar.getInstance().getTimeInMillis()){
+        if (eventCreatorId.equals(userId)&&event.getEventStart()+18000000 <  Calendar.getInstance().getTimeInMillis()){
             btnCompleteEvent.setVisibility(View.VISIBLE);
             btnCompleteEvent.setClickable(true);
             btnCompleteEvent.setOnClickListener(new View.OnClickListener() {
