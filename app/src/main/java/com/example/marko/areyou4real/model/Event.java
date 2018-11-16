@@ -17,7 +17,15 @@ public class Event {
     private String eventId;
     private String idOfTheUserWhoCreatedIt;
     private ArrayList<String> listOfUsersParticipatingInEvent = new ArrayList<>();
+    private boolean isCompleted = false;
 
+    public boolean isCompleted() {
+        return isCompleted;
+    }
+
+    public void setCompleted(boolean completed) {
+        isCompleted = completed;
+    }
 
     public long getEventStart() {
         return eventStart;
@@ -65,7 +73,7 @@ public class Event {
         this.eventDescription = eventDescription;
     }
 
-    public Event(String idOfTheUserWhoCreatedIt, String name, String activity, long eventStart, double eventLat, double eventLng, int usersNeeded, String eventDescription, String eventAdress) {
+    public Event(String idOfTheUserWhoCreatedIt, String name, String activity, long eventStart, double eventLat, double eventLng, int usersNeeded, String eventDescription, String eventAdress, boolean isCompleted) {
         this.idOfTheUserWhoCreatedIt = idOfTheUserWhoCreatedIt;
         this.name = name;
         this.activity = activity;
@@ -75,6 +83,7 @@ public class Event {
         this.usersNeeded = usersNeeded;
         this.eventDescription = eventDescription;
         this.eventAdress = eventAdress;
+        this.isCompleted = isCompleted;
 
     }
 

@@ -124,7 +124,9 @@ public class HomeFragment extends android.support.v4.app.Fragment {
                     for (DocumentSnapshot dc : task.getResult()) {
                         Event event = dc.toObject(Event.class);
                         if (distance(userLat, userLng, event.getEventLat(), event.getEventLng(), 'K') <= userRange) {
-                            eventsList.add(event);
+                            if(event.isCompleted()==false){
+                                eventsList.add(event);
+                            }
                         }
                         setUpAdapter(view);
 

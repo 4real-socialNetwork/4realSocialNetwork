@@ -12,6 +12,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.marko.areyou4real.InsideEvent;
 import com.example.marko.areyou4real.MainActivity;
 import com.example.marko.areyou4real.R;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -26,7 +27,7 @@ import com.google.firebase.messaging.RemoteMessage;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String TAG = "MyFirebaseMessagingServ";
     private static final String CHANNEL_ID = "Notification channel";
-    private static final String CHANNEL_DESCRIPTION = "Notifikacija o novom poslu";
+    private static final String CHANNEL_DESCRIPTION = "Notifikacija o novom eventu";
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference userRef = db.collection("Users");
@@ -56,6 +57,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+        System.out.println(TAG + "onMessagerecieved called");
         String notificationTitle = "";
         String notificationMessage = "";
         try{
@@ -64,21 +66,24 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }catch (NullPointerException e){
             Log.e(TAG, "onMessageReceived: NullPointerException: " + e.getMessage() );
         }
-        Log.d(TAG, "onMessageReceived: Message Received: \n" +
+        System.out.println(TAG + " onMessageReceived: Message Received: \n" +
                 "Title: " + notificationTitle + "\n" +
-                "Message: " + notificationMessage);;
+                "Message: " + notificationMessage);
 
         String dataType = remoteMessage.getData().get("data_type");
         if(dataType.equals("direct_message")){
-            Log.d(TAG, "onMessageReceived: new incoming message.");
             String title = remoteMessage.getData().get("title");
+            System.out.println("Title je: " + title);
             String message = remoteMessage.getData().get("message");
+            System.out.println("message je: " + message);
             String messageId = "256";
-            sendMessageNotification(title, message, messageId);
+            String eventId = remoteMessage.getData().get("eventId");
+            System.out.println("eventId je: " + eventId);
+            sendMessageNotification(title, message, messageId, eventId);
         }
     }
-    private void sendMessageNotification(String title, String message, String messageId){
-        Log.d(TAG, "sendChatmessageNotification: building a chatMessage notification");
+    private void sendMessageNotification(String title, String message, String messageId, String eventId){
+        System.out.println(TAG + " sendMessageNotification called");
 
         //get the notification id
         int notificationId = buildNotificationId(messageId);
@@ -86,7 +91,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // Instantiate a Builder object.
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
         // Creates an Intent for the Activity
-        Intent pendingIntent = new Intent(this, MainActivity.class);
+        Intent pendingIntent = new Intent(this, InsideEvent.class);
+        // put extra eventID to open particular event
+        pendingIntent.putExtra("EVENT_ID", eventId);
         // Sets the Activity to start in a new, empty task
         pendingIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         // Creates the PendingIntent

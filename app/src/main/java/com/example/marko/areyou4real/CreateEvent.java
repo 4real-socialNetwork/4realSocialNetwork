@@ -152,7 +152,7 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
         int peopleNeeded = Integer.parseInt(playersNeeded.getText().toString());
         String description = eventDescription.getText().toString();
         if (eventName.length() > 0 && activity.length() > 0 && peopleNeeded > 0 && description.length() > 0 && calendar.getTimeInMillis() != 0) {
-            Event event = new Event(userId, eventName, activity, calendar.getTimeInMillis(), eventLat, eventLng, peopleNeeded, description, eventAddress);
+            Event event = new Event(userId, eventName, activity, calendar.getTimeInMillis(), eventLat, eventLng, peopleNeeded, description, eventAddress,false);
             event.addCreatorUserToArray(userId);
 
             eventsRef.add(event).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {

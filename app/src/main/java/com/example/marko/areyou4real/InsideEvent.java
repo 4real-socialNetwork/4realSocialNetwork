@@ -296,7 +296,7 @@ public class InsideEvent extends AppCompatActivity {
         loadData();
     }
 
-    private void checkTime(Event event) {
+    private void checkTime(final Event event) {
 
         if (eventCreatorId.equals(userId)&&event.getEventStart()+18000000 <  Calendar.getInstance().getTimeInMillis()){
             btnCompleteEvent.setVisibility(View.VISIBLE);
@@ -304,7 +304,12 @@ public class InsideEvent extends AppCompatActivity {
             btnCompleteEvent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(InsideEvent.this, "Soon", Toast.LENGTH_SHORT).show();
+                    eventsRef.document(eventId).update("isCompleted",true).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(InsideEvent.this, "Event završen", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             });
         }

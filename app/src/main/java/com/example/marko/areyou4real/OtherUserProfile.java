@@ -141,6 +141,12 @@ public class OtherUserProfile extends AppCompatActivity {
                     if (fr.getSenderId().equals(FirebaseAuth.getInstance().getUid())&&(fr.isAccepted())==false){
                         btnAddPlayer.setText("Zahtjev poslan");
                         btnAddPlayer.setClickable(false);
+                        btnAddPlayer.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                btnAddPlayer.setText("Dodaj prijatelja");
+                            }
+                        });
                     }else if (fr.getSenderId().equals(FirebaseAuth.getInstance().getUid())&&(fr.isAccepted())!=false){
                         btnAddPlayer.setText("Prijatelji ste");
                         btnAddPlayer.setClickable(false);

@@ -195,15 +195,28 @@ public class UserProfile extends AppCompatActivity {
     private void updateUserProfile() {
 
 
-        usersRef.document(value).update("range", current_range, "name", name.getText().toString(), "description",
-                userDescription.getText().toString(), "interests", updatedInterest
-        ).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                progressBar.setVisibility(View.INVISIBLE);
-                Toast.makeText(UserProfile.this, "Promjene spremljene", Toast.LENGTH_SHORT).show();
-            }
-        });
+        if(updatedInterest.size()==0){
+            usersRef.document(value).update("range", current_range, "name", name.getText().toString(), "description",
+                    userDescription.getText().toString()
+            ).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    Toast.makeText(UserProfile.this, "Promjene spremljene", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }else{
+            usersRef.document(value).update("range", current_range, "name", name.getText().toString(), "description",
+                    userDescription.getText().toString(), "interests", updatedInterest
+            ).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    Toast.makeText(UserProfile.this, "Promjene spremljene", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
 
     }
 
