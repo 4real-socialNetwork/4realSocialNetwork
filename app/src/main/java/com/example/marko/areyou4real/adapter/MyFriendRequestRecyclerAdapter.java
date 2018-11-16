@@ -37,7 +37,7 @@ public class MyFriendRequestRecyclerAdapter extends FirestoreRecyclerAdapter<Fri
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference usersRef = db.collection("Users");
     private CollectionReference groupsRef = db.collection("Groups");
-    private TinyDB tinyDB ;
+    private TinyDB tinyDB;
 
 
     public MyFriendRequestRecyclerAdapter(@NonNull FirestoreRecyclerOptions<FriendRequest> options, Context mContext) {
@@ -76,17 +76,10 @@ public class MyFriendRequestRecyclerAdapter extends FirestoreRecyclerAdapter<Fri
 
 
                 usersRef.document(userDocRef).update("userFriends", FieldValue.arrayUnion(model.getSenderId()));
-                model.getSenderDocRef().update("userFriends",FieldValue.arrayUnion((FirebaseAuth.getInstance().getUid())));
-
-
-
-                groupsRef.document(tinyDB.getString("FIRSTGROUPID")).update("listOfUsersInGroup",FieldValue.arrayUnion(model.getSenderId()));
-
-                // groupsRef.document(model.getUsersFriendsGroup()).update("listOfUsersInGroup",FieldValue.arrayUnion(FirebaseAuth.getInstance().getUid()));
-
+                model.getSenderDocRef().update("userFriends", FieldValue.arrayUnion((FirebaseAuth.getInstance().getUid())));
                 usersRef.document(userDocRef).collection("FriendRequest").document(model.getFriendRequestRef()).update("accepted", true);
 
-                Toast.makeText(mContext, "Vi i "+model.getSenderName()+" ste prijatelji", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Vi i " + model.getSenderName() + " ste prijatelji", Toast.LENGTH_SHORT).show();
 
             }
         });

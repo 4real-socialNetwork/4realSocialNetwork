@@ -22,7 +22,7 @@ exports.sendPush2 = functions.firestore.document('Events/{eventId}')
 
         const eventCreatorUserId = newValue.idOfTheUserWhoCreatedIt;
 
-        const eventDescription = previous.eventDescription;
+        const eventDescription = previousValue.eventDescription;
 
         const listOfUsers = previousValue.listOfUsersParticipatingInEvent;
 

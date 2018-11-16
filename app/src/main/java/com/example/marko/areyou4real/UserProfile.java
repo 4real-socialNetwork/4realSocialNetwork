@@ -60,6 +60,7 @@ public class UserProfile extends AppCompatActivity {
     private AppCompatSeekBar seekBar;
     private static final int ACTIVITY_NUM = 3;
     private Button btnLogOut;
+    private Button btnFriendsList;
 
 
     @Override
@@ -79,6 +80,7 @@ public class UserProfile extends AppCompatActivity {
         seekBar = findViewById(R.id.seekBar);
         showSeekBar = findViewById(R.id.tvSeekBarShower);
         btnLogOut = findViewById(R.id.btnLogout);
+        btnFriendsList = findViewById(R.id.btnFriendsList);
 
 
         updateUI();
@@ -109,6 +111,13 @@ public class UserProfile extends AppCompatActivity {
             }
         });
 
+        btnFriendsList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(UserProfile.this,MyFriendsActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 

@@ -15,11 +15,14 @@ import com.example.marko.areyou4real.R;
 import com.example.marko.areyou4real.model.Event;
 import com.example.marko.areyou4real.InsideEvent;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdapter.MyViewHolder> {
     private Context mContext;
     private ArrayList<Event> eventList;
+    private SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy HH:mm",Locale.getDefault());
 
 
     public EventRecyclerAdapter(Context mContext,ArrayList<Event>eventList) {
@@ -47,7 +50,7 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
         String name = eventList.get(position).getActivity();
         String place = "Zagreb";
         String usersNeeded = eventList.get(position).getUsersNeeded()+"";
-        String timeOfEvent = eventList.get(position).getStartHour()+":"+eventList.get(position).getStartMinute();
+        String timeOfEvent = sdf.format(eventList.get(position).getEventStart());
         final String eventId = eventList.get(position).getEventId();
         holder.sport.setText(name);
         holder.place.setText(place);

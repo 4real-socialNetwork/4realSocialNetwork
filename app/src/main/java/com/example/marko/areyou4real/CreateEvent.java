@@ -1,6 +1,7 @@
 package com.example.marko.areyou4real;
 
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -15,12 +16,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.example.marko.areyou4real.fragments.DatePickerFragment;
 import com.example.marko.areyou4real.fragments.TimePickerFragment;
 import com.example.marko.areyou4real.model.Event;
 import com.example.marko.areyou4real.model.TextMessage;
@@ -35,7 +38,13 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class CreateEvent extends AppCompatActivity implements AdapterView.OnItemSelectedListener, TimePickerDialog.OnTimeSetListener {
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
+public class CreateEvent extends AppCompatActivity implements AdapterView.OnItemSelectedListener, TimePickerDialog.OnTimeSetListener
+        , DatePickerDialog.OnDateSetListener {
 
     private static final String TAG = "CreateEvent";
 
@@ -54,6 +63,9 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
     private String selectedInteres;
     private int startTimeHour;
     private int startTimeMinute;
+    private int yearOfEvent;
+    private int monthOfEvent;
+    private int dayOfMonthOfEvent;
     private Button btnSetTime;
     private TextView tvEventTime;
     private Button btnMap;
@@ -64,7 +76,11 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
     //user location;
     private static final int ERROR_DIALOG_REQUEST = 9001;
     public String mTextMessageId;
-
+    private Button btnEventDate;
+    private TextView tvEventDate;
+    private Calendar calendar = Calendar.getInstance();
+    private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy",Locale.getDefault());
 
 
     @Override
@@ -87,12 +103,23 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
         activity.setAdapter(spinnerAdapter);
         activity.setOnItemSelectedListener(this);
         btnSetTime = findViewById(R.id.btnTime);
+        btnEventDate = findViewById(R.id.btnDate);
+        tvEventDate = findViewById(R.id.tvDateOfEvent);
 
         btnSetTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DialogFragment timePicker = new TimePickerFragment();
                 timePicker.show(getSupportFragmentManager(), "Time picker");
+            }
+        });
+
+        btnEventDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment newFragment = new DatePickerFragment();
+
+                newFragment.show(getSupportFragmentManager(), "datePicker");
             }
         });
 
@@ -111,7 +138,6 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
     }
 
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -125,34 +151,36 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
         String activity = selectedInteres;
         int peopleNeeded = Integer.parseInt(playersNeeded.getText().toString());
         String description = eventDescription.getText().toString();
+        if (eventName.length() > 0 && activity.length() > 0 && peopleNeeded > 0 && description.length() > 0 && calendar.getTimeInMillis() != 0) {
+            Event event = new Event(userId, eventName, activity, calendar.getTimeInMillis(), eventLat, eventLng, peopleNeeded, description, eventAddress);
+            event.addCreatorUserToArray(userId);
 
-        Event event = new Event(userId, eventName, activity, startTimeHour, startTimeMinute, eventLat, eventLng, peopleNeeded, description,eventAddress);
-        event.addCreatorUserToArray(userId);
-
-        eventsRef.add(event).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-            @Override
-            public void onSuccess(DocumentReference documentReference) {
-                Toast.makeText(CreateEvent.this, "Event created", Toast.LENGTH_SHORT).show();
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(CreateEvent.this, e.toString(), Toast.LENGTH_SHORT).show();
-            }
-        }).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentReference> task) {
-                if (task.isSuccessful()) {
-                    docRef = task.getResult();
-                    docId = docRef.getId();
-                    docRef.update("eventId", docId);
-                    createChat();
-
+            eventsRef.add(event).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                @Override
+                public void onSuccess(DocumentReference documentReference) {
+                    Toast.makeText(CreateEvent.this, "Event created", Toast.LENGTH_SHORT).show();
 
                 }
-            }
-        });
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(CreateEvent.this, e.toString(), Toast.LENGTH_SHORT).show();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentReference> task) {
+                    if (task.isSuccessful()) {
+                        docRef = task.getResult();
+                        docId = docRef.getId();
+                        docRef.update("eventId", docId);
+                        createChat();
+
+
+                    }
+                }
+            });
+        }
+
 
     }
 
@@ -178,8 +206,11 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         startTimeHour = hourOfDay;
         startTimeMinute = minute;
-        tvEventTime.setText(startTimeHour + " : " + startTimeMinute);
+        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        calendar.set(Calendar.MINUTE, minute);
+        tvEventTime.setText(timeFormat.format(calendar.getTime()));
     }
+
 
     public boolean isServicesOkay() {
         int avalabile = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(mContext);
@@ -205,7 +236,7 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, MapsActivity.class);
-                startActivityForResult(intent,1);
+                startActivityForResult(intent, 1);
             }
         });
     }
@@ -213,28 +244,40 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode==1){
-            if(resultCode==RESULT_OK){
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
                 eventAddress = data.getStringExtra("ADDRESS");
                 tvEventLocationAddress.setText(eventAddress);
-                eventLat = data.getDoubleExtra("LAT",0);
-                eventLng = data.getDoubleExtra("LNG",0);
+                eventLat = data.getDoubleExtra("LAT", 0);
+                eventLng = data.getDoubleExtra("LNG", 0);
             }
         }
     }
 
-    public void createChat(){
-        eventsRef.document(docId).collection("chatRoom").add(new TextMessage("","","")).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+    public void createChat() {
+        eventsRef.document(docId).collection("chatRoom").add(new TextMessage("", "", "")).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 mTextMessageId = documentReference.getId();
                 eventsRef.document(docId).collection("chatRoom").document(mTextMessageId)
-                        .update("eventChatId",mTextMessageId);
+                        .update("eventChatId", mTextMessageId);
                 Intent intent = new Intent(mContext, MainActivity.class);
                 startActivity(intent);
 
             }
         });
     }
+
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month + 1);
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        tvEventDate.setText(dateFormat.format(calendar.getTime()));
+
+
+    }
+
 
 }

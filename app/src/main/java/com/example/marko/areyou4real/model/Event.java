@@ -3,26 +3,13 @@ package com.example.marko.areyou4real.model;
 import com.example.marko.areyou4real.EventChatRoom;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class Event {
     private String name;
     private String activity;
     private String eventDescription;
-    private int startHour;
-
-
-
-
-
-    public int getStartMinute() {
-        return startMinute;
-    }
-
-    public void setStartMinute(int startMinute) {
-        this.startMinute = startMinute;
-    }
-
-    private int startMinute;
+    private long eventStart;
     private double eventLat;
     private double eventLng;
     private int usersNeeded;
@@ -30,6 +17,15 @@ public class Event {
     private String eventId;
     private String idOfTheUserWhoCreatedIt;
     private ArrayList<String> listOfUsersParticipatingInEvent = new ArrayList<>();
+
+
+    public long getEventStart() {
+        return eventStart;
+    }
+
+    public void setEventStart(long eventStart) {
+        this.eventStart = eventStart;
+    }
 
     public String getEventAdress() {
         return eventAdress;
@@ -69,12 +65,11 @@ public class Event {
         this.eventDescription = eventDescription;
     }
 
-    public Event(String idOfTheUserWhoCreatedIt, String name, String activity, int startHour, int startMinute, double eventLat, double eventLng, int usersNeeded, String eventDescription, String eventAdress) {
+    public Event(String idOfTheUserWhoCreatedIt, String name, String activity, long eventStart, double eventLat, double eventLng, int usersNeeded, String eventDescription, String eventAdress) {
         this.idOfTheUserWhoCreatedIt = idOfTheUserWhoCreatedIt;
         this.name = name;
         this.activity = activity;
-        this.startHour = startHour;
-        this.startMinute = startMinute;
+        this.eventStart = eventStart;
         this.eventLat = eventLat;
         this.eventLng = eventLng;
         this.usersNeeded = usersNeeded;
@@ -99,14 +94,6 @@ public class Event {
         this.activity = activity;
     }
 
-    public int getStartHour() {
-        return startHour;
-    }
-
-
-    public void setStartHour(int startHour) {
-        this.startHour = startHour;
-    }
 
     public double getEventLat() {
         return eventLat;

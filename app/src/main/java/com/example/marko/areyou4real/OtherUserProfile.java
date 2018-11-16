@@ -143,6 +143,10 @@ public class OtherUserProfile extends AppCompatActivity {
                         btnAddPlayer.setClickable(false);
                     }else if (fr.getSenderId().equals(FirebaseAuth.getInstance().getUid())&&(fr.isAccepted())!=false){
                         btnAddPlayer.setText("Prijatelji ste");
+                        btnAddPlayer.setClickable(false);
+                    }else{
+                        btnAddPlayer.setText("Dodajte prijatelja");
+                        btnAddPlayer.setClickable(true);
                     }
 
                 }

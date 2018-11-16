@@ -25,6 +25,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 import javax.annotation.Nullable;
 
 public class InsideEvent extends AppCompatActivity {
@@ -47,6 +52,9 @@ public class InsideEvent extends AppCompatActivity {
     private String btnText2 = "exit event";
     private String btnText3 = "join event";
     private boolean isUserInEvent = false;
+    private SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm", Locale.getDefault());
+    private Button btnCompleteEvent;
+    private String eventCreatorId = "";
 
 
     @Override
@@ -69,6 +77,7 @@ public class InsideEvent extends AppCompatActivity {
         tvEventPlayersNeeded = findViewById(R.id.tvPlayersNeeded);
         tvEventPlayersEntered = findViewById(R.id.tvPlayersEntered);
         btnDoSomething = findViewById(R.id.btnDoSomething);
+        btnCompleteEvent = findViewById(R.id.btnCompleteEvent);
 
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -80,6 +89,7 @@ public class InsideEvent extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
 
     }
 
@@ -105,9 +115,10 @@ public class InsideEvent extends AppCompatActivity {
 
                 try {
                     Event event = documentSnapshot.toObject(Event.class);
+                    eventCreatorId = event.getIdOfTheUserWhoCreatedIt();
                     tvEventName.setText(event.getName());
                     tvEventActivity.setText(event.getActivity());
-                    tvEventTime.setText("" + event.getStartHour() + " : " + event.getStartMinute());
+                    tvEventTime.setText(sdf.format(event.getEventStart()));
                     tvEventDescription.setText(event.getEventDescription());
                     tvEventPlace.setText(event.getEventAdress());
                     tvEventPlayersNeeded.setText("" + event.getUsersNeeded());
@@ -128,6 +139,7 @@ public class InsideEvent extends AppCompatActivity {
                         fab.setVisibility(View.VISIBLE);
                         fab.setClickable(true);
                     }
+                    checkTime(event);
                 } catch (NullPointerException exception) {
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intent);
@@ -155,7 +167,7 @@ public class InsideEvent extends AppCompatActivity {
                     Event event = documentSnapshot.toObject(Event.class);
                     tvEventName.setText(event.getName());
                     tvEventActivity.setText(event.getActivity());
-                    tvEventTime.setText("" + event.getStartHour() + " : " + event.getStartMinute());
+                    tvEventTime.setText(sdf.format(event.getEventStart()));
                     tvEventDescription.setText(event.getEventDescription());
                     tvEventPlace.setText(event.getEventAdress());
                     tvEventPlayersNeeded.setText("" + event.getUsersNeeded());
@@ -282,6 +294,20 @@ public class InsideEvent extends AppCompatActivity {
             }
         });
         loadData();
+    }
+
+    private void checkTime(Event event) {
+
+        if (eventCreatorId.equals(userId)&&event.getEventStart() < 18000000 + Calendar.getInstance().getTimeInMillis()){
+            btnCompleteEvent.setVisibility(View.VISIBLE);
+            btnCompleteEvent.setClickable(true);
+            btnCompleteEvent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(InsideEvent.this, "Soon", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 }
 

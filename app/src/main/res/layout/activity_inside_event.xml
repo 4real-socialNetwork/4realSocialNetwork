@@ -19,52 +19,51 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Event name:"
+        android:paddingLeft="16dp"
         android:paddingTop="16dp"
-        android:paddingLeft="16dp"/>
+        android:text="Event name:" />
 
     <TextView
         android:id="@+id/tvEventName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="name"
-        android:paddingLeft="16dp"
-        />
+        android:paddingLeft="16dp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Activity played:"
-        android:paddingLeft="16dp"/>
+        android:paddingLeft="16dp"
+        android:text="Activity played:" />
 
     <TextView
         android:id="@+id/tvEventActivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="activity"
-        android:paddingLeft="16dp"/>
+        android:paddingLeft="16dp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="at what time?"
-        android:text="At what time ?"
-        android:paddingLeft="16dp"/>
+        android:paddingLeft="16dp"
+        android:text="At what time ?" />
 
     <TextView
         android:id="@+id/tvEventTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="at what time?"
-        android:paddingLeft="16dp"/>
+        android:paddingLeft="16dp" />
 
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Place"
-        android:text="Where is the event taking place:"
-        android:paddingLeft="16dp"/>
+        android:paddingLeft="16dp"
+        android:text="Where is the event taking place:" />
 
     <TextView
         android:id="@+id/tvEventPlace"
@@ -72,28 +71,28 @@
         android:layout_height="wrap_content"
         android:hint="Place"
         android:inputType="number"
-        android:paddingLeft="16dp"/>
+        android:paddingLeft="16dp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="players needed"
-        android:text="How many players are needed:"
-        android:paddingLeft="16dp"/>
+        android:paddingLeft="16dp"
+        android:text="How many players are needed:" />
 
     <TextView
         android:id="@+id/tvPlayersNeeded"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="players needed"
-        android:paddingLeft="16dp"/>
+        android:paddingLeft="16dp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="players entered"
-        android:text="How many players are currently in event :"
-        android:paddingLeft="16dp"/>
+        android:paddingLeft="16dp"
+        android:text="How many players are currently in event :" />
 
     <TextView
         android:id="@+id/tvPlayersEntered"
@@ -101,28 +100,48 @@
         android:layout_height="wrap_content"
         android:hint="players entered"
         android:inputType="number"
-        android:paddingLeft="16dp"/>
+        android:paddingLeft="16dp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Event description:"
-        android:paddingLeft="16dp"/>
+        android:paddingLeft="16dp"
+        android:text="Event description:" />
 
     <TextView
         android:id="@+id/tvEventDescription"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:hint="Description"
-        android:paddingLeft="16dp"/>
+        android:paddingLeft="16dp" />
 
-    <Button
-        android:id="@+id/btnDoSomething"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:text=" "
-        android:padding="16dp"/>
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnCompleteEvent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:padding="16dp"
+            android:layout_marginLeft="16dp"
+            android:text="ZAVRŠITE DOGAĐAJ "
+            android:visibility="invisible"/>
+
+        <Button
+            android:id="@+id/btnDoSomething"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:padding="16dp"
+            android:text=" "
+            android:layout_marginLeft="70dp"/>
+
+
+    </LinearLayout>
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
