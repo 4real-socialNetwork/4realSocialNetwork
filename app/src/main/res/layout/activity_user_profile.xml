@@ -20,11 +20,18 @@
 
             <ImageView
                 android:id="@+id/ivProfilePicture"
-                android:layout_width="140dp"
-                android:layout_height="140dp"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="64dp"
                 android:src="@drawable/avatar" />
+
+            <Button
+                android:id="@+id/btnUploadPicture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Upload"
+                android:layout_gravity="center_horizontal"/>
 
             <EditText
                 android:id="@+id/etUserName"

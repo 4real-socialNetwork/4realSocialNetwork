@@ -13,7 +13,7 @@ public class User {
     String name;
     String surname;
     String email;
-    ImageView profilePicure;
+    String profilePicureUri;
     String description;
     ArrayList<String> interests;
     int range;
@@ -104,12 +104,12 @@ public class User {
         this.email = email;
     }
 
-    public ImageView getProfilePicure() {
-        return profilePicure;
+    public String getProfilePicureUri() {
+        return profilePicureUri;
     }
 
-    public void setProfilePicure(ImageView profilePicure) {
-        this.profilePicure = profilePicure;
+    public void setProfilePicureUri(String profilePicureUri) {
+        this.profilePicureUri = profilePicureUri;
     }
 
     public String getDescription() {

@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -57,6 +58,8 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
         holder.usersNeeded.setText(usersNeeded);
         holder.eventTime.setText(timeOfEvent);
 
+        GlideApp.with(mContext).load(R.drawable.avatar).circleCrop().into(holder.eventPicture);
+
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,6 +81,7 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
         TextView place;
         TextView usersNeeded;
         TextView eventTime;
+        ImageView eventPicture;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -86,6 +90,7 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
             this.sport = itemView.findViewById(R.id.tvPlace);
             this.usersNeeded = itemView.findViewById(R.id.tvPlayersNeeded);
             this.eventTime = itemView.findViewById(R.id.tvEventStart);
+            this.eventPicture = itemView.findViewById(R.id.imageView);
 
         }
     }

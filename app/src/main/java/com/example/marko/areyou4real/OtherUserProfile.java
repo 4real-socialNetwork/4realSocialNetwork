@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.marko.areyou4real.adapter.GlideApp;
 import com.example.marko.areyou4real.adapter.TinyDB;
 import com.example.marko.areyou4real.model.FriendRequest;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -60,8 +61,11 @@ public class OtherUserProfile extends AppCompatActivity {
         tvUserDescription = findViewById(R.id.tvUserDescription);
         tvUserInterests = findViewById(R.id.tvInterests);
         btnAddPlayer = findViewById(R.id.btnAddPlayer);
+        ivUserProfilePicture = findViewById(R.id.ivProfilePicture);
+        GlideApp.with(OtherUserProfile.this).load(R.drawable.avatar).circleCrop().into(ivUserProfilePicture);
         loadData();
         getCurrentUserName();
+
 
         btnAddPlayer.setOnClickListener(new View.OnClickListener() {
             @Override

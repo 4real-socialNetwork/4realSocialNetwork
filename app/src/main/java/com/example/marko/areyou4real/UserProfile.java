@@ -2,6 +2,7 @@ package com.example.marko.areyou4real;
 
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -20,8 +21,10 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.marko.areyou4real.LoginCreateUser.LoginActivity;
 import com.example.marko.areyou4real.adapter.BottomNavigationViewHelper;
+import com.example.marko.areyou4real.adapter.GlideApp;
 import com.example.marko.areyou4real.dialogs.InterestDialog;
 import com.example.marko.areyou4real.fragments.TimePickerFragment;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -47,6 +50,7 @@ public class UserProfile extends AppCompatActivity {
     private EditText name;
     private EditText userDescription;
     private ImageView profilePicture;
+    private Uri mImageUri;
     private Button btnUserInterest;
     private Button btnSaveChanges;
     private ArrayList<String> updatedInterest = new ArrayList<>();
@@ -61,7 +65,8 @@ public class UserProfile extends AppCompatActivity {
     private static final int ACTIVITY_NUM = 3;
     private Button btnLogOut;
     private Button btnFriendsList;
-
+    private Button btnUploadPicture;
+    private static final int PICK_IMAGE_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +86,7 @@ public class UserProfile extends AppCompatActivity {
         showSeekBar = findViewById(R.id.tvSeekBarShower);
         btnLogOut = findViewById(R.id.btnLogout);
         btnFriendsList = findViewById(R.id.btnFriendsList);
-
+        btnUploadPicture = findViewById(R.id.btnUploadPicture);
 
         updateUI();
 
@@ -106,7 +111,7 @@ public class UserProfile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(UserProfile.this,LoginActivity.class);
+                Intent intent = new Intent(UserProfile.this, LoginActivity.class);
                 startActivity(intent);
             }
         });
@@ -114,8 +119,15 @@ public class UserProfile extends AppCompatActivity {
         btnFriendsList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(UserProfile.this,MyFriendsActivity.class);
+                Intent intent = new Intent(UserProfile.this, MyFriendsActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        btnUploadPicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            openFileChooser();
             }
         });
 
@@ -195,7 +207,7 @@ public class UserProfile extends AppCompatActivity {
     private void updateUserProfile() {
 
 
-        if(updatedInterest.size()==0){
+        if (updatedInterest.size() == 0) {
             usersRef.document(value).update("range", current_range, "name", name.getText().toString(), "description",
                     userDescription.getText().toString()
             ).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -205,7 +217,7 @@ public class UserProfile extends AppCompatActivity {
                     Toast.makeText(UserProfile.this, "Promjene spremljene", Toast.LENGTH_SHORT).show();
                 }
             });
-        }else{
+        } else {
             usersRef.document(value).update("range", current_range, "name", name.getText().toString(), "description",
                     userDescription.getText().toString(), "interests", updatedInterest
             ).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -259,6 +271,28 @@ public class UserProfile extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
+
+    private void openFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            mImageUri = data.getData();
+            GlideApp
+                    .with(UserProfile.this)
+                    .load(mImageUri)
+                    .circleCrop()
+                    .into(profilePicture);
+        }
     }
 }
 
