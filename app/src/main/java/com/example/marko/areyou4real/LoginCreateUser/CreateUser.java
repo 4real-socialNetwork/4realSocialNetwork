@@ -305,31 +305,36 @@ public class CreateUser extends AppCompatActivity {
     }
 
     private void uploadFile() {
-        final StorageReference fileReferance = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(mPictureUri));
+        if(mPictureUri!=null){
+            final StorageReference fileReferance = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(mPictureUri));
 
-        UploadTask uploadTask = fileReferance.putFile(mPictureUri);
+            UploadTask uploadTask = fileReferance.putFile(mPictureUri);
 
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                Toast.makeText(CreateUser.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                taskSnapshot.getMetadata();
-                taskSnapshot.getUploadSessionUri();
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Toast.makeText(CreateUser.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    taskSnapshot.getMetadata();
+                    taskSnapshot.getUploadSessionUri();
 
-                fileReferance.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        profilePictureUrl = uri.toString();
-                        Toast.makeText(mContext, profilePictureUrl, Toast.LENGTH_SHORT).show();
-                        createUserAndAccount();
-                    }
-                });
-            }
-        });
+                    fileReferance.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            profilePictureUrl = uri.toString();
+                            Toast.makeText(mContext, profilePictureUrl, Toast.LENGTH_SHORT).show();
+                            createUserAndAccount();
+                        }
+                    });
+                }
+            });
+        }else{
+            createUserAndAccount();
+        }
+
 
 
 
