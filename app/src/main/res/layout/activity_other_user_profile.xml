@@ -15,10 +15,10 @@
 
     <ImageView
         android:id="@+id/ivProfilePicture"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginLeft="16dp"
-        android:src="@drawable/avatar" />
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/avatar"
+        android:layout_gravity="center_horizontal"/>
 
     <TextView
         android:id="@+id/tvUserName"
@@ -85,7 +85,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:id="@+id/btnAddPlayer"
-        android:clickable="false"/>
+        android:clickable="false"
+        android:text="dodaj prijatelja"/>
 
 
 </LinearLayout>

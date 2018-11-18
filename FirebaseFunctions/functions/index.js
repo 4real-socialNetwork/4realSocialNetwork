@@ -9,29 +9,35 @@ var db = admin.firestore();
 //const settings = {/ your settings... / timestampsInSnapshots: true};
 //firestore.settings(settings);
 
-exports.sendPush2 = functions.firestore.document('Events/{eventId}').collection('chatRoom')
-    .onUpdate((change, context) => {
+
+exports.sendPush2 = functions.firestore.document('Events/{eventId}/chatRoom')
+    .onCreate((change, context) => {
 
         const newValue = change.after.data();
-        const previousValue = change.before.data();
-
-        const usersAfterChange = newValue.usersEntered;
-        const usersBeforeChange = previousValue.usersEntered;
-
-        const eventCreatorUserId = newValue.idOfTheUserWhoCreatedIt
-        const eventDescription = previousValue.eventDescription;
-        const eventId = newValue.eventId;
-
-        const listOfUsers = previousValue.listOfUsersParticipatingInEvent;
-
-        if (usersAfterChange == usersBeforeChange) return null;
-
-        let messageText = "Novi korisnik se pridružio "
-        if (usersAfterChange < usersBeforeChange) {
-            messageText = "Jedan korisnik je izašao iz "
-            listOfUsers = newValue.listOfUsersParticipatingInEvent;
-        }
+        const previousValue = change.before.data(); // treba prikazati zadnju izmjenu u notification poruci putem ovoga
+	
+		
+		let currentEventUrl = change.doc.ref.path.split("/").slice(0, ) //path to eventa unutar kojeg je chatRoom 
+		currentEventUrl = currentEventUrl.split("/").slice(0, currentEventUrl.split("/").length - 1).join("/")
+		var docRef = db.collection(currentEventUrl);
+        docRef.get()
+            .then(snapshot => {
+				const listOfUsers = snapshot.listOfUsersParticipatingInEvent; //dobijemo usere koji su u eventu
+				
+				//dalje nije dirao
+				//sretno care
+				
+				var docRef = db.collection('Users');
+				docRef.get()
+					.then(snapshot => {
+						snapshot.forEach(doc => {
+							console.log(doc.id, '=>', doc.data());
+							users.push(doc.data());
+						});
+			})
+       
         let users = [];
+		
         var docRef = db.collection('Users');
         docRef.get()
             .then(snapshot => {

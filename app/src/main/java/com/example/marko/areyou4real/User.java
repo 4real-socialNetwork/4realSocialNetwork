@@ -13,7 +13,7 @@ public class User {
     String name;
     String surname;
     String email;
-    String profilePicureUri;
+    String profilePictureUrl;
     String description;
     ArrayList<String> interests;
     int range;
@@ -21,6 +21,20 @@ public class User {
     double userLong;
     String userToken;
     ArrayList<String> userFriends;
+
+    public User(String userId, String userToken, String name, String surname, String email, String description,
+                ArrayList<String> interests, int range, ArrayList<String> userFriends, String profilePictureUrl) {
+        this.userId = userId;
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+        this.description = description;
+        this.interests = interests;
+        this.range = range;
+        this.userToken = userToken;
+        this.userFriends = userFriends;
+        this.profilePictureUrl = profilePictureUrl;
+    }
 
     public ArrayList<String> getUserFriends() {
         return userFriends;
@@ -104,12 +118,12 @@ public class User {
         this.email = email;
     }
 
-    public String getProfilePicureUri() {
-        return profilePicureUri;
+    public String getProfilePictureUrl() {
+        return profilePictureUrl;
     }
 
-    public void setProfilePicureUri(String profilePicureUri) {
-        this.profilePicureUri = profilePicureUri;
+    public void setProfilePictureUri(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
     }
 
     public String getDescription() {
@@ -137,18 +151,6 @@ public class User {
         this.userId = userId;
     }
 
-    public User(String userId, String userToken, String name, String surname, String email, String description,
-                ArrayList<String> interests, int range,ArrayList<String> userFriends) {
-        this.userId = userId;
-        this.name = name;
-        this.surname = surname;
-        this.email = email;
-        this.description = description;
-        this.interests = interests;
-        this.range = range;
-        this.userToken = userToken;
-        this.userFriends = userFriends;
-    }
 
     public void gradeUser(int grade) {
         userGrades += grade;

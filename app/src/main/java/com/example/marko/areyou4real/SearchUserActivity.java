@@ -125,6 +125,9 @@ public class SearchUserActivity extends AppCompatActivity {
                 filteredList.add(user);
             }
         }
-        mAdapter.filterList(filteredList);
+        try{
+            mAdapter.filterList(filteredList);
+        }catch (NullPointerException e){
+        }
     }
 }

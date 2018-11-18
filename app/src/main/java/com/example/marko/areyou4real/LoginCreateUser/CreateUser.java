@@ -1,8 +1,10 @@
 package com.example.marko.areyou4real.LoginCreateUser;
 
 import android.app.TimePickerDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -12,8 +14,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -23,11 +27,14 @@ import android.widget.Toast;
 import com.example.marko.areyou4real.MainActivity;
 import com.example.marko.areyou4real.R;
 import com.example.marko.areyou4real.User;
+import com.example.marko.areyou4real.UserProfile;
+import com.example.marko.areyou4real.adapter.GlideApp;
 import com.example.marko.areyou4real.adapter.TinyDB;
 import com.example.marko.areyou4real.dialogs.InterestDialog;
 import com.example.marko.areyou4real.fragments.TimePickerFragment;
 import com.example.marko.areyou4real.model.FriendRequest;
 import com.example.marko.areyou4real.model.Group;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -40,8 +47,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class CreateUser extends AppCompatActivity {
 
@@ -50,6 +62,8 @@ public class CreateUser extends AppCompatActivity {
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference mUsersRef = db.collection("Users");
+    private StorageReference mStorageRef;
+
 
     private Context mContext = CreateUser.this;
     private Button btnInteres;
@@ -67,7 +81,10 @@ public class CreateUser extends AppCompatActivity {
     public TinyDB tinyDB;
     public String mToken = "";
     private ArrayList<String> friendsList = new ArrayList<>();
-
+    private Uri mPictureUri;
+    private String profilePictureUrl = "";
+    private ImageView profilePicture;
+    private static final int PICK_IMAGE_REQUEST = 1;
 
 
     private int current_range = 5;
@@ -89,6 +106,18 @@ public class CreateUser extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBarUser);
         showSeekBar = findViewById(R.id.tvSeekBarShower);
         tvShowInterest = findViewById(R.id.tvShowInterest);
+        mStorageRef = FirebaseStorage.getInstance().getReference("ProfilePictures");
+        profilePicture = findViewById(R.id.ivProfilePicture);
+
+        btnCreateAccount.setClickable(false);
+        GlideApp.with(this).load(R.drawable.avatar).circleCrop().into(profilePicture);
+        profilePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFileChooser();
+            }
+        });
+
 
         showSeekBar.setText(current_range + " km");
         seekBar.setProgress(current_range);
@@ -115,7 +144,7 @@ public class CreateUser extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
-                createUserAndAccount();
+                uploadFile();
             }
         });
         btnInteres.setOnClickListener(new View.OnClickListener() {
@@ -141,28 +170,30 @@ public class CreateUser extends AppCompatActivity {
         });
 
 
+
+
         final String mail = email.getText().toString().trim();
         final String pass = password.getText().toString().trim();
         final String ime = name.getText().toString().trim();
         final String prezime = surname.getText().toString().trim();
         final String opis = description.getText().toString().trim();
         final int udaljenost = seekBar.getProgress();
-//sjebano s ovim djelom di stvaras uzera
+
 
         if (mail.contentEquals("@") || pass.length() > 6) {
             mAuth.createUserWithEmailAndPassword(mail, pass)
                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult authResult) {
-                            User user = new User(FirebaseAuth.getInstance().getUid(), mToken, ime, prezime, mail, opis, selectedItems, udaljenost,friendsList);
+                            User user = new User(FirebaseAuth.getInstance().getUid(), mToken, ime, prezime, mail, opis, selectedItems, udaljenost, friendsList, profilePictureUrl);
                             mUsersRef.add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(final DocumentReference documentReference) {
                                     friendsList.add(FirebaseAuth.getInstance().getUid());
-                                    db.collection("Groups").add(new Group("Prijatelji",friendsList,"",mAuth.getUid(),true)).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                    db.collection("Groups").add(new Group("Prijatelji", friendsList, "", mAuth.getUid(), true)).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                         @Override
                                         public void onComplete(@NonNull Task<DocumentReference> task) {
-                                            db.collection("Groups").document(task.getResult().getId()).update("groupId",task.getResult().getId());
+                                            db.collection("Groups").document(task.getResult().getId()).update("groupId", task.getResult().getId());
 
                                         }
                                     });
@@ -271,6 +302,68 @@ public class CreateUser extends AppCompatActivity {
             finish();
         }
         return true;
+    }
+
+    private void uploadFile() {
+        final StorageReference fileReferance = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(mPictureUri));
+
+        UploadTask uploadTask = fileReferance.putFile(mPictureUri);
+
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Toast.makeText(CreateUser.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                taskSnapshot.getMetadata();
+                taskSnapshot.getUploadSessionUri();
+
+                fileReferance.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        profilePictureUrl = uri.toString();
+                        Toast.makeText(mContext, profilePictureUrl, Toast.LENGTH_SHORT).show();
+                        createUserAndAccount();
+                    }
+                });
+            }
+        });
+
+
+
+
+    }
+
+    private String getFileExtension(Uri uri) {
+        ContentResolver cr = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cr.getType(uri));
+    }
+
+    private void openFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            mPictureUri = data.getData();
+            GlideApp
+                    .with(CreateUser.this)
+                    .load(mPictureUri)
+                    .circleCrop()
+                    .into(profilePicture);
+
+            uploadFile();
+        }
     }
 
 

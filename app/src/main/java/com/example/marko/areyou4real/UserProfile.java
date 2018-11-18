@@ -1,7 +1,9 @@
 package com.example.marko.areyou4real;
 
 import android.app.TimePickerDialog;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -12,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -22,6 +25,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
 import com.example.marko.areyou4real.LoginCreateUser.LoginActivity;
 import com.example.marko.areyou4real.adapter.BottomNavigationViewHelper;
 import com.example.marko.areyou4real.adapter.GlideApp;
@@ -36,6 +40,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import org.w3c.dom.Text;
@@ -67,6 +74,9 @@ public class UserProfile extends AppCompatActivity {
     private Button btnFriendsList;
     private Button btnUploadPicture;
     private static final int PICK_IMAGE_REQUEST = 1;
+    private StorageReference mStorageRef;
+    private String pictureUrl = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +89,7 @@ public class UserProfile extends AppCompatActivity {
         name = findViewById(R.id.etUserName);
         userDescription = findViewById(R.id.etUserDescription);
         profilePicture = findViewById(R.id.ivProfilePicture);
+        GlideApp.with(UserProfile.this).load(R.drawable.avatar).circleCrop().into(profilePicture);
         btnUserInterest = findViewById(R.id.btnUserInterest);
         btnSaveChanges = findViewById(R.id.btnSaveUserChanges);
         progressBar = findViewById(R.id.progressBar);
@@ -87,6 +98,8 @@ public class UserProfile extends AppCompatActivity {
         btnLogOut = findViewById(R.id.btnLogout);
         btnFriendsList = findViewById(R.id.btnFriendsList);
         btnUploadPicture = findViewById(R.id.btnUploadPicture);
+        mStorageRef = FirebaseStorage.getInstance().getReference("ProfilePictures");
+
 
         updateUI();
 
@@ -124,10 +137,18 @@ public class UserProfile extends AppCompatActivity {
             }
         });
 
+        profilePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFileChooser();
+            }
+        });
+
         btnUploadPicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            openFileChooser();
+                uploadFile();
+                progressBar.setVisibility(View.VISIBLE);
             }
         });
 
@@ -150,6 +171,9 @@ public class UserProfile extends AppCompatActivity {
                 for (DocumentSnapshot dc : queryDocumentSnapshots) {
                     User user = dc.toObject(User.class);
                     name.setText(user.getName());
+                    GlideApp.with(UserProfile.this).load(user.getProfilePictureUrl()).
+                            placeholder(R.drawable.avatar).circleCrop()
+                            .into(profilePicture);
                     userDescription.setText(user.getDescription());
                     current_range = user.getRange();
                     for (int i = 0; i < user.getInterests().size(); i++) {
@@ -287,12 +311,51 @@ public class UserProfile extends AppCompatActivity {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
                 && data != null && data.getData() != null) {
             mImageUri = data.getData();
-            GlideApp
-                    .with(UserProfile.this)
+            GlideApp.with(UserProfile.this)
                     .load(mImageUri)
                     .circleCrop()
                     .into(profilePicture);
         }
+    }
+
+    private String getFileExtension(Uri uri) {
+        ContentResolver cr = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cr.getType(uri));
+    }
+
+    private void uploadFile() {
+
+        if(mImageUri!=null){
+            final StorageReference fileReferance = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(mImageUri));
+            fileReferance.putFile(mImageUri).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Toast.makeText(UserProfile.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    taskSnapshot.getMetadata();
+                    taskSnapshot.getUploadSessionUri();
+
+                    fileReferance.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            pictureUrl = uri.toString();
+                            Toast.makeText(UserProfile.this, pictureUrl, Toast.LENGTH_SHORT).show();
+                            progressBar.setVisibility(View.INVISIBLE);
+
+                        }
+                    });
+                }
+            });
+        }
+
+
+
+
+
     }
 }
 

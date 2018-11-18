@@ -90,6 +90,11 @@ public class OtherUserProfile extends AppCompatActivity {
                 for (DocumentSnapshot dc : queryDocumentSnapshots) {
                     otherUser = dc.toObject(User.class);
                      thisUserDocRef = dc.getReference();
+                    GlideApp.with(OtherUserProfile.this).load(otherUser.getProfilePictureUrl())
+                            .circleCrop()
+                            .placeholder(R.drawable.avatar)
+                            .into(ivUserProfilePicture);
+
                     tvUserName.setText(otherUser.getName());
                     tvUserDescription.setText(otherUser.getDescription());
                     for (String value : otherUser.getInterests()) {
@@ -155,7 +160,7 @@ public class OtherUserProfile extends AppCompatActivity {
                         btnAddPlayer.setText("Prijatelji ste");
                         btnAddPlayer.setClickable(false);
                     }else{
-                        btnAddPlayer.setText("Dodajte prijatelja");
+                        btnAddPlayer.setText("Dodaj prijatelja");
                         btnAddPlayer.setClickable(true);
                     }
 
