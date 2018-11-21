@@ -18,14 +18,17 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.example.marko.areyou4real.adapter.TinyDB;
 import com.example.marko.areyou4real.fragments.DatePickerFragment;
 import com.example.marko.areyou4real.fragments.TimePickerFragment;
 import com.example.marko.areyou4real.model.Event;
+import com.example.marko.areyou4real.model.EventRequest;
 import com.example.marko.areyou4real.model.TextMessage;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -36,10 +39,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -52,11 +58,13 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
 
     private EditText name;
     private Spinner activity;
+    private Spinner eventTypeSpinner;
     private EditText playersNeeded;
     private EditText eventDescription;
     private Button btnCreateEvent;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference eventsRef = db.collection("Events");
+    private CollectionReference usersRef = db.collection("Users");
     private DocumentReference docRef;
     private String docId;
     private String userId = FirebaseAuth.getInstance().getUid();
@@ -70,6 +78,7 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
     private TextView tvEventTime;
     private Button btnMap;
     private TextView tvEventLocationAddress;
+    private TextView tvEventForUsers;
     private double eventLat;
     private double eventLng;
     private String eventAddress = "";
@@ -80,7 +89,12 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
     private TextView tvEventDate;
     private Calendar calendar = Calendar.getInstance();
     private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy",Locale.getDefault());
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yyyy", Locale.getDefault());
+    private boolean isPrivate = false;
+    private ArrayList<String> groupNames = new ArrayList<>();
+    private ArrayList<String> usersInGroup = new ArrayList<>();
+    private TinyDB tinyDB;
+    private ProgressBar progressBar ;
 
 
     @Override
@@ -98,10 +112,20 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
         tvEventTime = findViewById(R.id.tvTimeStart);
         name = findViewById(R.id.etName);
         activity = findViewById(R.id.spinner);
+        eventTypeSpinner = findViewById(R.id.eventTypeSpinner);
+
+        progressBar = findViewById(R.id.progressBar);
+
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.interests, android.R.layout.simple_spinner_item);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         activity.setAdapter(spinnerAdapter);
         activity.setOnItemSelectedListener(this);
+
+        setEventTypeSpinner();
+
+        tvEventForUsers = findViewById(R.id.tvEventForUsers);
+
+
         btnSetTime = findViewById(R.id.btnTime);
         btnEventDate = findViewById(R.id.btnDate);
         tvEventDate = findViewById(R.id.tvDateOfEvent);
@@ -130,6 +154,7 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
         btnCreateEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
                 createEvent();
             }
         });
@@ -147,42 +172,83 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
     }
 
     public void createEvent() {
-        String eventName = name.getText().toString();
-        String activity = selectedInteres;
-        int peopleNeeded = Integer.parseInt(playersNeeded.getText().toString());
-        String description = eventDescription.getText().toString();
-        if (eventName.length() > 0 && activity.length() > 0 && peopleNeeded > 0 && description.length() > 0 && calendar.getTimeInMillis() != 0) {
-            Event event = new Event(userId, eventName, activity, calendar.getTimeInMillis(), eventLat, eventLng, peopleNeeded, description, eventAddress,false);
-            event.addCreatorUserToArray(userId);
 
-            eventsRef.add(event).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                @Override
-                public void onSuccess(DocumentReference documentReference) {
-                    Toast.makeText(CreateEvent.this, "Event created", Toast.LENGTH_SHORT).show();
+        if(!isPrivate){
+            String eventName = name.getText().toString();
+            String activity = selectedInteres;
+            int peopleNeeded = Integer.parseInt(playersNeeded.getText().toString());
+            String description = eventDescription.getText().toString();
+            if (eventName.length() > 0 && activity.length() > 0 && peopleNeeded > 0 && description.length() > 0 && calendar.getTimeInMillis() != 0) {
+                Event event = new Event(userId, eventName, activity, calendar.getTimeInMillis(), eventLat, eventLng, peopleNeeded, description, eventAddress, false, isPrivate);
+                event.addCreatorUserToArray(userId);
 
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(CreateEvent.this, e.toString(), Toast.LENGTH_SHORT).show();
-                }
-            }).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentReference> task) {
-                    if (task.isSuccessful()) {
-                        docRef = task.getResult();
-                        docId = docRef.getId();
-                        docRef.update("eventId", docId);
-                        createChat();
-
+                eventsRef.add(event).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Toast.makeText(CreateEvent.this, "Javno", Toast.LENGTH_SHORT).show();
 
                     }
-                }
-            });
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(CreateEvent.this, e.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        if (task.isSuccessful()) {
+                            docRef = task.getResult();
+                            docId = docRef.getId();
+                            docRef.update("eventId", docId);
+                            createChat();
+
+
+                        }
+                    }
+                });
+                Intent intent = new Intent(mContext, MainActivity.class);
+                startActivity(intent);
+            }
+        }else{
+            String eventName = name.getText().toString();
+            String activity = selectedInteres;
+            int peopleNeeded = Integer.parseInt(playersNeeded.getText().toString());
+            String description = eventDescription.getText().toString();
+            if (eventName.length() > 0 && activity.length() > 0 && peopleNeeded > 0 && description.length() > 0 && calendar.getTimeInMillis() != 0) {
+                Event event = new Event(userId, eventName, activity, calendar.getTimeInMillis(), eventLat, eventLng, peopleNeeded, description, eventAddress, false, isPrivate);
+                event.addCreatorUserToArray(userId);
+
+                eventsRef.add(event).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Toast.makeText(CreateEvent.this, "Private event created", Toast.LENGTH_SHORT).show();
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(CreateEvent.this, e.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        if (task.isSuccessful()) {
+                            docRef = task.getResult();
+                            docId = docRef.getId();
+                            docRef.update("eventId", docId);
+                            createChat();
+                            sendEventRequest();
+
+
+                        }
+                    }
+                });
+            }
+
         }
 
-
     }
+
 
     private void setToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -245,27 +311,36 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
-            if (resultCode == RESULT_OK) {
+            if (resultCode == RESULT_OK && data != null) {
                 eventAddress = data.getStringExtra("ADDRESS");
                 tvEventLocationAddress.setText(eventAddress);
                 eventLat = data.getDoubleExtra("LAT", 0);
                 eventLng = data.getDoubleExtra("LNG", 0);
             }
+        } else if (requestCode == 2 && data != null) {
+            if (resultCode == RESULT_OK) {
+                isPrivate = true;
+                usersInGroup = data.getStringArrayListExtra("users_in_group");
+                groupNames = data.getStringArrayListExtra("group_names");
+                Toast.makeText(mContext, usersInGroup.get(0), Toast.LENGTH_SHORT).show();
+                tvEventForUsers.setText(groupNames.toString());
+
+            }
         }
     }
 
     public void createChat() {
-        eventsRef.document(docId).collection("chatRoom").add(new TextMessage("", "", "")).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+        eventsRef.document(docId).collection("chatRoom").add(new TextMessage("", "", "", docId, "")).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 mTextMessageId = documentReference.getId();
                 eventsRef.document(docId).collection("chatRoom").document(mTextMessageId)
                         .update("eventChatId", mTextMessageId);
-                Intent intent = new Intent(mContext, MainActivity.class);
-                startActivity(intent);
+
 
             }
         });
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
 
@@ -277,6 +352,72 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
         tvEventDate.setText(dateFormat.format(calendar.getTime()));
 
 
+    }
+
+    private void setEventTypeSpinner() {
+        ArrayAdapter<CharSequence> eventSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.eventType, android.R.layout.simple_spinner_item);
+        eventSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        eventTypeSpinner.setAdapter(eventSpinnerAdapter);
+        eventTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0: {
+                        isPrivate = false;
+                        tvEventForUsers.setText(parent.getItemAtPosition(position).toString());
+                        break;
+                    }
+                    case 1:
+                        isPrivate = true;
+                        Intent intent = new Intent(CreateEvent.this, MyGroupsSelector.class);
+                        startActivityForResult(intent, 2);
+                        break;
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+    }
+    private void sendEventRequest(){
+        tinyDB = new TinyDB(mContext);
+        String userName = tinyDB.getString("USERNAME");
+        String userDocRef = tinyDB.getString("USERDOCREF");
+        for(String reciverId : usersInGroup){
+            final EventRequest eventRequest = new EventRequest(docId,"",selectedInteres,calendar.getTimeInMillis(),userName,userDocRef,reciverId,false);
+            usersRef.whereEqualTo("userId",reciverId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    for(DocumentSnapshot dc : queryDocumentSnapshots){
+                        final String reciverDocRef = dc.getReference().getId();
+                        usersRef.document(reciverDocRef).collection("EventRequests").add(eventRequest).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                documentReference.update("reciverDocRef",reciverDocRef,"eventRequestDocRef",documentReference.getId());
+                            }
+                        });
+
+                    }
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
+        }
+        progressBar.setVisibility(View.INVISIBLE);
+        Toast.makeText(mContext, "Uspjeh", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(mContext, MainActivity.class);
+        startActivity(intent);
     }
 
 

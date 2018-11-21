@@ -21,6 +21,7 @@ public class User {
     double userLong;
     String userToken;
     ArrayList<String> userFriends;
+    String userDocRef;
 
     public User(String userId, String userToken, String name, String surname, String email, String description,
                 ArrayList<String> interests, int range, ArrayList<String> userFriends, String profilePictureUrl) {
@@ -34,6 +35,14 @@ public class User {
         this.userToken = userToken;
         this.userFriends = userFriends;
         this.profilePictureUrl = profilePictureUrl;
+    }
+
+    public String getUserDocRef() {
+        return userDocRef;
+    }
+
+    public void setUserDocRef(String userDocRef) {
+        this.userDocRef = userDocRef;
     }
 
     public ArrayList<String> getUserFriends() {

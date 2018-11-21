@@ -108,7 +108,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
             }
         });
 
-        getUserFirstGroup();
+        //getUserFirstGroup();
 
         return view;
     }
@@ -123,14 +123,17 @@ public class HomeFragment extends android.support.v4.app.Fragment {
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     for (DocumentSnapshot dc : task.getResult()) {
                         Event event = dc.toObject(Event.class);
-                        if (distance(userLat, userLng, event.getEventLat(), event.getEventLng(), 'K') <= userRange) {
-                            if(event.isCompleted()==false){
-                                eventsList.add(event);
+                        if(!event.isPrivate()){
+                            if (distance(userLat, userLng, event.getEventLat(), event.getEventLng(), 'K') <= userRange) {
+                                if(event.isCompleted()==false){
+                                    eventsList.add(event);
+                                }
                             }
-                        }
-                        setUpAdapter(view);
+                            setUpAdapter(view);
 
-                    }
+                        }
+                        }
+
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -171,6 +174,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
                     tinyDB = new TinyDB(getContext());
                     tinyDB.putString("USERDOCREF", userDocId);
                     tinyDB.putString("USERTOKEN", userToken);
+                    tinyDB.putString("USERNAME",user.getName());
                 }
                 loadEvents(view);
                 //updateUserToken();

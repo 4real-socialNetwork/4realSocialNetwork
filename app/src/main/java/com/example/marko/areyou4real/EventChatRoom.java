@@ -144,7 +144,7 @@ public class EventChatRoom extends AppCompatActivity {
     }
     public void sendMessage(){
         String eventId = getIntent().getStringExtra("EVENTID");
-        textMessage = new TextMessage(currentUser.getName(), mMessageText.getText().toString(), currentUser.getUserId());
+        textMessage = new TextMessage(currentUser.getName(), mMessageText.getText().toString(), currentUser.getUserId(),eventId,"");
         FirebaseFirestore.getInstance()
                 .collection("Events")
                 .document(eventId)

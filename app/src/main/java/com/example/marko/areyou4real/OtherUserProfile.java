@@ -40,12 +40,12 @@ public class OtherUserProfile extends AppCompatActivity {
     private CollectionReference usersRef = db.collection("Users");
     private String interests = "";
     private Button btnAddPlayer;
-    private DocumentReference thisUserDocRef;
+    private String thisUserDocRef;
     private User otherUser;
     private String currentUserName ="";
     private TinyDB tinyDB ;
     String currentUserDocId = "";
-    private DocumentReference currentUserDocRef ;
+    private String currentUserDocRef ;
 
 
     @Override
@@ -71,6 +71,7 @@ public class OtherUserProfile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 btnAddPlayer.setText("zahtjev poslan");
+                btnAddPlayer.setClickable(false);
                 sendPlayerRequest();
 
             }
@@ -81,39 +82,44 @@ public class OtherUserProfile extends AppCompatActivity {
 
     private void loadData() {
         intent = getIntent();
-        String otherUserId = intent.getStringExtra("userId");
+        final String otherUserId = intent.getStringExtra("userId");
 
-        usersRef.whereEqualTo("userId", otherUserId)
-                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        usersRef.document(otherUserId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for (DocumentSnapshot dc : queryDocumentSnapshots) {
-                    otherUser = dc.toObject(User.class);
-                     thisUserDocRef = dc.getReference();
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                otherUser = documentSnapshot.toObject(User.class);
+                thisUserDocRef = documentSnapshot.getId();
+                if(otherUser.getProfilePictureUrl()!=null) {
                     GlideApp.with(OtherUserProfile.this).load(otherUser.getProfilePictureUrl())
                             .circleCrop()
                             .placeholder(R.drawable.avatar)
                             .into(ivUserProfilePicture);
-
-                    tvUserName.setText(otherUser.getName());
-                    tvUserDescription.setText(otherUser.getDescription());
-                    for (String value : otherUser.getInterests()) {
-                        if (value == otherUser.getInterests().get(otherUser.getInterests().size() - 1)) {
-                            interests += value+".";
-                        } else {
-                            interests += value + ", ";
-
-                        }
-                    }
-                    tvUserInterests.setText(interests);
+                }
+                else {
+                    GlideApp.with(OtherUserProfile.this).load(R.drawable.avatar).circleCrop().into(ivUserProfilePicture);
 
                 }
+
+
+                tvUserName.setText(otherUser.getName());
+                tvUserDescription.setText(otherUser.getDescription());
+                for (String value : otherUser.getInterests()) {
+                    if (value == otherUser.getInterests().get(otherUser.getInterests().size() - 1)) {
+                        interests += value+".";
+                    } else {
+                        interests += value + ", ";
+
+                    }
+                }
+                tvUserInterests.setText(interests);
                 checkIfFriendRequestIsSent();
+
             }
+
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(OtherUserProfile.this, e.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(OtherUserProfile.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -128,8 +134,7 @@ public class OtherUserProfile extends AppCompatActivity {
         return true;
     }
     private void sendPlayerRequest(){
-        String userFriendGroupId = new TinyDB(OtherUserProfile.this).getString("FRIENDSGROUPID");
-        thisUserDocRef.collection("FriendRequest").add(new FriendRequest(FirebaseAuth.getInstance().getUid(),false,currentUserName,currentUserDocRef,"",userFriendGroupId))
+        usersRef.document(thisUserDocRef).collection("FriendRequest").add(new FriendRequest(FirebaseAuth.getInstance().getUid(),false,currentUserName,currentUserDocRef,"",thisUserDocRef))
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
@@ -140,7 +145,7 @@ public class OtherUserProfile extends AppCompatActivity {
     }
 
     private void checkIfFriendRequestIsSent(){
-        thisUserDocRef.collection("FriendRequest").whereEqualTo("senderId",FirebaseAuth.getInstance().getUid())
+        usersRef.document(thisUserDocRef).collection("FriendRequest").whereEqualTo("senderId",FirebaseAuth.getInstance().getUid())
                 .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -176,7 +181,7 @@ public class OtherUserProfile extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                          currentUserName = task.getResult().toObject(User.class).getName();
-                        currentUserDocRef = task.getResult().getReference();
+                        currentUserDocRef = task.getResult().getId();
                     }
                 });
     }

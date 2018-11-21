@@ -18,6 +18,15 @@ public class Event {
     private String idOfTheUserWhoCreatedIt;
     private ArrayList<String> listOfUsersParticipatingInEvent = new ArrayList<>();
     private boolean isCompleted = false;
+    private boolean isPrivate;
+
+    public boolean isPrivate() {
+        return isPrivate;
+    }
+
+    public void setPrivate(boolean aPrivate) {
+        isPrivate = aPrivate;
+    }
 
     public boolean isCompleted() {
         return isCompleted;
@@ -73,7 +82,7 @@ public class Event {
         this.eventDescription = eventDescription;
     }
 
-    public Event(String idOfTheUserWhoCreatedIt, String name, String activity, long eventStart, double eventLat, double eventLng, int usersNeeded, String eventDescription, String eventAdress, boolean isCompleted) {
+    public Event(String idOfTheUserWhoCreatedIt, String name, String activity, long eventStart, double eventLat, double eventLng, int usersNeeded, String eventDescription, String eventAdress, boolean isCompleted, boolean isPrivate) {
         this.idOfTheUserWhoCreatedIt = idOfTheUserWhoCreatedIt;
         this.name = name;
         this.activity = activity;
@@ -84,6 +93,7 @@ public class Event {
         this.eventDescription = eventDescription;
         this.eventAdress = eventAdress;
         this.isCompleted = isCompleted;
+        this.isPrivate = isPrivate;
 
     }
 

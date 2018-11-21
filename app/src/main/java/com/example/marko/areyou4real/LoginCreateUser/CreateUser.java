@@ -190,6 +190,7 @@ public class CreateUser extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(final DocumentReference documentReference) {
                                     friendsList.add(FirebaseAuth.getInstance().getUid());
+                                    mUsersRef.document(documentReference.getId()).update("userDocRef",documentReference.getId());
                                     db.collection("Groups").add(new Group("Prijatelji", friendsList, "", mAuth.getUid(), true)).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                         @Override
                                         public void onComplete(@NonNull Task<DocumentReference> task) {

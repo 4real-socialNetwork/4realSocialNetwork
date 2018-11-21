@@ -8,6 +8,15 @@ public class Group {
     private String groupId;
     private String groupAdmin;
     private boolean firstGroup;
+    private boolean isSelected;
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
 
     public boolean isFirstGroup() {
         return firstGroup;

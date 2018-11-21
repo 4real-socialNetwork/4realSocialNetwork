@@ -224,7 +224,7 @@ public class CreateGroup extends AppCompatActivity {
         return true;
     }
     private void createChat(){
-        mGroupsRef.document(groupId).collection("chatRoom").add(new TextMessage("","","")).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+        mGroupsRef.document(groupId).collection("chatRoom").add(new TextMessage("","","","",groupId)).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 mTextMessageId = documentReference.getId();

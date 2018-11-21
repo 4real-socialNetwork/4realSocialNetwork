@@ -8,9 +8,18 @@ public class FriendRequest {
     String senderId;
     boolean accepted;
     String senderName;
-    DocumentReference senderDocRef;
+    String senderDocRef;
     String friendRequestRef;
     String usersFriendsGroup;
+    String reciverDocRef;
+
+    public String getReciverDocRef() {
+        return reciverDocRef;
+    }
+
+    public void setReciverDocRef(String reciverDocRef) {
+        this.reciverDocRef = reciverDocRef;
+    }
 
     public String getUsersFriendsGroup() {
         return usersFriendsGroup;
@@ -37,21 +46,21 @@ public class FriendRequest {
     }
 
 
-    public DocumentReference getSenderDocRef() {
+    public String getSenderDocRef() {
         return senderDocRef;
     }
 
-    public void setSenderDocRef(DocumentReference senderDocRef) {
+    public void setSenderDocRef(String senderDocRef) {
         this.senderDocRef = senderDocRef;
     }
 
-    public FriendRequest(String senderId, boolean accepted,String senderName,DocumentReference senderDocRef,String friendRequestRef,String usersFriendsGroup) {
+    public FriendRequest(String senderId, boolean accepted,String senderName,String senderDocRef,String friendRequestRef,String reciverDocRef) {
         this.senderId = senderId;
         this.accepted = accepted;
         this.senderName = senderName;
         this.senderDocRef = senderDocRef;
         this.friendRequestRef = friendRequestRef;
-        this.usersFriendsGroup = usersFriendsGroup;
+        this.reciverDocRef = reciverDocRef;
     }
 
     public FriendRequest() {

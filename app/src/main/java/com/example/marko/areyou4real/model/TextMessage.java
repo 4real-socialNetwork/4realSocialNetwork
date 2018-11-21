@@ -9,13 +9,33 @@ public class TextMessage {
     private String mMessage;
     private String mUid;
     private Date mTimestamp;
+    private String idOfEventOfMessage;
+    private String idOfGroupOfMessage;
 
     public TextMessage() { } // Needed for Firebase
 
-    public TextMessage(String name, String message, String uid) {
-        mName = name;
-        mMessage = message;
-        mUid = uid;
+    public TextMessage(String name, String message, String uid,String idOfEventOfMessage,String idOfGroupOfMessage) {
+        this.mName = name;
+        this.mMessage = message;
+        this.mUid = uid;
+        this.idOfEventOfMessage = idOfEventOfMessage;
+        this.idOfGroupOfMessage = idOfGroupOfMessage;
+    }
+
+    public String getIdOfGroupOfMessage() {
+        return idOfGroupOfMessage;
+    }
+
+    public void setIdOfGroupOfMessage(String idOfGroupOfMessage) {
+        this.idOfGroupOfMessage = idOfGroupOfMessage;
+    }
+
+    public String getIdOfEventOfMessage() {
+        return idOfEventOfMessage;
+    }
+
+    public void setIdOfEventOfMessage(String idOfEventOfMessage) {
+        this.idOfEventOfMessage = idOfEventOfMessage;
     }
 
     public String getName() { return mName; }

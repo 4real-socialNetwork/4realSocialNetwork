@@ -138,7 +138,7 @@ public class GroupChatRoom extends AppCompatActivity {
     }
     public void sendMessage(){
         String groupId = getIntent().getStringExtra("GROUPID");
-        textMessage = new TextMessage(currentUser.getName(), mMessageText.getText().toString(), currentUser.getUserId());
+        textMessage = new TextMessage(currentUser.getName(), mMessageText.getText().toString(), currentUser.getUserId(),"",groupId);
         FirebaseFirestore.getInstance()
                 .collection("Groups")
                 .document(groupId)

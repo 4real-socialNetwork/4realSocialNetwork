@@ -29,6 +29,7 @@ import com.bumptech.glide.RequestBuilder;
 import com.example.marko.areyou4real.LoginCreateUser.LoginActivity;
 import com.example.marko.areyou4real.adapter.BottomNavigationViewHelper;
 import com.example.marko.areyou4real.adapter.GlideApp;
+import com.example.marko.areyou4real.adapter.TinyDB;
 import com.example.marko.areyou4real.dialogs.InterestDialog;
 import com.example.marko.areyou4real.fragments.TimePickerFragment;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -164,30 +165,28 @@ public class UserProfile extends AppCompatActivity {
 
 
     public void updateUI() {
-        usersRef.whereEqualTo("userId", userId)
-                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        TinyDB tinyDB = new TinyDB(UserProfile.this);
+        String thisUserDocRef = tinyDB.getString("USERDOCREF");
+        usersRef.document(thisUserDocRef).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for (DocumentSnapshot dc : queryDocumentSnapshots) {
-                    User user = dc.toObject(User.class);
-                    name.setText(user.getName());
-                    GlideApp.with(UserProfile.this).load(user.getProfilePictureUrl()).
-                            placeholder(R.drawable.avatar).circleCrop()
-                            .into(profilePicture);
-                    userDescription.setText(user.getDescription());
-                    current_range = user.getRange();
-                    for (int i = 0; i < user.getInterests().size(); i++) {
-                        if (user.getInterests().get(i) != null) {
-                            interest += user.getInterests().get(i) + ",";
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                User user = documentSnapshot.toObject(User.class);
+                name.setText(user.getName());
+                GlideApp.with(UserProfile.this).load(user.getProfilePictureUrl()).
+                        placeholder(R.drawable.avatar).circleCrop()
+                        .into(profilePicture);
+                userDescription.setText(user.getDescription());
+                current_range = user.getRange();
+                for (int i = 0; i < user.getInterests().size(); i++) {
+                    if (user.getInterests().get(i) != null) {
+                        interest += user.getInterests().get(i) + ",";
 
-                        }
                     }
-                    tvInterests.setText(interest.toLowerCase());
-                    setBar();
                 }
+                tvInterests.setText(interest.toLowerCase());
+                setBar();
             }
         });
-
     }
 
     public void getDocumentRefId() {

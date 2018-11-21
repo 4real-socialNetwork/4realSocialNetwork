@@ -49,12 +49,12 @@ public class MyFriendsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_friends);
+        setUpAdapter();
         getUsersId();
         mUserSearch = findViewById(R.id.etSearchUser);
         mUserSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
@@ -84,7 +84,8 @@ public class MyFriendsActivity extends AppCompatActivity {
 
     private void getUsersId() {
         TinyDB tinyDB = new TinyDB(MyFriendsActivity.this);
-        usersRef.document(tinyDB.getString("USERDOCREF")).get()
+        String userDocRef = tinyDB.getString("USERDOCREF");
+        usersRef.document(userDocRef).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -118,6 +119,5 @@ public class MyFriendsActivity extends AppCompatActivity {
                 }
             });
         }
-        setUpAdapter();
     }
 }

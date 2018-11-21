@@ -100,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
         getLocationPermission();
         createLocationRequest();
         getUserDocumentId();
-        getServerKey();
 
 
         mPageAdapter = new SectionPagerAdapter(getSupportFragmentManager());
@@ -170,12 +169,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
     }
 
-    private void signOut() {
-        FirebaseAuth.getInstance().signOut();
-        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-        startActivity(intent);
-        Toast.makeText(this, "odjavljivanje", Toast.LENGTH_SHORT).show();
-    }
+
 
     private void getLocationPermission() {
         String[] permissions = {FINE_LOCATION,

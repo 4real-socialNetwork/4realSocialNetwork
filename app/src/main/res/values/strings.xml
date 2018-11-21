@@ -18,7 +18,11 @@
         <item>Šah</item>
         <item>Društvene igre</item>
         <item>Druženje</item>
+    </string-array>
 
+    <string-array name="eventType">
+        <item>Javni</item>
+        <item>Privatni</item>
 
     </string-array>
     <string name="title_activity_maps">Map</string>

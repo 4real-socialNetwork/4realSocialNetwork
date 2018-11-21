@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="90dp"
+    android:id="@+id/senderLayout">
+
+    <TextView
+        android:id="@+id/tvSenderName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="4dp"
+        android:text="Marko"
+        android:textColor="#000000" />
+
+    <TextView
+        android:id="@+id/tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/tvSenderName"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="25dp"
+        android:layout_toEndOf="@+id/tvSenderName"
+        android:text="Vas poziva na događaj: "
+        android:paddingLeft="4dp"/>
+
+    <TextView
+        android:id="@+id/tvEventName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvSenderName"
+        android:layout_alignStart="@+id/tvSenderName"
+        android:layout_marginStart="0dp"
+        android:text="Društvene igre" />
+
+    <TextView
+        android:id="@+id/tvTimeOfEvent"
+        android:layout_width="105dp"
+        android:layout_height="25dp"
+        android:layout_below="@+id/tvEventName"
+        android:layout_alignStart="@+id/tvEventName"
+        android:layout_alignEnd="@+id/tvEventName"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="-17dp"
+        android:layout_marginBottom="17dp"
+        android:text="21:00" />
+
+    <Button
+        android:id="@+id/btnAllow"
+        android:layout_width="77dp"
+        android:layout_height="37dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="11dp"
+        android:text="Prihvati"
+        android:textSize="10sp" />
+
+    <Button
+        android:id="@+id/btnDecline"
+        android:layout_width="82dp"
+        android:layout_height="34dp"
+        android:layout_below="@+id/tv"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="88dp"
+        android:layout_marginTop="22dp"
+        android:layout_marginEnd="110dp"
+        android:layout_marginBottom="11dp"
+        android:layout_toEndOf="@+id/tvEventName"
+        android:text="Odbij"
+        android:textSize="10sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/darker_gray" />
+
+
+
+
+</RelativeLayout>

@@ -65,7 +65,7 @@ public class FriendRequestNotificationFragment extends Fragment {
         tinyDB = new TinyDB(mContext);
         userDocId = tinyDB.getString("USERDOCREF");
         Query query = userRef.document(userDocId).collection("FriendRequest").whereEqualTo("accepted",false)
-                .orderBy("senderName", Query.Direction.DESCENDING)
+                .orderBy("senderName")
                 .limit(50);
 
         FirestoreRecyclerOptions<FriendRequest> firestoreRecyclerOptions = new FirestoreRecyclerOptions
