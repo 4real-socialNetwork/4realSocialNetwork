@@ -12,7 +12,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.marko.areyou4real.adapter.TinyDB;
 import com.example.marko.areyou4real.model.Event;
+import com.example.marko.areyou4real.model.EventRequest;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -42,6 +44,7 @@ public class InsideEvent extends AppCompatActivity {
     private TextView tvEventPlayersEntered;
     private Button btnDoSomething;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference usersRef = db.collection("Users");
     private String eventId;
     private String eventChatId;
     private CollectionReference eventsRef = db.collection("Events");
@@ -214,24 +217,21 @@ public class InsideEvent extends AppCompatActivity {
             btnDoSomething.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    eventsRef.whereEqualTo("eventId", eventId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    eventsRef.document(eventId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override
-                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                            for (DocumentSnapshot dc : queryDocumentSnapshots) {
-                                Event event = dc.toObject(Event.class);
-                                if (event.getListOfUsersParticipatingInEvent().contains(userId)) {
-                                    Toast.makeText(InsideEvent.this, "Allready in event", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    event.addUsersToArray(userId);
-                                    eventsRef.document(eventId).set(event);
-                                    btnDoSomething.setText(btnText2);
-                                    Toast.makeText(InsideEvent.this, "event joined", Toast.LENGTH_SHORT).show();
-                                    fab.setVisibility(View.VISIBLE);
-                                    fab.setClickable(true);
-                                }
-
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            Event event = documentSnapshot.toObject(Event.class);
+                            if (event.getListOfUsersParticipatingInEvent().contains(userId)) {
+                                Toast.makeText(InsideEvent.this, "Allready in event", Toast.LENGTH_SHORT).show();
+                            } else {
+                                event.addUsersToArray(userId);
+                                eventsRef.document(eventId).set(event);
+                                btnDoSomething.setText(btnText2);
+                                Toast.makeText(InsideEvent.this, "event joined", Toast.LENGTH_SHORT).show();
+                                fab.setVisibility(View.VISIBLE);
+                                fab.setClickable(true);
+                                checkIfEventIsInEventRequests();
                             }
-
                         }
                     });
 
@@ -240,6 +240,7 @@ public class InsideEvent extends AppCompatActivity {
             });
         }
         loadData();
+
 
     }
 
@@ -313,6 +314,23 @@ public class InsideEvent extends AppCompatActivity {
                 }
             });
         }
+    }
+    private void checkIfEventIsInEventRequests(){
+        TinyDB tinyDB = new TinyDB(InsideEvent.this);
+        final String userDocRef = tinyDB.getString("USERDOCREF");
+
+        usersRef.document(tinyDB.getString("USERDOCREF")).collection("EventRequests")
+                .whereEqualTo("eventId",eventId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (DocumentSnapshot dc : queryDocumentSnapshots){
+                    String requestDocRef = dc.getId();
+                    usersRef.document(userDocRef).collection("EventRequests")
+                            .document(requestDocRef).update("answered",true);
+
+                }
+            }
+        });
     }
 }
 

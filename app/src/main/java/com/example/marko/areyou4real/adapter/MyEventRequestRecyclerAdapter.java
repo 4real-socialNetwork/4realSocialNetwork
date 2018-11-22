@@ -16,18 +16,25 @@ import android.widget.Toast;
 import com.example.marko.areyou4real.InsideEvent;
 import com.example.marko.areyou4real.OtherUserProfile;
 import com.example.marko.areyou4real.R;
+import com.example.marko.areyou4real.model.Event;
 import com.example.marko.areyou4real.model.EventRequest;
 import com.example.marko.areyou4real.model.FriendRequest;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
+
+import javax.annotation.Nullable;
 
 public class MyEventRequestRecyclerAdapter extends FirestoreRecyclerAdapter<EventRequest, MyEventRequestRecyclerAdapter.MyEventsHolder> {
     private Context mContext;
@@ -35,7 +42,6 @@ public class MyEventRequestRecyclerAdapter extends FirestoreRecyclerAdapter<Even
     private CollectionReference usersRef = db.collection("Users");
     private CollectionReference eventsRef = db.collection("Events");
     private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
-
 
 
     public MyEventRequestRecyclerAdapter(@NonNull FirestoreRecyclerOptions<EventRequest> options, Context mContext) {
@@ -57,12 +63,14 @@ public class MyEventRequestRecyclerAdapter extends FirestoreRecyclerAdapter<Even
     protected void onBindViewHolder(@NonNull MyEventsHolder holder, int position, @NonNull final EventRequest model) {
         final TinyDB tinyDB = new TinyDB(mContext);
         final String userDocRef = tinyDB.getString("USERDOCREF");
+
+
         holder.senderName.setText(model.getSenderName());
         holder.senderLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, InsideEvent.class);
-                intent.putExtra("EVENT_ID",model.getEventId() );
+                intent.putExtra("EVENT_ID", model.getEventId());
                 mContext.startActivity(intent);
             }
         });
@@ -71,18 +79,28 @@ public class MyEventRequestRecyclerAdapter extends FirestoreRecyclerAdapter<Even
             public void onClick(View v) {
 
 
-                usersRef.document(userDocRef).collection("EventRequests").document(model.getEventRequestDocRef()).update("answered",true);
-                eventsRef.document(model.getEventId()).update("listOfUsersParticipatingInEvent",FieldValue.arrayUnion(FirebaseAuth.getInstance().getUid()));
+                usersRef.document(userDocRef).collection("EventRequests").document(model.getEventRequestDocRef()).update("answered", true);
+                eventsRef.document(model.getEventId()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        Event event = documentSnapshot.toObject(Event.class);
+                        event.addUsersToArray(FirebaseAuth.getInstance().getUid());
+                        eventsRef.document(model.getEventId()).set(event);
+                        Intent intent = new Intent(mContext, InsideEvent.class);
+                        intent.putExtra("EVENT_ID", model.getEventId());
+                        mContext.startActivity(intent);
+                        Toast.makeText(mContext, "Pridružili ste se događaju : " + model.getEventActivity(), Toast.LENGTH_SHORT).show();
+                    }
+                });
 
-
-                    Toast.makeText(mContext, "Pridružili ste se događaju : "+model.getEventActivity(), Toast.LENGTH_SHORT).show();
 
             }
         });
         holder.btnDecline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                usersRef.document(userDocRef).collection("EventRequests").document(model.getEventId()).update("isAnswered",true);
+                usersRef.document(userDocRef).collection("EventRequests").document(model.getEventRequestDocRef()).update("answered", true);
+                Toast.makeText(mContext, "Zahtjev odbijen", Toast.LENGTH_SHORT).show();
             }
         });
         holder.tvEventName.setText(model.getEventActivity());

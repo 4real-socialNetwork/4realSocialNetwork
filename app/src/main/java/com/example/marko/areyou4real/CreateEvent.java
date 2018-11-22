@@ -46,7 +46,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Locale;
 
 public class CreateEvent extends AppCompatActivity implements AdapterView.OnItemSelectedListener, TimePickerDialog.OnTimeSetListener
@@ -94,8 +96,8 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
     private ArrayList<String> groupNames = new ArrayList<>();
     private ArrayList<String> usersInGroup = new ArrayList<>();
     private TinyDB tinyDB;
-    private ProgressBar progressBar ;
-
+    private ProgressBar progressBar;
+    private ArrayList<String> duplicateCheck = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,7 +175,7 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
 
     public void createEvent() {
 
-        if(!isPrivate){
+        if (!isPrivate) {
             String eventName = name.getText().toString();
             String activity = selectedInteres;
             int peopleNeeded = Integer.parseInt(playersNeeded.getText().toString());
@@ -209,7 +211,7 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
                 Intent intent = new Intent(mContext, MainActivity.class);
                 startActivity(intent);
             }
-        }else{
+        } else {
             String eventName = name.getText().toString();
             String activity = selectedInteres;
             int peopleNeeded = Integer.parseInt(playersNeeded.getText().toString());
@@ -384,33 +386,41 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
 
 
     }
-    private void sendEventRequest(){
+
+    private void sendEventRequest() {
         tinyDB = new TinyDB(mContext);
         String userName = tinyDB.getString("USERNAME");
         String userDocRef = tinyDB.getString("USERDOCREF");
-        for(String reciverId : usersInGroup){
-            final EventRequest eventRequest = new EventRequest(docId,"",selectedInteres,calendar.getTimeInMillis(),userName,userDocRef,reciverId,false);
-            usersRef.whereEqualTo("userId",reciverId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                @Override
-                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                    for(DocumentSnapshot dc : queryDocumentSnapshots){
-                        final String reciverDocRef = dc.getReference().getId();
-                        usersRef.document(reciverDocRef).collection("EventRequests").add(eventRequest).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                documentReference.update("reciverDocRef",reciverDocRef,"eventRequestDocRef",documentReference.getId());
+        for (String reciverId : usersInGroup) {
+            if (!reciverId.equals(FirebaseAuth.getInstance().getUid())) {
+                if (!duplicateCheck.contains(reciverId)) {
+                    duplicateCheck.add(reciverId);
+                    final EventRequest eventRequest = new EventRequest(docId, "", selectedInteres, calendar.getTimeInMillis(), userName, userDocRef, reciverId, false);
+                    usersRef.whereEqualTo("userId", reciverId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            for (DocumentSnapshot dc : queryDocumentSnapshots) {
+                                final String reciverDocRef = dc.getReference().getId();
+                                usersRef.document(reciverDocRef).collection("EventRequests").add(eventRequest).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                    @Override
+                                    public void onSuccess(DocumentReference documentReference) {
+                                        documentReference.update("reciverDocRef", reciverDocRef, "eventRequestDocRef", documentReference.getId());
+                                    }
+                                });
+
                             }
-                        });
 
-                    }
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
                 }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
+
+            }
 
 
         }

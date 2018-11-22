@@ -145,7 +145,6 @@ public class CreateGroup extends AppCompatActivity {
                     }
                     }
                 });
-                finish();
 
             }
         });
@@ -230,8 +229,10 @@ public class CreateGroup extends AppCompatActivity {
                 mTextMessageId = documentReference.getId();
                 mGroupsRef.document(groupId).collection("chatRoom").document(mTextMessageId)
                         .update("eventChatId",mTextMessageId);
-                Intent intent = new Intent(mContext, MainActivity.class);
+                Intent intent = new Intent(mContext, InsideGroup.class);
+                intent.putExtra("GROUP_ID",groupId);
                 startActivity(intent);
+                finish();
 
             }
         });
