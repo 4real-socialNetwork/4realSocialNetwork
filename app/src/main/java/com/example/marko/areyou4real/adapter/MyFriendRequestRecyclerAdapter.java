@@ -61,7 +61,7 @@ public class MyFriendRequestRecyclerAdapter extends FirestoreRecyclerAdapter<Fri
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, OtherUserProfile.class);
-                intent.putExtra("userId", model.getSenderDocRef());
+                intent.putExtra("otherUserDocRef", model.getSenderDocRef());
                 mContext.startActivity(intent);
             }
         });

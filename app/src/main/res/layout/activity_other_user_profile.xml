@@ -88,5 +88,14 @@
         android:clickable="false"
         android:text="dodaj prijatelja"/>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/btnDeclinePlayer"
+        android:clickable="false"
+        android:text="Odbij prijateljstvo"
+        android:visibility="invisible"/>
+
 
 </LinearLayout>

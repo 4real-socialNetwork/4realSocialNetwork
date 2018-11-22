@@ -45,7 +45,7 @@ public class SearchUserRecyclerViewAdapter extends RecyclerView.Adapter<SearchUs
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext,OtherUserProfile.class);
-                intent.putExtra("userId",userList.get(position).getUserDocRef());
+                intent.putExtra("otherUserDocRef",userList.get(position).getUserDocRef());
                 mContext.startActivity(intent);
             }
         });
