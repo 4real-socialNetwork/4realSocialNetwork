@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +30,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 import javax.annotation.Nullable;
@@ -43,6 +43,7 @@ public class InsideEvent extends AppCompatActivity {
     private TextView tvEventPlayersNeeded;
     private TextView tvEventPlayersEntered;
     private Button btnDoSomething;
+    private Button btnSendEventRequest;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference usersRef = db.collection("Users");
     private String eventId;
@@ -58,7 +59,9 @@ public class InsideEvent extends AppCompatActivity {
     private SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm", Locale.getDefault());
     private Button btnCompleteEvent;
     private String eventCreatorId = new String();
-
+    private ImageView ivEventPlace;
+    private double eventLat;
+    private double eventLng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +84,15 @@ public class InsideEvent extends AppCompatActivity {
         tvEventPlayersEntered = findViewById(R.id.tvPlayersEntered);
         btnDoSomething = findViewById(R.id.btnDoSomething);
         btnCompleteEvent = findViewById(R.id.btnCompleteEvent);
+        btnSendEventRequest = findViewById(R.id.btnSendEventRequest);
+        ivEventPlace = findViewById(R.id.ivEventPlaceMap);
+
+        ivEventPlace.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(InsideEvent.this,MapsActivity.class);
+            }
+        });
 
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -126,6 +138,8 @@ public class InsideEvent extends AppCompatActivity {
                     tvEventPlace.setText(event.getEventAdress());
                     tvEventPlayersNeeded.setText("" + event.getUsersNeeded());
                     tvEventPlayersEntered.setText("" + event.getUsersEntered());
+                    eventLat = event.getEventLat();
+                    eventLng = event.getEventLng();
 
                     if (userId.equals(event.getIdOfTheUserWhoCreatedIt())) {
                         btnDoSomething.setText(btnText1);
@@ -175,9 +189,12 @@ public class InsideEvent extends AppCompatActivity {
                     tvEventPlace.setText(event.getEventAdress());
                     tvEventPlayersNeeded.setText("" + event.getUsersNeeded());
                     tvEventPlayersEntered.setText("" + event.getUsersEntered());
+                    eventLat = event.getEventLat();
+                    eventLng = event.getEventLng();
 
                     if (userId.equals(event.getIdOfTheUserWhoCreatedIt())) {
                         btnDoSomething.setText(btnText1);
+                        btnSendEventRequest.setVisibility(View.VISIBLE);
                         deleteEvent();
 
 

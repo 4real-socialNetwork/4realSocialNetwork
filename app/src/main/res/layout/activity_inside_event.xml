@@ -22,11 +22,14 @@
 
 
         <Button
+            android:id="@+id/btnSendEventRequest"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="29dp"
             android:layout_gravity="right"
             android:layout_marginRight="16dp"
-            android:text="Pozovite igrače" />
+            android:text="Podjeli"
+            android:textSize="8sp"
+            android:visibility="invisible" />
 
         <TextView
             android:layout_width="match_parent"
@@ -91,6 +94,7 @@
                 android:paddingLeft="16dp" />
 
             <ImageView
+                android:clickable="true"
                 android:id="@+id/ivEventPlaceMap"
                 android:layout_width="30dp"
                 android:layout_height="20dp"
