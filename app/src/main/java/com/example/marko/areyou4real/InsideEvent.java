@@ -91,6 +91,7 @@ public class InsideEvent extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(InsideEvent.this,MapsActivity.class);
+                Toast.makeText(InsideEvent.this, "soon", Toast.LENGTH_SHORT).show();
             }
         });
 
