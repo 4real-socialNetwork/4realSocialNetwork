@@ -81,6 +81,7 @@ public class UserProfile extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
     private StorageReference mStorageRef;
     private String pictureUrl = "";
+    private TinyDB tinyDB;
 
 
     @Override
@@ -120,8 +121,9 @@ public class UserProfile extends AppCompatActivity {
         btnSaveChanges.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getDocumentRefId();
                 progressBar.setVisibility(View.VISIBLE);
+                updateUserProfile();
+
             }
         });
 
@@ -187,7 +189,7 @@ public class UserProfile extends AppCompatActivity {
                     }
                 }
                 tvInterests.setText(interest.toLowerCase());
-                setBar();
+                //setBar();
             }
         });
     }
@@ -202,7 +204,6 @@ public class UserProfile extends AppCompatActivity {
                             value = dc.getId();
 
                         }
-                        updateUserProfile();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -231,10 +232,11 @@ public class UserProfile extends AppCompatActivity {
 
 
     private void updateUserProfile() {
-
+    tinyDB = new TinyDB(UserProfile.this);
+    String userDocRef = tinyDB.getString("USERDOCREF");
 
         if (updatedInterest.size() == 0) {
-            usersRef.document(value).update("range", current_range, "name", name.getText().toString(), "description",
+            usersRef.document(userDocRef).update("range", current_range, "name", name.getText().toString(), "description",
                     userDescription.getText().toString()
             ).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
@@ -244,7 +246,7 @@ public class UserProfile extends AppCompatActivity {
                 }
             });
         } else {
-            usersRef.document(value).update("range", current_range, "name", name.getText().toString(), "description",
+            usersRef.document(userDocRef).update("range", current_range, "name", name.getText().toString(), "description",
                     userDescription.getText().toString(), "interests", updatedInterest
             ).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
@@ -370,8 +372,16 @@ public class UserProfile extends AppCompatActivity {
                 GlideApp.with(UserProfile.this).load(user.getProfilePictureUrl()).
                         placeholder(R.drawable.avatar).circleCrop()
                         .into(profilePicture);
+                for (int i = 0; i < user.getInterests().size(); i++) {
+                    if (user.getInterests().get(i) != null) {
+                        interest += user.getInterests().get(i) + ",";
+
+                    }
+                }
                 userDescription.setText(user.getDescription());
                 current_range = user.getRange();
+                setBar();
+
 
             }
         });

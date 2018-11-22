@@ -34,6 +34,7 @@ import com.pchmn.materialchips.model.Chip;
 import com.pchmn.materialchips.model.ChipInterface;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -223,7 +224,7 @@ public class CreateGroup extends AppCompatActivity {
         return true;
     }
     private void createChat(){
-        mGroupsRef.document(groupId).collection("chatRoom").add(new TextMessage("","","","",groupId)).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+        mGroupsRef.document(groupId).collection("chatRoom").add(new TextMessage("","","","",groupId,Calendar.getInstance().getTimeInMillis())).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 mTextMessageId = documentReference.getId();

@@ -57,7 +57,7 @@ public class InsideEvent extends AppCompatActivity {
     private boolean isUserInEvent = false;
     private SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm", Locale.getDefault());
     private Button btnCompleteEvent;
-    private String eventCreatorId = "";
+    private String eventCreatorId = new String();
 
 
     @Override

@@ -8,18 +8,19 @@ public class TextMessage {
     private String mName;
     private String mMessage;
     private String mUid;
-    private Date mTimestamp;
+    private long mTimestamp;
     private String idOfEventOfMessage;
     private String idOfGroupOfMessage;
 
     public TextMessage() { } // Needed for Firebase
 
-    public TextMessage(String name, String message, String uid,String idOfEventOfMessage,String idOfGroupOfMessage) {
+    public TextMessage(String name, String message, String uid,String idOfEventOfMessage,String idOfGroupOfMessage,long mTimestamp) {
         this.mName = name;
         this.mMessage = message;
         this.mUid = uid;
         this.idOfEventOfMessage = idOfEventOfMessage;
         this.idOfGroupOfMessage = idOfGroupOfMessage;
+        this.mTimestamp = mTimestamp;
     }
 
     public String getIdOfGroupOfMessage() {
@@ -50,8 +51,7 @@ public class TextMessage {
 
     public void setUid(String uid) { mUid = uid; }
 
-    @ServerTimestamp
-    public Date getTimestamp() { return mTimestamp; }
+    public long getTimestamp() { return mTimestamp; }
 
-    public void setTimestamp(Date timestamp) { mTimestamp = timestamp; }
+    public void setTimestamp(long timestamp) { mTimestamp = timestamp; }
 }

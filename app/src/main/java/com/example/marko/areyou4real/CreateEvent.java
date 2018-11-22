@@ -202,7 +202,7 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
                             docRef = task.getResult();
                             docId = docRef.getId();
                             docRef.update("eventId", docId);
-                            createChat();
+                            //createChat();
 
 
                         }
@@ -238,7 +238,7 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
                             docRef = task.getResult();
                             docId = docRef.getId();
                             docRef.update("eventId", docId);
-                            createChat();
+                            //createChat();
                             sendEventRequest();
 
 
@@ -332,7 +332,7 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
     }
 
     public void createChat() {
-        eventsRef.document(docId).collection("chatRoom").add(new TextMessage("", "", "", docId, "")).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+        eventsRef.document(docId).collection("chatRoom").add(new TextMessage("", "", "", docId, "",Calendar.getInstance().getTimeInMillis())).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 mTextMessageId = documentReference.getId();

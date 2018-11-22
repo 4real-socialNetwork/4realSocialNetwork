@@ -32,10 +32,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+import java.util.Calendar;
+
 public class EventChatRoom extends AppCompatActivity {
     private EditText mMessageText;
     private TextMessage textMessage;
-    public TinyDB tinyDB ;
+    public TinyDB tinyDB;
     private String mUserName;
     private String mUserId;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -46,6 +48,7 @@ public class EventChatRoom extends AppCompatActivity {
     private Button btnSendMessage;
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +72,6 @@ public class EventChatRoom extends AppCompatActivity {
         });
 
 
-
     }
 
     @Override
@@ -82,7 +84,7 @@ public class EventChatRoom extends AppCompatActivity {
 
     private void getUserInfo() {
         tinyDB = new TinyDB(this);
-        docRef =  colRef.document(tinyDB.getString("USERDOCREF"));
+        docRef = colRef.document(tinyDB.getString("USERDOCREF"));
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -101,7 +103,7 @@ public class EventChatRoom extends AppCompatActivity {
     }
 
     public void setUpRecyclerView() {
-         String eventId = getIntent().getStringExtra("EVENTID");
+        String eventId = getIntent().getStringExtra("EVENTID");
 
         Query query = FirebaseFirestore.getInstance()
                 .collection("Events")
@@ -111,7 +113,7 @@ public class EventChatRoom extends AppCompatActivity {
                 .limit(50);
 
         FirestoreRecyclerOptions<TextMessage> options = new FirestoreRecyclerOptions.Builder<TextMessage>()
-                .setQuery(query,TextMessage.class)
+                .setQuery(query, TextMessage.class)
                 .build();
 
         adapter = new TextMessageAdapter(options);
@@ -129,7 +131,7 @@ public class EventChatRoom extends AppCompatActivity {
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
-                layoutManager.smoothScrollToPosition(recyclerView,null,adapter.getItemCount());
+                layoutManager.smoothScrollToPosition(recyclerView, null, adapter.getItemCount());
             }
         });
 
@@ -142,9 +144,10 @@ public class EventChatRoom extends AppCompatActivity {
         adapter.startListening();
 
     }
-    public void sendMessage(){
+
+    public void sendMessage() {
         String eventId = getIntent().getStringExtra("EVENTID");
-        textMessage = new TextMessage(currentUser.getName(), mMessageText.getText().toString(), currentUser.getUserId(),eventId,"");
+        textMessage = new TextMessage(currentUser.getName(), mMessageText.getText().toString(), currentUser.getUserId(), eventId, "", Calendar.getInstance().getTimeInMillis());
         FirebaseFirestore.getInstance()
                 .collection("Events")
                 .document(eventId)
@@ -154,6 +157,7 @@ public class EventChatRoom extends AppCompatActivity {
 
 
     }
+
     public static void hideKeyboard(Activity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         //Find the currently focused view, so we can grab the correct window token from it.
