@@ -38,7 +38,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -49,6 +51,8 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+
+import javax.annotation.Nullable;
 
 public class UserProfile extends AppCompatActivity {
     private FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -175,8 +179,7 @@ public class UserProfile extends AppCompatActivity {
                 GlideApp.with(UserProfile.this).load(user.getProfilePictureUrl()).
                         placeholder(R.drawable.avatar).circleCrop()
                         .into(profilePicture);
-                userDescription.setText(user.getDescription());
-                current_range = user.getRange();
+
                 for (int i = 0; i < user.getInterests().size(); i++) {
                     if (user.getInterests().get(i) != null) {
                         interest += user.getInterests().get(i) + ",";
@@ -352,8 +355,26 @@ public class UserProfile extends AppCompatActivity {
         }
 
 
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        TinyDB tinyDB = new TinyDB(UserProfile.this);
+        String thisUserDocRef = tinyDB.getString("USERDOCREF");
+        usersRef.document(thisUserDocRef).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                User user = documentSnapshot.toObject(User.class);
+                name.setText(user.getName());
+                GlideApp.with(UserProfile.this).load(user.getProfilePictureUrl()).
+                        placeholder(R.drawable.avatar).circleCrop()
+                        .into(profilePicture);
+                userDescription.setText(user.getDescription());
+                current_range = user.getRange();
 
+            }
+        });
 
     }
 }
