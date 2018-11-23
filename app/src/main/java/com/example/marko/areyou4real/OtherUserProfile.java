@@ -1,6 +1,7 @@
 
 package com.example.marko.areyou4real;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -54,13 +55,14 @@ public class OtherUserProfile extends AppCompatActivity {
     String currentUserDocId = "";
     private String otherUserDocRef = "";
     private String friendRequestDocRef = "";
-
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_other_user_profile);
         toolbar = findViewById(R.id.toolbar);
+        mContext = OtherUserProfile.this;
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -72,7 +74,7 @@ public class OtherUserProfile extends AppCompatActivity {
         btnDeclinePlayer = findViewById(R.id.btnDeclinePlayer);
         ivUserProfilePicture = findViewById(R.id.ivProfilePicture);
         GlideApp.with(OtherUserProfile.this).load(R.drawable.avatar).circleCrop().into(ivUserProfilePicture);
-        //loadData();
+        loadData();
         getCurrentUserName();
 
 
@@ -120,8 +122,7 @@ public class OtherUserProfile extends AppCompatActivity {
                     }
                 }
                 tvUserInterests.setText(interests);
-                checkIfFriendRequestIsSent();
-
+                checkIfFriends();
             }
 
         }).addOnFailureListener(new OnFailureListener() {
@@ -164,23 +165,25 @@ public class OtherUserProfile extends AppCompatActivity {
                     if (fr.getSenderId().equals(FirebaseAuth.getInstance().getUid()) && (fr.isAccepted()) == false) {
                         btnAddPlayer.setText("Zahtjev poslan");
                         btnAddPlayer.setClickable(false);
-                        btnAddPlayer.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                btnAddPlayer.setText("Dodaj prijatelja");
-                            }
-                        });
+
                     } else if (fr.getSenderId().equals(FirebaseAuth.getInstance().getUid()) && (fr.isAccepted()) != false) {
                         btnAddPlayer.setText("Prijatelji ste");
                         btnAddPlayer.setClickable(false);
                     } else {
                         btnAddPlayer.setText("Dodaj prijatelja");
                         btnAddPlayer.setClickable(true);
+                        btnAddPlayer.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                sendPlayerRequest();
+                            }
+                        });
                     }
 
                 }
             }
         });
+
     }
 
     private void getCurrentUserName() {
@@ -204,33 +207,40 @@ public class OtherUserProfile extends AppCompatActivity {
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (DocumentSnapshot dc : queryDocumentSnapshots) {
                     if (dc.toObject(FriendRequest.class) != null) {
-                        friendRequestDocRef = dc.toObject(FriendRequest.class).getFriendRequestRef();
+                        FriendRequest friendRequest = dc.toObject(FriendRequest.class);
+                        friendRequestDocRef = friendRequest.getFriendRequestRef();
+                        if(!friendRequest.isAccepted()){
+                            btnDeclinePlayer.setVisibility(View.VISIBLE);
+                            btnDeclinePlayer.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    usersRef.document(currentUserDocId).collection("FriendRequest")
+                                            .document(friendRequestDocRef).delete();
+                                    btnDeclinePlayer.setVisibility(View.INVISIBLE);
+                                }
+                            });
+                            btnAddPlayer.setText("Potvrdi prijatelja");
+                            btnAddPlayer.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    btnDeclinePlayer.setVisibility(View.INVISIBLE);
+                                    btnAddPlayer.setVisibility(View.INVISIBLE);
+                                    Toast.makeText(OtherUserProfile.this, "yes", Toast.LENGTH_SHORT).show();
+                                    usersRef.document(currentUserDocId).collection("FriendRequest")
+                                            .document(friendRequestDocRef).update("accepted", true);
+
+                                    usersRef.document(currentUserDocId).update("userFriends", FieldValue.arrayUnion(otherUser.getUserId()));
+                                    usersRef.document(otherUserDocRef).update("userFriends", FieldValue.arrayUnion(FirebaseAuth.getInstance().getUid()));
+
+
+                                }
+                            });
+                        }else {
+                            checkIfFriendRequestIsSent();
+                        }
+
                     }
-                    btnDeclinePlayer.setVisibility(View.VISIBLE);
-                    btnDeclinePlayer.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            usersRef.document(currentUserDocId).collection("FriendRequest")
-                                    .document(friendRequestDocRef).delete();
-                            btnDeclinePlayer.setVisibility(View.INVISIBLE);
-                        }
-                    });
-                    btnAddPlayer.setText("Potvrdi prijatelja");
-                    btnAddPlayer.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            btnDeclinePlayer.setVisibility(View.INVISIBLE);
-                            btnAddPlayer.setVisibility(View.INVISIBLE);
-                            Toast.makeText(OtherUserProfile.this, "yes", Toast.LENGTH_SHORT).show();
-                            usersRef.document(currentUserDocId).collection("FriendRequest")
-                                    .document(friendRequestDocRef).update("accepted", true);
 
-                            usersRef.document(currentUserDocId).update("userFriends", FieldValue.arrayUnion(otherUser.getUserId()));
-                            usersRef.document(otherUserDocRef).update("userFriends", FieldValue.arrayUnion(FirebaseAuth.getInstance().getUid()));
-
-
-                        }
-                    });
                 }
 
             }
@@ -250,15 +260,16 @@ public class OtherUserProfile extends AppCompatActivity {
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
                 otherUser = documentSnapshot.toObject(User.class);
                 thisUserDocRef = documentSnapshot.getId();
-                if (otherUser.getProfilePictureUrl() != null) {
-                    GlideApp.with(OtherUserProfile.this).load(otherUser.getProfilePictureUrl())
-                            .circleCrop()
-                            .placeholder(R.drawable.avatar)
-                            .into(ivUserProfilePicture);
-                } else {
-                    GlideApp.with(OtherUserProfile.this).load(R.drawable.avatar).circleCrop().into(ivUserProfilePicture);
+                if(mContext!=null){
+                    if (otherUser.getProfilePictureUrl() != null) {
+                        GlideApp.with(OtherUserProfile.this).load(otherUser.getProfilePictureUrl())
+                                .circleCrop()
+                                .placeholder(R.drawable.avatar)
+                                .into(ivUserProfilePicture);
+                    } else {
+                        GlideApp.with(OtherUserProfile.this).load(R.drawable.avatar).circleCrop().into(ivUserProfilePicture);
 
-                     }
+                    }
 
 
                     tvUserName.setText(otherUser.getName());
@@ -271,10 +282,10 @@ public class OtherUserProfile extends AppCompatActivity {
 
                         }
                     }
-                    tvUserInterests.setText(interests);
-                    checkIfFriends();
-                    checkIfFriendRequestIsSent();
-                    checkIfFriendRequestRecived();
+                   // tvUserInterests.setText(interests);
+
+                }
+
                 }
             });
 
@@ -286,6 +297,8 @@ public class OtherUserProfile extends AppCompatActivity {
                     if (documentSnapshot.toObject(User.class).getUserFriends().contains(otherUser.getUserId())) {
                         btnAddPlayer.setText("Prijatelji ste");
                         btnAddPlayer.setClickable(false);
+                    }else {
+                        checkIfFriendRequestRecived();
                     }
                 }
             });

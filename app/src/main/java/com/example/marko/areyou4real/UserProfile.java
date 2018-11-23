@@ -372,23 +372,26 @@ public class UserProfile extends AppCompatActivity {
         usersRef.document(thisUserDocRef).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                User user = documentSnapshot.toObject(User.class);
-                name.setText(user.getName());
-                if(mContext!=null){
-                    GlideApp.with(UserProfile.this).load(user.getProfilePictureUrl()).
-                            placeholder(R.drawable.avatar).circleCrop()
-                            .into(profilePicture);
-                }
-
-                for (int i = 0; i < user.getInterests().size(); i++) {
-                    if (user.getInterests().get(i) != null) {
-                        interest += user.getInterests().get(i) + ",";
-
+                if(documentSnapshot!=null){
+                    User user = documentSnapshot.toObject(User.class);
+                    name.setText(user.getName());
+                    if(mContext!=null){
+                        GlideApp.with(UserProfile.this).load(user.getProfilePictureUrl()).
+                                placeholder(R.drawable.avatar).circleCrop()
+                                .into(profilePicture);
                     }
+
+                    // for (int i = 0; i < user.getInterests().size(); i++) {
+                    //     if (user.getInterests().get(i) != null) {
+                    //       interest += user.getInterests().get(i) + ",";
+
+                    //    }
+                    // }
+                    userDescription.setText(user.getDescription());
+                    current_range = user.getRange();
+                    setBar();
                 }
-                userDescription.setText(user.getDescription());
-                current_range = user.getRange();
-                setBar();
+
 
 
             }

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.marko.areyou4real.adapter.TinyDB;
+import com.example.marko.areyou4real.fragments.InsideEventMap;
 import com.example.marko.areyou4real.model.Event;
 import com.example.marko.areyou4real.model.EventRequest;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -90,8 +91,10 @@ public class InsideEvent extends AppCompatActivity {
         ivEventPlace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(InsideEvent.this,MapsActivity.class);
-                Toast.makeText(InsideEvent.this, "soon", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(InsideEvent.this,InsideEventMap.class);
+                intent.putExtra("event_lat",eventLat);
+                intent.putExtra("event_lng",eventLng);
+                startActivity(intent);
             }
         });
 

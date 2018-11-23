@@ -84,7 +84,8 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps" />
+            android:label="@string/title_activity_maps"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".EventChatRoom"
             android:screenOrientation="portrait" />
@@ -97,6 +98,10 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".MyGroupsSelector"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fragments.InsideEventMap"
+            android:label="@string/title_activity_inside_event_map"
             android:screenOrientation="portrait"></activity>
     </application>
 
