@@ -225,8 +225,8 @@ public class OtherUserProfile extends AppCompatActivity {
                             usersRef.document(currentUserDocId).collection("FriendRequest")
                                     .document(friendRequestDocRef).update("accepted", true);
 
-                                usersRef.document(currentUserDocId).update("userFriends", FieldValue.arrayUnion(otherUser.getUserId()));
-                                usersRef.document(otherUserDocRef).update("userFriends", FieldValue.arrayUnion(FirebaseAuth.getInstance().getUid()));
+                            usersRef.document(currentUserDocId).update("userFriends", FieldValue.arrayUnion(otherUser.getUserId()));
+                            usersRef.document(otherUserDocRef).update("userFriends", FieldValue.arrayUnion(FirebaseAuth.getInstance().getUid()));
 
 
                         }
@@ -250,44 +250,44 @@ public class OtherUserProfile extends AppCompatActivity {
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
                 otherUser = documentSnapshot.toObject(User.class);
                 thisUserDocRef = documentSnapshot.getId();
-               // if (otherUser.getProfilePictureUrl() != null) {
-               //     GlideApp.with(OtherUserProfile.this).load(otherUser.getProfilePictureUrl())
-               //             .circleCrop()
-                //            .placeholder(R.drawable.avatar)
-                 //           .into(ivUserProfilePicture);
-             //   } else {
-                //    GlideApp.with(OtherUserProfile.this).load(R.drawable.avatar).circleCrop().into(ivUserProfilePicture);
+                if (otherUser.getProfilePictureUrl() != null) {
+                    GlideApp.with(OtherUserProfile.this).load(otherUser.getProfilePictureUrl())
+                            .circleCrop()
+                            .placeholder(R.drawable.avatar)
+                            .into(ivUserProfilePicture);
+                } else {
+                    GlideApp.with(OtherUserProfile.this).load(R.drawable.avatar).circleCrop().into(ivUserProfilePicture);
 
-               // }
+                     }
 
 
-                tvUserName.setText(otherUser.getName());
-                tvUserDescription.setText(otherUser.getDescription());
-                for (String value : otherUser.getInterests()) {
-                    if (value == otherUser.getInterests().get(otherUser.getInterests().size() - 1)) {
-                        interests += value + ".";
-                    } else {
-                        interests += value + ", ";
+                    tvUserName.setText(otherUser.getName());
+                    tvUserDescription.setText(otherUser.getDescription());
+                    for (String value : otherUser.getInterests()) {
+                        if (value == otherUser.getInterests().get(otherUser.getInterests().size() - 1)) {
+                            interests += value + ".";
+                        } else {
+                            interests += value + ", ";
 
+                        }
+                    }
+                    tvUserInterests.setText(interests);
+                    checkIfFriends();
+                    checkIfFriendRequestIsSent();
+                    checkIfFriendRequestRecived();
+                }
+            });
+
+        }
+        private void checkIfFriends () {
+            usersRef.document(currentUserDocId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    if (documentSnapshot.toObject(User.class).getUserFriends().contains(otherUser.getUserId())) {
+                        btnAddPlayer.setText("Prijatelji ste");
+                        btnAddPlayer.setClickable(false);
                     }
                 }
-                tvUserInterests.setText(interests);
-                checkIfFriends();
-                checkIfFriendRequestIsSent();
-                checkIfFriendRequestRecived();
-            }
-        });
-
+            });
+        }
     }
-    private void checkIfFriends(){
-        usersRef.document(currentUserDocId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.toObject(User.class).getUserFriends().contains(otherUser.getUserId())){
-                    btnAddPlayer.setText("Prijatelji ste");
-                    btnAddPlayer.setClickable(false);
-                }
-            }
-        });
-    }
-}

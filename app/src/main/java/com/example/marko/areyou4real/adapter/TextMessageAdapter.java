@@ -42,6 +42,7 @@ public class TextMessageAdapter extends FirestoreRecyclerAdapter<TextMessage, Te
     protected void onBindViewHolder(@NonNull TextMessageHolder holder, int position, @NonNull TextMessage model) {
         if(model.getUid().equals(FirebaseAuth.getInstance().getUid())){
             holder.layoutSide.setGravity(Gravity.RIGHT);
+            holder.textMessageLayout.setBackgroundResource(R.drawable.text_message_bubble);
             holder.mSenderName.setVisibility(View.INVISIBLE);
             holder.mSenderMessage.setText(model.getMessage());
             holder.mSenderTime.setText(sdf.format(model.getTimestamp()));

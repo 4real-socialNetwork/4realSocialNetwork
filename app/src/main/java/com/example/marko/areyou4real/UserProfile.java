@@ -2,6 +2,7 @@ package com.example.marko.areyou4real;
 
 import android.app.TimePickerDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -82,6 +83,7 @@ public class UserProfile extends AppCompatActivity {
     private StorageReference mStorageRef;
     private String pictureUrl = "";
     private TinyDB tinyDB;
+    private Context mContext;
 
 
     @Override
@@ -89,6 +91,7 @@ public class UserProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
         setUpBottomNavigationView();
+        mContext = UserProfile.this;
 
 
         tvInterests = findViewById(R.id.interestTextView);
@@ -178,9 +181,11 @@ public class UserProfile extends AppCompatActivity {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 User user = documentSnapshot.toObject(User.class);
                 name.setText(user.getName());
-                GlideApp.with(UserProfile.this).load(user.getProfilePictureUrl()).
-                        placeholder(R.drawable.avatar).circleCrop()
-                        .into(profilePicture);
+                if(mContext!=null){
+                    GlideApp.with(UserProfile.this).load(user.getProfilePictureUrl()).
+                            placeholder(R.drawable.avatar).circleCrop()
+                            .into(profilePicture);
+                }
 
                 for (int i = 0; i < user.getInterests().size(); i++) {
                     if (user.getInterests().get(i) != null) {
@@ -369,9 +374,12 @@ public class UserProfile extends AppCompatActivity {
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
                 User user = documentSnapshot.toObject(User.class);
                 name.setText(user.getName());
-                GlideApp.with(UserProfile.this).load(user.getProfilePictureUrl()).
-                        placeholder(R.drawable.avatar).circleCrop()
-                        .into(profilePicture);
+                if(mContext!=null){
+                    GlideApp.with(UserProfile.this).load(user.getProfilePictureUrl()).
+                            placeholder(R.drawable.avatar).circleCrop()
+                            .into(profilePicture);
+                }
+
                 for (int i = 0; i < user.getInterests().size(); i++) {
                     if (user.getInterests().get(i) != null) {
                         interest += user.getInterests().get(i) + ",";
