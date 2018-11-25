@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AreYou4Real</string>
+    <string name="app_name">4real</string>
     <string name="title_activity_create_user">CreateUser</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="tab_text_1">Tab 1</string>

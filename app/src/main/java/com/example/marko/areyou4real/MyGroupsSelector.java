@@ -27,6 +27,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+import java.util.ArrayList;
+
 public class MyGroupsSelector extends AppCompatActivity {
     private RecyclerView recyclerView;
     private MyGroupsFirebaseRecylcerAdapter mAdapter;
@@ -55,25 +57,33 @@ public class MyGroupsSelector extends AppCompatActivity {
         btnGrupSelected.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.putStringArrayListExtra("users_in_group",mAdapter.getUsersInGroup());
-                intent.putStringArrayListExtra("group_names",mAdapter.getGroupNames());
-                setResult(MyGroupsSelector.RESULT_OK,intent);
-                finish();
+
+                if (mAdapter.getUsersInGroup() != null){
+                    Intent intent = new Intent();
+                    intent.putStringArrayListExtra("users_in_group", mAdapter.getUsersInGroup());
+                    intent.putStringArrayListExtra("group_names", mAdapter.getGroupNames());
+                    setResult(MyGroupsSelector.RESULT_OK, intent);
+                    finish();
+                }else{
+                    Toast.makeText(mContext, "Niste odabrali grupu", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+
             }
         });
 
 
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId()==android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             finish();
         }
         return true;
     }
 
-    private void setUpAdapter(){
+    private void setUpAdapter() {
         Query query = groupsRef.whereArrayContains("listOfUsersInGroup", userId)
                 .orderBy("groupName", Query.Direction.DESCENDING)
                 .limit(50);
@@ -83,7 +93,7 @@ public class MyGroupsSelector extends AppCompatActivity {
                 .setQuery(query, Group.class)
                 .build();
 
-        mAdapter = new MyGroupsFirebaseRecylcerAdapter(firestoreRecyclerOptions,mContext);
+        mAdapter = new MyGroupsFirebaseRecylcerAdapter(firestoreRecyclerOptions, mContext);
 
         recyclerView = findViewById(R.id.container);
         recyclerView.setHasFixedSize(true);

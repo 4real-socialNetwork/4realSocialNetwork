@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSeekBar;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -181,7 +182,7 @@ public class UserProfile extends AppCompatActivity {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 User user = documentSnapshot.toObject(User.class);
                 name.setText(user.getName());
-                if(mContext!=null){
+                if (mContext != null) {
                     GlideApp.with(UserProfile.this).load(user.getProfilePictureUrl()).
                             placeholder(R.drawable.avatar).circleCrop()
                             .into(profilePicture);
@@ -237,8 +238,8 @@ public class UserProfile extends AppCompatActivity {
 
 
     private void updateUserProfile() {
-    tinyDB = new TinyDB(UserProfile.this);
-    String userDocRef = tinyDB.getString("USERDOCREF");
+        tinyDB = new TinyDB(UserProfile.this);
+        String userDocRef = tinyDB.getString("USERDOCREF");
 
         if (updatedInterest.size() == 0) {
             usersRef.document(userDocRef).update("range", current_range, "name", name.getText().toString(), "description",
@@ -294,6 +295,7 @@ public class UserProfile extends AppCompatActivity {
         BottomNavigationViewHelper.enableNavigation(UserProfile.this, bottomNavigationViewEx);
         Menu menu = bottomNavigationViewEx.getMenu();
         MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
+        menuItem.setIcon(R.drawable.nav_profile_selected);
         menuItem.setChecked(true);
 
     }
@@ -335,7 +337,7 @@ public class UserProfile extends AppCompatActivity {
 
     private void uploadFile() {
 
-        if(mImageUri!=null){
+        if (mImageUri != null) {
             final StorageReference fileReferance = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(mImageUri));
             fileReferance.putFile(mImageUri).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -372,26 +374,24 @@ public class UserProfile extends AppCompatActivity {
         usersRef.document(thisUserDocRef).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                if(documentSnapshot!=null){
+                if (documentSnapshot != null) {
                     User user = documentSnapshot.toObject(User.class);
                     name.setText(user.getName());
-                    if(mContext!=null){
-                        GlideApp.with(UserProfile.this).load(user.getProfilePictureUrl()).
-                                placeholder(R.drawable.avatar).circleCrop()
-                                .into(profilePicture);
+                    if (mContext != null) {
+                        try {
+                            GlideApp.with(UserProfile.this).load(user.getProfilePictureUrl()).
+                                    placeholder(R.drawable.avatar).circleCrop()
+                                    .into(profilePicture);
+                        } catch (IllegalArgumentException e1) {
+                            Log.d("Illegal argument", "onEvent: " + e1.getMessage());
+                        }
+
                     }
 
-                    // for (int i = 0; i < user.getInterests().size(); i++) {
-                    //     if (user.getInterests().get(i) != null) {
-                    //       interest += user.getInterests().get(i) + ",";
-
-                    //    }
-                    // }
                     userDescription.setText(user.getDescription());
                     current_range = user.getRange();
                     setBar();
                 }
-
 
 
             }

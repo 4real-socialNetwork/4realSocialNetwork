@@ -24,13 +24,7 @@
 
         </android.support.v7.widget.Toolbar>
 
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/cardview_light_background"
-            app:tabSelectedTextColor="@color/colorAccent"
-            app:tabTextColor="@color/colorPrimary"/>
+
 
     </android.support.design.widget.AppBarLayout>
 
@@ -42,13 +36,14 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_weight="100"
-        ></android.support.v7.widget.RecyclerView>
+        android:padding="16dp"
+        />
 
     <com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
         android:id="@+id/bottomNavigation"
         android:layout_weight="0.5"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
         android:background="?android:attr/windowBackground"

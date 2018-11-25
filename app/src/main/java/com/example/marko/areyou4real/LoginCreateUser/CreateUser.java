@@ -85,6 +85,16 @@ public class CreateUser extends AppCompatActivity {
     private String profilePictureUrl = "";
     private ImageView profilePicture;
     private static final int PICK_IMAGE_REQUEST = 1;
+    private Button btnNogomet;
+    private Button btnKosarka;
+    private Button btnSah;
+    private Button btnDrustveneIgre;
+    private Button btnDruzenje;
+    private int isItEventNogomet = 4;
+    private int isItEventKosarka = 4;
+    private int isItEventSah = 4;
+    private int isItEventDruzenje = 4;
+    private int isItEventDrustvene= 4;
 
 
     private int current_range = 5;
@@ -108,6 +118,12 @@ public class CreateUser extends AppCompatActivity {
         tvShowInterest = findViewById(R.id.tvShowInterest);
         mStorageRef = FirebaseStorage.getInstance().getReference("ProfilePictures");
         profilePicture = findViewById(R.id.ivProfilePicture);
+        btnNogomet = findViewById(R.id.btnNogomet);
+        btnKosarka = findViewById(R.id.btnKosarka);
+        btnSah = findViewById(R.id.btnSah);
+        btnDrustveneIgre = findViewById(R.id.btnDrustveneIgre);
+        btnDruzenje = findViewById(R.id.btnDruzenje);
+
 
         btnCreateAccount.setClickable(false);
         GlideApp.with(this).load(R.drawable.avatar).circleCrop().into(profilePicture);
@@ -118,6 +134,7 @@ public class CreateUser extends AppCompatActivity {
             }
         });
 
+        setUpInterestButtons();
 
         showSeekBar.setText(current_range + " km");
         seekBar.setProgress(current_range);
@@ -170,8 +187,6 @@ public class CreateUser extends AppCompatActivity {
         });
 
 
-
-
         final String mail = email.getText().toString().trim();
         final String pass = password.getText().toString().trim();
         final String ime = name.getText().toString().trim();
@@ -190,14 +205,8 @@ public class CreateUser extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(final DocumentReference documentReference) {
                                     friendsList.add(FirebaseAuth.getInstance().getUid());
-                                    mUsersRef.document(documentReference.getId()).update("userDocRef",documentReference.getId());
-                                    db.collection("Groups").add(new Group("Prijatelji", friendsList, "", mAuth.getUid(), true)).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<DocumentReference> task) {
-                                            db.collection("Groups").document(task.getResult().getId()).update("groupId", task.getResult().getId());
-
-                                        }
-                                    });
+                                    mUsersRef.document(documentReference.getId()).update("userDocRef", documentReference.getId());
+                                    
                                     progressBar.setVisibility(View.INVISIBLE);
                                     Intent intent = new Intent(mContext, MainActivity.class);
                                     startActivity(intent);
@@ -306,7 +315,7 @@ public class CreateUser extends AppCompatActivity {
     }
 
     private void uploadFile() {
-        if(mPictureUri!=null){
+        if (mPictureUri != null) {
             final StorageReference fileReferance = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(mPictureUri));
 
             UploadTask uploadTask = fileReferance.putFile(mPictureUri);
@@ -332,12 +341,9 @@ public class CreateUser extends AppCompatActivity {
                     });
                 }
             });
-        }else{
+        } else {
             createUserAndAccount();
         }
-
-
-
 
 
     }
@@ -372,5 +378,133 @@ public class CreateUser extends AppCompatActivity {
         }
     }
 
+    private void setUpInterestButtons() {
+        btnNogomet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isItEventNogomet % 2 == 0) {
+                    btnNogomet.setPressed(true);
+                    if (btnNogomet.isPressed()) {
+                        btnNogomet.setBackgroundResource(R.drawable.interest_button_pressed);
+                        isItEventNogomet += 1;
+                        selectedItems.add("Nogomet");
 
-}
+                    }
+                } else {
+                    btnNogomet.setPressed(false);
+                    if (!btnNogomet.isPressed()) {
+                        btnNogomet.setBackgroundResource(R.drawable.interest_button);
+                        isItEventNogomet += 1;
+                        selectedItems.remove("Nogomet");
+                    }
+
+                }
+
+            }
+        });
+
+        btnKosarka.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isItEventKosarka % 2 == 0){
+                    btnKosarka.setPressed(true);
+                    if (btnKosarka.isPressed()) {
+                        btnKosarka.setBackgroundResource(R.drawable.interest_button_pressed);
+                        isItEventKosarka += 1;
+                        selectedItems.add("Košarka");
+
+                    }
+                }
+                else {
+                    btnKosarka.setPressed(false);
+                    if(!btnKosarka.isPressed()){
+                        btnKosarka.setBackgroundResource(R.drawable.interest_button);
+                        isItEventKosarka += 1;
+                        selectedItems.remove("Košarka");
+                    }
+
+                }
+
+            }
+        });
+
+        btnDruzenje.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isItEventDruzenje % 2 == 0){
+                    btnDruzenje.setPressed(true);
+                    if (btnDruzenje.isPressed()) {
+                        btnDruzenje.setBackgroundResource(R.drawable.interest_button_pressed);
+                        isItEventDruzenje += 1;
+                        selectedItems.add("Druženje");
+
+                    }
+                }
+                else {
+                    btnDruzenje.setPressed(false);
+                    if(!btnDruzenje.isPressed()){
+                        btnDruzenje.setBackgroundResource(R.drawable.interest_button);
+                        isItEventDruzenje += 1;
+                        selectedItems.remove("Druženje");
+                    }
+
+                }
+
+            }
+        });
+
+        btnSah.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isItEventSah % 2 == 0){
+                    btnSah.setPressed(true);
+                    if (btnSah.isPressed()) {
+                        btnSah.setBackgroundResource(R.drawable.interest_button_pressed);
+                        isItEventSah += 1;
+                        selectedItems.add("Šah");
+
+                    }
+                }
+                else {
+                    btnSah.setPressed(false);
+                    if(!btnSah.isPressed()){
+                        btnSah.setBackgroundResource(R.drawable.interest_button);
+                        isItEventSah += 1;
+                        selectedItems.remove("Šah");
+                    }
+
+                }
+
+            }
+        });
+
+        btnDrustveneIgre.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isItEventDrustvene % 2 == 0){
+                    btnDrustveneIgre.setPressed(true);
+                    if (btnDrustveneIgre.isPressed()) {
+                        btnDrustveneIgre.setBackgroundResource(R.drawable.interest_button_pressed);
+                        isItEventDrustvene += 1;
+                        selectedItems.add("Društvene igre");
+
+                    }
+                }
+                else {
+                    btnDrustveneIgre.setPressed(false);
+                    if(!btnDrustveneIgre.isPressed()){
+                        btnDrustveneIgre.setBackgroundResource(R.drawable.interest_button);
+                        isItEventDrustvene += 1;
+                        selectedItems.remove("Društvene igre");
+                    }
+
+                }
+
+            }
+        });
+    }
+    }
+
+
+
+

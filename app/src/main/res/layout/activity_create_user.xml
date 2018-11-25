@@ -70,15 +70,12 @@
                 android:max="100" />
 
 
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentBottom="true"
                 android:background="@android:color/darker_gray" />
-
-
 
 
             <TextView
@@ -92,6 +89,68 @@
                 android:layout_height="wrap_content"
                 android:text="Interesi" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnNogomet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/interest_button"
+                    android:text="Nogomet"
+                    android:textColor="#ffff"
+                    android:layout_margin="2dp"/>
+
+                <Button
+                    android:layout_margin="2dp"
+                    android:id="@+id/btnKosarka"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/interest_button"
+                    android:text="Košarka"
+                    android:textColor="#ffff" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:layout_margin="2dp"
+                    android:id="@+id/btnSah"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/interest_button"
+                    android:text="Šah"
+                    android:textColor="#ffff" />
+
+                <Button
+                    android:layout_margin="2dp"
+                    android:id="@+id/btnDrustveneIgre"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/interest_button"
+                    android:text="Društvene igre"
+                    android:textColor="#ffff"
+                    android:padding="6dp"/>
+
+                <Button
+                    android:layout_margin="2dp"
+                    android:id="@+id/btnDruzenje"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/interest_button"
+                    android:text="Druženje"
+                    android:textColor="#ffff" />
+
+
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/tvShowInterest"
                 android:layout_width="wrap_content"
@@ -103,27 +162,29 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentBottom="true"
                 android:background="@android:color/darker_gray" />
+
             <TextView
-                android:paddingTop="6dp"
-                android:text="Izaberite sliku profila"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"/>
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="6dp"
+                android:text="Izaberite sliku profila" />
 
             <ImageView
-                android:layout_marginTop="6dp"
+                android:id="@+id/ivProfilePicture"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:src="@drawable/avatar"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="6dp"
                 android:clickable="true"
-                android:id="@+id/ivProfilePicture"/>
+                android:src="@drawable/avatar" />
+
             <View
-                android:layout_marginTop="4dp"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentBottom="true"
+                android:layout_marginTop="4dp"
                 android:background="@android:color/darker_gray" />
 
             <Button
@@ -131,7 +192,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:text="Stvorite igrača" />
+                android:text="Stvorite igrača"
+                android:background="@drawable/interest_button"
+                android:textColor="?android:colorBackground"
+                android:padding="6dp"/>
 
             <ProgressBar
                 android:id="@+id/progressBarUser"

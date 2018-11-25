@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -56,6 +57,7 @@ public class OtherUserProfile extends AppCompatActivity {
     private String otherUserDocRef = "";
     private String friendRequestDocRef = "";
     private Context mContext;
+    private String currentUserId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +102,7 @@ public class OtherUserProfile extends AppCompatActivity {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 otherUser = documentSnapshot.toObject(User.class);
                 thisUserDocRef = documentSnapshot.getId();
+                currentUserId = documentSnapshot.toObject(User.class).getUserId();
                 if (otherUser.getProfilePictureUrl() != null) {
                     GlideApp.with(OtherUserProfile.this).load(otherUser.getProfilePictureUrl())
                             .circleCrop()
@@ -144,7 +147,8 @@ public class OtherUserProfile extends AppCompatActivity {
     }
 
     private void sendPlayerRequest() {
-        usersRef.document(thisUserDocRef).collection("FriendRequest").add(new FriendRequest(FirebaseAuth.getInstance().getUid(), false, currentUserName, currentUserDocId, "", thisUserDocRef))
+        usersRef.document(thisUserDocRef).collection("FriendRequest").add(new FriendRequest(FirebaseAuth.getInstance().getUid(), false, currentUserName, currentUserDocId, ""
+                , thisUserDocRef,currentUserId))
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
@@ -209,7 +213,7 @@ public class OtherUserProfile extends AppCompatActivity {
                     if (dc.toObject(FriendRequest.class) != null) {
                         FriendRequest friendRequest = dc.toObject(FriendRequest.class);
                         friendRequestDocRef = friendRequest.getFriendRequestRef();
-                        if(!friendRequest.isAccepted()){
+                        if (!friendRequest.isAccepted()) {
                             btnDeclinePlayer.setVisibility(View.VISIBLE);
                             btnDeclinePlayer.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -235,7 +239,7 @@ public class OtherUserProfile extends AppCompatActivity {
 
                                 }
                             });
-                        }else {
+                        } else {
                             checkIfFriendRequestIsSent();
                         }
 
@@ -260,14 +264,19 @@ public class OtherUserProfile extends AppCompatActivity {
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
                 otherUser = documentSnapshot.toObject(User.class);
                 thisUserDocRef = documentSnapshot.getId();
-                if(mContext!=null){
-                    if (otherUser.getProfilePictureUrl() != null) {
-                        GlideApp.with(OtherUserProfile.this).load(otherUser.getProfilePictureUrl())
-                                .circleCrop()
-                                .placeholder(R.drawable.avatar)
-                                .into(ivUserProfilePicture);
-                    } else {
-                        GlideApp.with(OtherUserProfile.this).load(R.drawable.avatar).circleCrop().into(ivUserProfilePicture);
+                if (mContext != null) {
+                    try {
+                        if (otherUser.getProfilePictureUrl() != null) {
+                            GlideApp.with(OtherUserProfile.this).load(otherUser.getProfilePictureUrl())
+                                    .circleCrop()
+                                    .placeholder(R.drawable.avatar)
+                                    .into(ivUserProfilePicture);
+                        } else {
+                            GlideApp.with(OtherUserProfile.this).load(R.drawable.avatar).circleCrop().into(ivUserProfilePicture);
+
+                        }
+                    } catch (IllegalArgumentException exception) {
+                        Log.d("IllegalArgument", "onEvent: " + exception.getMessage());
 
                     }
 
@@ -282,25 +291,26 @@ public class OtherUserProfile extends AppCompatActivity {
 
                         }
                     }
-                   // tvUserInterests.setText(interests);
+                    // tvUserInterests.setText(interests);
 
                 }
 
-                }
-            });
+            }
+        });
 
-        }
-        private void checkIfFriends () {
-            usersRef.document(currentUserDocId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    if (documentSnapshot.toObject(User.class).getUserFriends().contains(otherUser.getUserId())) {
-                        btnAddPlayer.setText("Prijatelji ste");
-                        btnAddPlayer.setClickable(false);
-                    }else {
-                        checkIfFriendRequestRecived();
-                    }
-                }
-            });
-        }
     }
+
+    private void checkIfFriends() {
+        usersRef.document(currentUserDocId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.toObject(User.class).getUserFriends().contains(otherUser.getUserId())) {
+                    btnAddPlayer.setText("Prijatelji ste");
+                    btnAddPlayer.setClickable(false);
+                } else {
+                    checkIfFriendRequestRecived();
+                }
+            }
+        });
+    }
+}

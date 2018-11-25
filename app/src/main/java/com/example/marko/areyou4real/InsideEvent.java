@@ -1,5 +1,6 @@
 package com.example.marko.areyou4real;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -9,11 +10,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.marko.areyou4real.adapter.TinyDB;
+import com.example.marko.areyou4real.dialogs.ShareEventDialog;
 import com.example.marko.areyou4real.fragments.InsideEventMap;
 import com.example.marko.areyou4real.model.Event;
 import com.example.marko.areyou4real.model.EventRequest;
@@ -23,6 +26,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -30,6 +34,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -63,6 +68,15 @@ public class InsideEvent extends AppCompatActivity {
     private ImageView ivEventPlace;
     private double eventLat;
     private double eventLng;
+    private CheckBox mCheckBox1;
+    private CheckBox mCheckBox2;
+    private CheckBox mCheckBox3;
+    private ArrayList<String> usersToBeInvited = new ArrayList<>();
+    private ArrayList<String> duplicateCheck = new ArrayList<>();
+    private ArrayList<String> namesOfUsersInvited = new ArrayList<>();
+    private TinyDB tinyDB;
+    private Context mContext;
+    private long eventTimeInMili;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +88,7 @@ public class InsideEvent extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        mContext = InsideEvent.this;
 
         fab = findViewById(R.id.fab);
         tvEventName = findViewById(R.id.tvEventName);
@@ -88,12 +103,16 @@ public class InsideEvent extends AppCompatActivity {
         btnSendEventRequest = findViewById(R.id.btnSendEventRequest);
         ivEventPlace = findViewById(R.id.ivEventPlaceMap);
 
+        mCheckBox1 = findViewById(R.id.checkBox1);
+        mCheckBox2 = findViewById(R.id.checkBox2);
+        mCheckBox3 = findViewById(R.id.checkBox3);
+
         ivEventPlace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(InsideEvent.this,InsideEventMap.class);
-                intent.putExtra("event_lat",eventLat);
-                intent.putExtra("event_lng",eventLng);
+                Intent intent = new Intent(InsideEvent.this, InsideEventMap.class);
+                intent.putExtra("event_lat", eventLat);
+                intent.putExtra("event_lng", eventLng);
                 startActivity(intent);
             }
         });
@@ -109,6 +128,13 @@ public class InsideEvent extends AppCompatActivity {
             }
         });
 
+        btnSendEventRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ShareEventDialog dialog = new ShareEventDialog();
+                dialog.show(getFragmentManager(), "ShareDialog");
+            }
+        });
 
     }
 
@@ -195,10 +221,29 @@ public class InsideEvent extends AppCompatActivity {
                     tvEventPlayersEntered.setText("" + event.getUsersEntered());
                     eventLat = event.getEventLat();
                     eventLng = event.getEventLng();
+                    eventTimeInMili = event.getEventStart();
+
+                    if (event.getSkillNeeded() == 1) {
+                        mCheckBox1.setChecked(true);
+                        mCheckBox2.setVisibility(View.INVISIBLE);
+                        mCheckBox3.setVisibility(View.INVISIBLE);
+
+                    } else if (event.getSkillNeeded() == 2) {
+                        mCheckBox1.setChecked(true);
+                        mCheckBox2.setChecked(true);
+                        mCheckBox3.setVisibility(View.INVISIBLE);
+
+
+                    } else if (event.getSkillNeeded() == 3) {
+                        mCheckBox1.setChecked(true);
+                        mCheckBox2.setChecked(true);
+                        mCheckBox3.setChecked(true);
+                    }
 
                     if (userId.equals(event.getIdOfTheUserWhoCreatedIt())) {
                         btnDoSomething.setText(btnText1);
                         btnSendEventRequest.setVisibility(View.VISIBLE);
+                        btnSendEventRequest.setClickable(true);
                         deleteEvent();
 
 
@@ -320,13 +365,13 @@ public class InsideEvent extends AppCompatActivity {
 
     private void checkTime(final Event event) {
 
-        if (eventCreatorId.equals(userId)&&event.getEventStart()+18000000 <  Calendar.getInstance().getTimeInMillis()){
+        if (eventCreatorId.equals(userId) && event.getEventStart() + 18000000 < Calendar.getInstance().getTimeInMillis()) {
             btnCompleteEvent.setVisibility(View.VISIBLE);
             btnCompleteEvent.setClickable(true);
             btnCompleteEvent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    eventsRef.document(eventId).update("isCompleted",true).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    eventsRef.document(eventId).update("isCompleted", true).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Toast.makeText(InsideEvent.this, "Event završen", Toast.LENGTH_SHORT).show();
@@ -336,22 +381,88 @@ public class InsideEvent extends AppCompatActivity {
             });
         }
     }
-    private void checkIfEventIsInEventRequests(){
+
+    private void checkIfEventIsInEventRequests() {
         TinyDB tinyDB = new TinyDB(InsideEvent.this);
         final String userDocRef = tinyDB.getString("USERDOCREF");
 
         usersRef.document(tinyDB.getString("USERDOCREF")).collection("EventRequests")
-                .whereEqualTo("eventId",eventId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                .whereEqualTo("eventId", eventId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for (DocumentSnapshot dc : queryDocumentSnapshots){
+                for (DocumentSnapshot dc : queryDocumentSnapshots) {
                     String requestDocRef = dc.getId();
                     usersRef.document(userDocRef).collection("EventRequests")
-                            .document(requestDocRef).update("answered",true);
+                            .document(requestDocRef).update("answered", true);
 
                 }
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            if (requestCode == 1) {
+
+                if (resultCode == RESULT_OK && data != null) {
+                    usersToBeInvited = data.getStringArrayListExtra("users_in_group");
+                    namesOfUsersInvited = data.getStringArrayListExtra("group_names");
+                    Toast.makeText(InsideEvent.this, usersToBeInvited.get(0), Toast.LENGTH_SHORT).show();
+                    sendEventRequest();
+                }
+            } else if (requestCode == 2) {
+                if (resultCode == RESULT_OK && data != null) {
+                    usersToBeInvited = data.getStringArrayListExtra("friends_selected");
+                    Toast.makeText(mContext, usersToBeInvited.get(0), Toast.LENGTH_SHORT).show();
+                    sendEventRequest();
+                }
+            }
+
+        }catch (Exception e){
+            Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void sendEventRequest() {
+        tinyDB = new TinyDB(mContext);
+        String userName = tinyDB.getString("USERNAME");
+        String userDocRef = tinyDB.getString("USERDOCREF");
+        for (String reciverId : usersToBeInvited) {
+            if (!reciverId.equals(FirebaseAuth.getInstance().getUid())) {
+                if (!duplicateCheck.contains(reciverId)) {
+                    duplicateCheck.add(reciverId);
+                    final EventRequest eventRequest = new EventRequest(eventId, "", tvEventActivity.getText().toString(), eventTimeInMili, userName, userDocRef, reciverId, false);
+                    usersRef.whereEqualTo("userId", reciverId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            for (DocumentSnapshot dc : queryDocumentSnapshots) {
+                                final String reciverDocRef = dc.getReference().getId();
+                                usersRef.document(reciverDocRef).collection("EventRequests").add(eventRequest).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                    @Override
+                                    public void onSuccess(DocumentReference documentReference) {
+                                        documentReference.update("reciverDocRef", reciverDocRef, "eventRequestDocRef", documentReference.getId());
+                                    }
+                                });
+
+                            }
+
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                }
+
+            }
+
+
+        }
+        Toast.makeText(mContext, "Uspjeh", Toast.LENGTH_SHORT).show();
     }
 }
 

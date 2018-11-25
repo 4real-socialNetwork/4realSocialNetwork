@@ -86,6 +86,48 @@
                 android:background="@android:color/darker_gray" />
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Predložena razina skilla za sudjelovanje : "
+                android:paddingLeft="16dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="16dp">
+                <CheckBox
+                    android:id="@+id/checkBox1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="?android:attr/starStyle"
+                    />
+                <CheckBox
+                    android:id="@+id/checkBox2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="?android:attr/starStyle"
+                    />
+                <CheckBox
+                    android:id="@+id/checkBox3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="?android:attr/starStyle"
+                    />
+
+
+            </LinearLayout>
+
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:background="@android:color/darker_gray" />
+
+            <TextView
                 android:id="@+id/tvEventTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -97,7 +139,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
-                android:text="Vrijeme" />
+                android:text="Vrijeme"
+                android:background="@drawable/interest_button"
+                android:textColor="?android:colorBackground"
+                />
 
             <TextView
                 android:id="@+id/tvTimeStart"
@@ -118,7 +163,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
-                android:text="Datum" />
+                android:text="Datum"
+                android:background="@drawable/interest_button"
+                android:textColor="?android:colorBackground"/>
 
             <TextView
                 android:id="@+id/tvDateOfEvent"
@@ -145,7 +192,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
-                android:text="mjesto" />
+                android:text="mjesto"
+                android:background="@drawable/interest_button"
+                android:textColor="?android:colorBackground"/>
 
             <TextView
                 android:id="@+id/tvPlaceAdress"
@@ -194,6 +243,8 @@
                     android:padding="16dp"
                     android:text="Stvori
 događaj"
+                    android:background="@drawable/interest_button"
+                    android:textColor="?android:colorBackground"
                     android:layout_marginLeft="50dp"/>
 
 

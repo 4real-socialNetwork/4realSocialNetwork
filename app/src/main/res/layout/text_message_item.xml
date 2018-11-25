@@ -23,11 +23,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingLeft="12dp"
+            android:padding="10dp"
             android:background="@drawable/text_message_bubble">
 
             <TextView
-                android:padding="6dp"
                 android:id="@+id/tvTextMessage"
                 android:layout_width="115dp"
                 android:layout_height="wrap_content"

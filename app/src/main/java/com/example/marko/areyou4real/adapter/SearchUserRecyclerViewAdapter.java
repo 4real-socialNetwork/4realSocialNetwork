@@ -100,7 +100,7 @@ public class SearchUserRecyclerViewAdapter extends RecyclerView.Adapter<SearchUs
         public ViewHolder(View itemView) {
             super(itemView);
             this.userName = itemView.findViewById(R.id.tvUserName);
-            this.searchUserLinearLayout = itemView.findViewById(R.id.searchListItemRLinearLayout);
+            this.searchUserLinearLayout = itemView.findViewById(R.id.searchListItemLinearLayout);
         }
     }
 

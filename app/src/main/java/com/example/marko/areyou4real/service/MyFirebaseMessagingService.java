@@ -14,7 +14,9 @@ import android.widget.Toast;
 
 import com.example.marko.areyou4real.InsideEvent;
 import com.example.marko.areyou4real.MainActivity;
+import com.example.marko.areyou4real.OtherUserProfile;
 import com.example.marko.areyou4real.R;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -71,32 +73,44 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 "Message: " + notificationMessage);
 
         String dataType = remoteMessage.getData().get("data_type");
-        if(dataType.equals("direct_message")){
+        if(dataType.equals("event_joining")){
             String title = remoteMessage.getData().get("title");
-            System.out.println("Title je: " + title);
             String message = remoteMessage.getData().get("message");
-            System.out.println("message je: " + message);
-            String messageId = "256";
-            String eventId = remoteMessage.getData().get("eventId");
-            System.out.println("eventId je: " + eventId);
-            sendMessageNotification(title, message, messageId, eventId);
+            String messageId = remoteMessage.getData().get("messageId");
+            String extraId = remoteMessage.getData().get("extraId");
+            String extraName = "EVENT_ID";
+
+            sendMessageNotification(title, message, messageId, extraId, extraName);
         }
+        if (dataType.equals("event_request")){
+            String title = remoteMessage.getData().get("title");
+            String message = remoteMessage.getData().get("message");
+            String messageId = remoteMessage.getData().get("messageId");
+            String extraId = remoteMessage.getData().get("extraId");
+            String extraName = "EVENT_ID";
+
+            sendMessageNotification(title, message, messageId, extraId, extraName);
+        }
+        if (dataType.equals("friend_request")){
+            String title = remoteMessage.getData().get("title");
+            String message = remoteMessage.getData().get("message");
+            String messageId = remoteMessage.getData().get("messageId");
+            String extraId = remoteMessage.getData().get("extraId");
+            String extraName = "otherUserDocRef";
+
+            sendFriendRequest(title, message, messageId, extraId, extraName);
+        }
+
     }
-    private void sendMessageNotification(String title, String message, String messageId, String eventId){
-        System.out.println(TAG + " sendMessageNotification called");
+    private void sendFriendRequest(String title, String message, String messageId, String extraId, String extraName){
 
-        //get the notification id
         int notificationId = buildNotificationId(messageId);
-
-        // Instantiate a Builder object.
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
-        // Creates an Intent for the Activity
-        Intent pendingIntent = new Intent(this, InsideEvent.class);
-        // put extra eventID to open particular event
-        pendingIntent.putExtra("EVENT_ID", eventId);
-        // Sets the Activity to start in a new, empty task
+
+        Intent pendingIntent = new Intent(this, OtherUserProfile.class);
+        pendingIntent.putExtra(extraName, extraId);
         pendingIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        // Creates the PendingIntent
+
         PendingIntent notifyPendingIntent =
                 PendingIntent.getActivity(
                         this,
@@ -105,7 +119,39 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
-        //add properties to the builder
+        builder.setSmallIcon(R.drawable.ic_person_white_24dp)
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                .setContentTitle(title)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
+                .setOnlyAlertOnce(true);
+
+        builder.setContentIntent(notifyPendingIntent);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        mNotificationManager.notify(notificationId, builder.build());
+    }
+
+    private void sendMessageNotification(String title, String message, String messageId, String extraId, String extraName){
+
+        int notificationId = buildNotificationId(messageId);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
+
+        Intent pendingIntent = new Intent(this, InsideEvent.class);
+        pendingIntent.putExtra(extraName, extraId);
+        pendingIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        PendingIntent notifyPendingIntent =
+                PendingIntent.getActivity(
+                        this,
+                        0,
+                        pendingIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
         builder.setSmallIcon(R.drawable.ic_person_white_24dp)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setContentTitle(title)

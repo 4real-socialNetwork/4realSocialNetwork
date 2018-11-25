@@ -12,6 +12,15 @@ public class FriendRequest {
     String friendRequestRef;
     String usersFriendsGroup;
     String reciverDocRef;
+    String reciverId;
+
+    public String getReciverId() {
+        return reciverId;
+    }
+
+    public void setReciverId(String reciverId) {
+        this.reciverId = reciverId;
+    }
 
     public String getReciverDocRef() {
         return reciverDocRef;
@@ -54,13 +63,14 @@ public class FriendRequest {
         this.senderDocRef = senderDocRef;
     }
 
-    public FriendRequest(String senderId, boolean accepted,String senderName,String senderDocRef,String friendRequestRef,String reciverDocRef) {
+    public FriendRequest(String senderId, boolean accepted,String senderName,String senderDocRef,String friendRequestRef,String reciverDocRef,String reciverId) {
         this.senderId = senderId;
         this.accepted = accepted;
         this.senderName = senderName;
         this.senderDocRef = senderDocRef;
         this.friendRequestRef = friendRequestRef;
         this.reciverDocRef = reciverDocRef;
+        this.reciverId = reciverId;
     }
 
     public FriendRequest() {

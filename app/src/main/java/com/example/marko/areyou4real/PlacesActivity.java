@@ -29,34 +29,37 @@ public class PlacesActivity extends AppCompatActivity {
         setUpBottomNavigationView();
         setUpAdapter();
     }
-    private void setUpBottomNavigationView(){
-        BottomNavigationViewEx bottomNavigationViewEx =findViewById(R.id.bottomNavigation);
+
+    private void setUpBottomNavigationView() {
+        BottomNavigationViewEx bottomNavigationViewEx = findViewById(R.id.bottomNavigation);
         BottomNavigationViewHelper.setUpBottomNavigationView(bottomNavigationViewEx);
-        BottomNavigationViewHelper.enableNavigation(PlacesActivity.this,bottomNavigationViewEx);
-        Menu menu  = bottomNavigationViewEx.getMenu();
+        BottomNavigationViewHelper.enableNavigation(PlacesActivity.this, bottomNavigationViewEx);
+        Menu menu = bottomNavigationViewEx.getMenu();
         MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
+        menuItem.setIcon(R.drawable.nav_places_selected);
         menuItem.setChecked(true);
     }
 
-    private void setUpAdapter(){
+    private void setUpAdapter() {
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         manager = new LinearLayoutManager(mContext);
         adapter = new PlacesReyclerAdapter(mContext);
-        adapter.addItem(new Place("SD Martinovka","Stjepana Radića 23",null,3881654,150.00,"Marinovka je kul"));
-        adapter.addItem(new Place("SD Martinovka","Stjepana Radića 23",null,3881654,150.00,"Marinovka je kul"));
-        adapter.addItem(new Place("SD Martinovka","Stjepana Radića 23",null,3881654,150.00,"Marinovka je kul"));
-        adapter.addItem(new Place("SD Martinovka","Stjepana Radića 23",null,3881654,150.00,"Marinovka je kul"));
-        adapter.addItem(new Place("SD Martinovka","Stjepana Radića 23",null,3881654,150.00,"Marinovka je kul"));
-        adapter.addItem(new Place("SD Martinovka","Stjepana Radića 23",null,3881654,150.00,"Marinovka je kul"));
-        adapter.addItem(new Place("SD Martinovka","Stjepana Radića 23",null,3881654,150.00,"Marinovka je kul"));
+        adapter.addItem(new Place("SD Martinovka", "Stjepana Radića 23", null, 3881654, 150.00, "Marinovka je kul"));
+        adapter.addItem(new Place("SD Martinovka", "Stjepana Radića 23", null, 3881654, 150.00, "Marinovka je kul"));
+        adapter.addItem(new Place("SD Martinovka", "Stjepana Radića 23", null, 3881654, 150.00, "Marinovka je kul"));
+        adapter.addItem(new Place("SD Martinovka", "Stjepana Radića 23", null, 3881654, 150.00, "Marinovka je kul"));
+        adapter.addItem(new Place("SD Martinovka", "Stjepana Radića 23", null, 3881654, 150.00, "Marinovka je kul"));
+        adapter.addItem(new Place("SD Martinovka", "Stjepana Radića 23", null, 3881654, 150.00, "Marinovka je kul"));
+        adapter.addItem(new Place("SD Martinovka", "Stjepana Radića 23", null, 3881654, 150.00, "Marinovka je kul"));
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
 
     }
+
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(this,MainActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);

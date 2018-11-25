@@ -52,21 +52,24 @@ public class NotificationsActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
     }
 
-    private void setUpBottomNavigationView(){
-        BottomNavigationViewEx bottomNavigationViewEx =findViewById(R.id.bottomNavigation);
+    private void setUpBottomNavigationView() {
+        BottomNavigationViewEx bottomNavigationViewEx = findViewById(R.id.bottomNavigation);
         BottomNavigationViewHelper.setUpBottomNavigationView(bottomNavigationViewEx);
-        BottomNavigationViewHelper.enableNavigation(NotificationsActivity.this,bottomNavigationViewEx);
-        Menu menu  = bottomNavigationViewEx.getMenu();
+        BottomNavigationViewHelper.enableNavigation(NotificationsActivity.this, bottomNavigationViewEx);
+        Menu menu = bottomNavigationViewEx.getMenu();
         MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
+        menuItem.setIcon(R.drawable.nav_notif_selected);
         menuItem.setChecked(true);
     }
+
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(this,MainActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
+
     private void setupViewPager(ViewPager viewPager) {
         SectionPagerAdapter adapter = new SectionPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new FriendRequestNotificationFragment(), "Zahtjevi");

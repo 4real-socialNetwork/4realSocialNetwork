@@ -16,6 +16,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -98,6 +100,12 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
     private TinyDB tinyDB;
     private ProgressBar progressBar;
     private ArrayList<String> duplicateCheck = new ArrayList<>();
+    private CheckBox mCheckBox1;
+    private CheckBox mCheckBox2;
+    private CheckBox mCheckBox3;
+    private CheckBox mCheckBox4;
+    private CheckBox mCheckBox5;
+    private int skillRequired;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +132,12 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
         activity.setOnItemSelectedListener(this);
 
         setEventTypeSpinner();
+
+        mCheckBox1 = findViewById(R.id.checkBox1);
+        mCheckBox2 = findViewById(R.id.checkBox2);
+        mCheckBox3 = findViewById(R.id.checkBox3);
+
+        setUpCheckBoxes();
 
         tvEventForUsers = findViewById(R.id.tvEventForUsers);
 
@@ -181,7 +195,7 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
             int peopleNeeded = Integer.parseInt(playersNeeded.getText().toString());
             String description = eventDescription.getText().toString();
             if (eventName.length() > 0 && activity.length() > 0 && peopleNeeded > 0 && description.length() > 0 && calendar.getTimeInMillis() != 0) {
-                Event event = new Event(userId, eventName, activity, calendar.getTimeInMillis(), eventLat, eventLng, peopleNeeded, description, eventAddress, false, isPrivate);
+                Event event = new Event(userId, eventName, activity, skillRequired, calendar.getTimeInMillis(), eventLat, eventLng, peopleNeeded, description, eventAddress, false, isPrivate);
                 event.addCreatorUserToArray(userId);
 
                 eventsRef.add(event).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -217,7 +231,7 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
             int peopleNeeded = Integer.parseInt(playersNeeded.getText().toString());
             String description = eventDescription.getText().toString();
             if (eventName.length() > 0 && activity.length() > 0 && peopleNeeded > 0 && description.length() > 0 && calendar.getTimeInMillis() != 0) {
-                Event event = new Event(userId, eventName, activity, calendar.getTimeInMillis(), eventLat, eventLng, peopleNeeded, description, eventAddress, false, isPrivate);
+                Event event = new Event(userId, eventName, activity, 0, calendar.getTimeInMillis(), eventLat, eventLng, peopleNeeded, description, eventAddress, false, isPrivate);
                 event.addCreatorUserToArray(userId);
 
                 eventsRef.add(event).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -322,17 +336,21 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
         } else if (requestCode == 2 && data != null) {
             if (resultCode == RESULT_OK) {
                 isPrivate = true;
-                usersInGroup = data.getStringArrayListExtra("users_in_group");
-                groupNames = data.getStringArrayListExtra("group_names");
-                Toast.makeText(mContext, usersInGroup.get(0), Toast.LENGTH_SHORT).show();
-                tvEventForUsers.setText(groupNames.toString());
+                try{
+                    usersInGroup = data.getStringArrayListExtra("users_in_group");
+                    groupNames = data.getStringArrayListExtra("group_names");
+                    tvEventForUsers.setText(groupNames.toString());
+                }catch (Exception e){
+                    Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
 
             }
         }
     }
 
     public void createChat() {
-        eventsRef.document(docId).collection("chatRoom").add(new TextMessage("", "", "", docId, "",Calendar.getInstance().getTimeInMillis())).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+        eventsRef.document(docId).collection("chatRoom").add(new TextMessage("", "", "", docId, "", Calendar.getInstance().getTimeInMillis())).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 mTextMessageId = documentReference.getId();
@@ -391,43 +409,102 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
         tinyDB = new TinyDB(mContext);
         String userName = tinyDB.getString("USERNAME");
         String userDocRef = tinyDB.getString("USERDOCREF");
-        for (String reciverId : usersInGroup) {
-            if (!reciverId.equals(FirebaseAuth.getInstance().getUid())) {
-                if (!duplicateCheck.contains(reciverId)) {
-                    duplicateCheck.add(reciverId);
-                    final EventRequest eventRequest = new EventRequest(docId, "", selectedInteres, calendar.getTimeInMillis(), userName, userDocRef, reciverId, false);
-                    usersRef.whereEqualTo("userId", reciverId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                        @Override
-                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                            for (DocumentSnapshot dc : queryDocumentSnapshots) {
-                                final String reciverDocRef = dc.getReference().getId();
-                                usersRef.document(reciverDocRef).collection("EventRequests").add(eventRequest).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                    @Override
-                                    public void onSuccess(DocumentReference documentReference) {
-                                        documentReference.update("reciverDocRef", reciverDocRef, "eventRequestDocRef", documentReference.getId());
-                                    }
-                                });
+        if(usersInGroup.size()>0){
+            for (String reciverId : usersInGroup) {
+                if (!reciverId.equals(FirebaseAuth.getInstance().getUid())) {
+                    if (!duplicateCheck.contains(reciverId)) {
+                        duplicateCheck.add(reciverId);
+                        final EventRequest eventRequest = new EventRequest(docId, "", selectedInteres, calendar.getTimeInMillis(), userName, userDocRef, reciverId, false);
+                        usersRef.whereEqualTo("userId", reciverId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                for (DocumentSnapshot dc : queryDocumentSnapshots) {
+                                    final String reciverDocRef = dc.getReference().getId();
+                                    usersRef.document(reciverDocRef).collection("EventRequests").add(eventRequest).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                        @Override
+                                        public void onSuccess(DocumentReference documentReference) {
+                                            documentReference.update("reciverDocRef", reciverDocRef, "eventRequestDocRef", documentReference.getId());
+                                        }
+                                    });
+
+                                }
 
                             }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
 
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    }
 
                 }
 
+
             }
-
-
         }
+
         progressBar.setVisibility(View.INVISIBLE);
         Toast.makeText(mContext, "Uspjeh", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(mContext, MainActivity.class);
         startActivity(intent);
+    }
+
+    private void setUpCheckBoxes() {
+        mCheckBox1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+
+                    mCheckBox1.setChecked(true);
+                    mCheckBox2.setChecked(false);
+                    mCheckBox3.setChecked(false);
+                    skillRequired = 1;
+
+                } else {
+                    mCheckBox1.setChecked(false);
+                    mCheckBox2.setChecked(false);
+                    mCheckBox3.setChecked(false);
+
+                }
+            }
+        });
+        mCheckBox2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mCheckBox1.setChecked(true);
+                    mCheckBox2.setChecked(true);
+                    mCheckBox3.setChecked(false);
+                    skillRequired = 2;
+
+                } else {
+                    mCheckBox1.setChecked(true);
+                    mCheckBox2.setChecked(false);
+                    mCheckBox3.setChecked(false);
+                }
+
+            }
+        });
+        mCheckBox3.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mCheckBox1.setChecked(true);
+                    mCheckBox2.setChecked(true);
+                    mCheckBox3.setChecked(true);
+                    skillRequired = 3;
+                } else {
+                    mCheckBox1.setChecked(true);
+                    mCheckBox2.setChecked(true);
+                    mCheckBox3.setChecked(false);
+                }
+
+
+            }
+        });
+
     }
 
 

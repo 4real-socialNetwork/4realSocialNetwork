@@ -52,6 +52,9 @@
         android:text="21:00" />
 
     <Button
+        android:padding="6dp"
+        android:background="@drawable/interest_button"
+        android:textColor="?android:colorBackground"
         android:id="@+id/btnAllow"
         android:layout_width="77dp"
         android:layout_height="37dp"
@@ -65,6 +68,9 @@
         android:textSize="10sp" />
 
     <Button
+        android:padding="6dp"
+        android:background="@drawable/interest_button"
+        android:textColor="?android:colorBackground"
         android:id="@+id/btnDecline"
         android:layout_width="92dp"
         android:layout_height="38dp"

@@ -5,14 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".EventChatRoom"
-   >
+    tools:context=".EventChatRoom">
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        />
+        android:background="@color/colorPrimary" />
 
 
     <android.support.v7.widget.RecyclerView
@@ -20,31 +19,32 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="10"
-        android:padding="16dp"/>
+        android:padding="16dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
         <EditText
             android:id="@+id/tiEditMessage"
-            android:layout_width="200dp"
+            android:layout_width="212dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            />
+            android:layout_marginBottom="16dp" />
 
         <Button
-            android:layout_width="wrap_content"
+            android:id="@+id/btnSendMessage"
+            android:layout_width="128dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/interest_button_pressed"
             android:text="SendMessage"
-            android:id="@+id/btnSendMessage"/>
+            android:textColor="?android:colorBackground" />
 
     </LinearLayout>
-
-
 
 
 </LinearLayout>

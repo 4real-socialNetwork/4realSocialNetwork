@@ -15,6 +15,9 @@
         tools:context=".MapsActivity" />
 
     <Button
+        android:padding="6dp"
+        android:background="@drawable/interest_button"
+        android:textColor="?android:colorBackground"
         android:id="@+id/btnSaveLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

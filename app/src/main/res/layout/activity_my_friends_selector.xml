@@ -26,12 +26,12 @@
         android:padding="16dp"/>
 
     <Button
-        android:id="@+id/btnGroupSelected"
+        android:id="@+id/btnFriendsSelected"
         android:layout_width="330dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="16dp"
+        android:text="Prijatelji odabrani"
         android:background="@drawable/interest_button"
-        android:text="grupe odabrane"
         android:textColor="?android:colorBackground"
         android:layout_gravity="center_horizontal"/>
 

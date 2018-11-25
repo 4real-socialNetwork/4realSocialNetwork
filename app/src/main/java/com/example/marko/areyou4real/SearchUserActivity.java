@@ -77,6 +77,7 @@ public class SearchUserActivity extends AppCompatActivity {
         BottomNavigationViewHelper.enableNavigation(SearchUserActivity.this, bottomNavigationViewEx);
         Menu menu = bottomNavigationViewEx.getMenu();
         MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
+        menuItem.setIcon(R.drawable.nav_search_selected);
         menuItem.setChecked(true);
     }
 
@@ -125,9 +126,9 @@ public class SearchUserActivity extends AppCompatActivity {
                 filteredList.add(user);
             }
         }
-        try{
+        try {
             mAdapter.filterList(filteredList);
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
         }
     }
 }

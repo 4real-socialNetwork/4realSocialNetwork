@@ -19,6 +19,15 @@ public class Event {
     private ArrayList<String> listOfUsersParticipatingInEvent = new ArrayList<>();
     private boolean isCompleted = false;
     private boolean isPrivate;
+    private int skillNeeded;
+
+    public int getSkillNeeded() {
+        return skillNeeded;
+    }
+
+    public void setSkillNeeded(int skillNeeded) {
+        this.skillNeeded = skillNeeded;
+    }
 
     public boolean isPrivate() {
         return isPrivate;
@@ -82,10 +91,11 @@ public class Event {
         this.eventDescription = eventDescription;
     }
 
-    public Event(String idOfTheUserWhoCreatedIt, String name, String activity, long eventStart, double eventLat, double eventLng, int usersNeeded, String eventDescription, String eventAdress, boolean isCompleted, boolean isPrivate) {
+    public Event(String idOfTheUserWhoCreatedIt, String name, String activity,int skillNeeded ,long eventStart, double eventLat, double eventLng, int usersNeeded, String eventDescription, String eventAdress, boolean isCompleted, boolean isPrivate) {
         this.idOfTheUserWhoCreatedIt = idOfTheUserWhoCreatedIt;
         this.name = name;
         this.activity = activity;
+        this.skillNeeded = skillNeeded;
         this.eventStart = eventStart;
         this.eventLat = eventLat;
         this.eventLng = eventLng;

@@ -170,7 +170,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     private void getLocationPermission() {
         String[] permissions = {FINE_LOCATION,
                 COARSE_LOCATION};
@@ -240,7 +239,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     private void getServerKey() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference server = db.collection("Server");
@@ -257,13 +255,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     private void setUpBottomNavigationView() {
         BottomNavigationViewEx bottomNavigationViewEx = findViewById(R.id.bottomNavigation);
         BottomNavigationViewHelper.setUpBottomNavigationView(bottomNavigationViewEx);
         BottomNavigationViewHelper.enableNavigation(MainActivity.this, bottomNavigationViewEx);
         Menu menu = bottomNavigationViewEx.getMenu();
         MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
+        menuItem.setIcon(R.drawable.nav_home_selected);
         menuItem.setChecked(true);
     }
 

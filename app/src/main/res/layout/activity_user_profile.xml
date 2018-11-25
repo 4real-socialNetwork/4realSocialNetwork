@@ -23,15 +23,17 @@
                 android:layout_width="160dp"
                 android:layout_height="160dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="64dp"
-                />
+                android:layout_marginTop="64dp" />
 
             <Button
                 android:id="@+id/btnUploadPicture"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/interest_button"
+                android:padding="6dp"
                 android:text="Upload"
-                android:layout_gravity="center_horizontal"/>
+                android:textColor="?android:colorBackground" />
 
             <EditText
                 android:id="@+id/etUserName"
@@ -55,6 +57,9 @@
 
 
             <Button
+                android:padding="6dp"
+                android:background="@drawable/interest_button"
+                android:textColor="?android:colorBackground"
                 android:id="@+id/btnUserInterest"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -67,6 +72,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="16dp" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -75,6 +81,9 @@
                 android:background="@android:color/darker_gray" />
 
             <Button
+                android:padding="6dp"
+                android:background="@drawable/interest_button"
+                android:textColor="?android:colorBackground"
                 android:id="@+id/btnFriendsList"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -86,7 +95,9 @@
                 android:layout_height="1dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentBottom="true"
-                android:background="@android:color/darker_gray" />
+                android:background="@drawable/interest_button"
+                android:padding="6dp"
+                android:textColor="?android:colorBackground" />
 
 
             <TextView
@@ -116,6 +127,9 @@
 
 
             <Button
+                android:padding="6dp"
+                android:background="@drawable/interest_button"
+                android:textColor="?android:colorBackground"
                 android:id="@+id/btnSaveUserChanges"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -130,12 +144,15 @@
                 android:visibility="invisible" />
 
             <Button
+                android:padding="6dp"
+                android:background="@drawable/interest_button_pressed"
+                android:textColor="?android:colorBackground"
+                android:id="@+id/btnLogout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="odjava"
                 android:layout_marginBottom="65dp"
-                android:id="@+id/btnLogout"/>
+                android:text="odjava" />
 
         </LinearLayout>
     </ScrollView>
@@ -143,7 +160,7 @@
     <com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
         android:background="?android:attr/windowBackground"

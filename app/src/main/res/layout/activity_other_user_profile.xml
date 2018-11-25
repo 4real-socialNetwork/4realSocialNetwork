@@ -81,14 +81,21 @@
         android:paddingLeft="16dp" />
 
     <Button
+        android:padding="6dp"
+        android:background="@drawable/interest_button"
+        android:textColor="?android:colorBackground"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:id="@+id/btnAddPlayer"
         android:clickable="false"
-        android:text="dodaj prijatelja"/>
+        android:text="dodaj prijatelja"
+        />
 
     <Button
+        android:padding="6dp"
+        android:background="@drawable/interest_button"
+        android:textColor="?android:colorBackground"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
