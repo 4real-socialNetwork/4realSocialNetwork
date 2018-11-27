@@ -12,6 +12,8 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.marko.areyou4real.EventChatRoom;
+import com.example.marko.areyou4real.GroupChatRoom;
 import com.example.marko.areyou4real.InsideEvent;
 import com.example.marko.areyou4real.MainActivity;
 import com.example.marko.areyou4real.OtherUserProfile;
@@ -100,8 +102,92 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             sendFriendRequest(title, message, messageId, extraId, extraName);
         }
+        if (dataType.equals("event_message")){
+            String title = remoteMessage.getData().get("title");
+            String message = remoteMessage.getData().get("message");
+            String messageId = remoteMessage.getData().get("messageId");
+            String extraId = remoteMessage.getData().get("extraId");
+            String extraName = "EVENTID";
 
+            sendEventMessage(title, message, messageId, extraId, extraName);
+        }
+        if (dataType.equals("group_message")){
+            String title = remoteMessage.getData().get("title");
+            String message = remoteMessage.getData().get("message");
+            String messageId = remoteMessage.getData().get("messageId");
+            String extraId = remoteMessage.getData().get("extraId");
+            String extraName = "GROUPID";
+
+            sendGroupMessage(title, message, messageId, extraId, extraName);
+        }
     }
+    private void sendGroupMessage(String title, String message, String messageId, String extraId, String extraName){
+
+        int notificationId = buildNotificationId(messageId);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
+
+        Intent pendingIntent = new Intent(this, GroupChatRoom.class);
+        pendingIntent.putExtra(extraName, extraId);
+        pendingIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        PendingIntent notifyPendingIntent =
+                PendingIntent.getActivity(
+                        this,
+                        0,
+                        pendingIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
+        builder.setSmallIcon(R.drawable.ic_person_white_24dp)
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                .setContentTitle(title)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
+                .setOnlyAlertOnce(true);
+
+        builder.setContentIntent(notifyPendingIntent);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        mNotificationManager.notify(notificationId, builder.build());
+    }
+
+    private void sendEventMessage(String title, String message, String messageId, String extraId, String extraName){
+
+        int notificationId = buildNotificationId(messageId);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
+
+        Intent pendingIntent = new Intent(this, EventChatRoom.class);
+        pendingIntent.putExtra(extraName, extraId);
+        pendingIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        PendingIntent notifyPendingIntent =
+                PendingIntent.getActivity(
+                        this,
+                        0,
+                        pendingIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
+        builder.setSmallIcon(R.drawable.ic_person_white_24dp)
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                .setContentTitle(title)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
+                .setOnlyAlertOnce(true);
+
+        builder.setContentIntent(notifyPendingIntent);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        mNotificationManager.notify(notificationId, builder.build());
+    }
+
+
     private void sendFriendRequest(String title, String message, String messageId, String extraId, String extraName){
 
         int notificationId = buildNotificationId(messageId);

@@ -30,7 +30,9 @@ import com.example.marko.areyou4real.User;
 import com.example.marko.areyou4real.UserProfile;
 import com.example.marko.areyou4real.adapter.GlideApp;
 import com.example.marko.areyou4real.adapter.TinyDB;
+import com.example.marko.areyou4real.dialogs.DialogCallback;
 import com.example.marko.areyou4real.dialogs.InterestDialog;
+import com.example.marko.areyou4real.dialogs.SkillDialog;
 import com.example.marko.areyou4real.fragments.TimePickerFragment;
 import com.example.marko.areyou4real.model.FriendRequest;
 import com.example.marko.areyou4real.model.Group;
@@ -90,11 +92,15 @@ public class CreateUser extends AppCompatActivity {
     private Button btnSah;
     private Button btnDrustveneIgre;
     private Button btnDruzenje;
-    private int isItEventNogomet = 4;
-    private int isItEventKosarka = 4;
-    private int isItEventSah = 4;
-    private int isItEventDruzenje = 4;
-    private int isItEventDrustvene= 4;
+    int isItEventNogomet = 4;
+    int isItEventKosarka = 4;
+    int isItEventSah = 4;
+    int isItEventDruzenje = 4;
+    int isItEventDrustvene = 4;
+    int interestNumber;
+    private int nogometSkill;
+    private int kosarkaSkill;
+    private int sahSkill;
 
 
     private int current_range = 5;
@@ -105,7 +111,6 @@ public class CreateUser extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_user);
         setUpToolbar();
-        btnInteres = findViewById(R.id.btnInteres);
         email = findViewById(R.id.etEmail);
         password = findViewById(R.id.etPassword);
         name = findViewById(R.id.etName);
@@ -164,12 +169,6 @@ public class CreateUser extends AppCompatActivity {
                 uploadFile();
             }
         });
-        btnInteres.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openDialog();
-            }
-        });
 
 
     }
@@ -200,13 +199,14 @@ public class CreateUser extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult authResult) {
-                            User user = new User(FirebaseAuth.getInstance().getUid(), mToken, ime, prezime, mail, opis, selectedItems, udaljenost, friendsList, profilePictureUrl);
+                            User user = new User(FirebaseAuth.getInstance().getUid(), mToken, ime, prezime, mail, opis, selectedItems, udaljenost, friendsList, profilePictureUrl,
+                                    nogometSkill, kosarkaSkill, sahSkill,0,0,100);
                             mUsersRef.add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(final DocumentReference documentReference) {
                                     friendsList.add(FirebaseAuth.getInstance().getUid());
                                     mUsersRef.document(documentReference.getId()).update("userDocRef", documentReference.getId());
-                                    
+
                                     progressBar.setVisibility(View.INVISIBLE);
                                     Intent intent = new Intent(mContext, MainActivity.class);
                                     startActivity(intent);
@@ -219,7 +219,7 @@ public class CreateUser extends AppCompatActivity {
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(CreateUser.this, "Već postoji korisnik s tim računom", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "onFailure: "+e.getMessage());
                     progressBar.setVisibility(View.INVISIBLE);
                 }
             });
@@ -383,6 +383,9 @@ public class CreateUser extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (isItEventNogomet % 2 == 0) {
+                    setInterestNumber(1);
+                    SkillDialog skillDialog = new SkillDialog();
+                    skillDialog.show(getFragmentManager(), "NogometSkinDialog");
                     btnNogomet.setPressed(true);
                     if (btnNogomet.isPressed()) {
                         btnNogomet.setBackgroundResource(R.drawable.interest_button_pressed);
@@ -393,6 +396,7 @@ public class CreateUser extends AppCompatActivity {
                 } else {
                     btnNogomet.setPressed(false);
                     if (!btnNogomet.isPressed()) {
+                        nogometSkill = 0;
                         btnNogomet.setBackgroundResource(R.drawable.interest_button);
                         isItEventNogomet += 1;
                         selectedItems.remove("Nogomet");
@@ -406,18 +410,21 @@ public class CreateUser extends AppCompatActivity {
         btnKosarka.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isItEventKosarka % 2 == 0){
+                if (isItEventKosarka % 2 == 0) {
                     btnKosarka.setPressed(true);
                     if (btnKosarka.isPressed()) {
+                        setInterestNumber(2);
+                        SkillDialog skillDialog = new SkillDialog();
+                        skillDialog.show(getFragmentManager(), "KosarkaSkillDialog");
                         btnKosarka.setBackgroundResource(R.drawable.interest_button_pressed);
                         isItEventKosarka += 1;
                         selectedItems.add("Košarka");
 
                     }
-                }
-                else {
+                } else {
                     btnKosarka.setPressed(false);
-                    if(!btnKosarka.isPressed()){
+                    if (!btnKosarka.isPressed()) {
+                        kosarkaSkill = 0;
                         btnKosarka.setBackgroundResource(R.drawable.interest_button);
                         isItEventKosarka += 1;
                         selectedItems.remove("Košarka");
@@ -428,46 +435,26 @@ public class CreateUser extends AppCompatActivity {
             }
         });
 
-        btnDruzenje.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isItEventDruzenje % 2 == 0){
-                    btnDruzenje.setPressed(true);
-                    if (btnDruzenje.isPressed()) {
-                        btnDruzenje.setBackgroundResource(R.drawable.interest_button_pressed);
-                        isItEventDruzenje += 1;
-                        selectedItems.add("Druženje");
 
-                    }
-                }
-                else {
-                    btnDruzenje.setPressed(false);
-                    if(!btnDruzenje.isPressed()){
-                        btnDruzenje.setBackgroundResource(R.drawable.interest_button);
-                        isItEventDruzenje += 1;
-                        selectedItems.remove("Druženje");
-                    }
-
-                }
-
-            }
-        });
 
         btnSah.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isItEventSah % 2 == 0){
+                if (isItEventSah % 2 == 0) {
                     btnSah.setPressed(true);
                     if (btnSah.isPressed()) {
+                        setInterestNumber(3);
+                        SkillDialog skillDialog = new SkillDialog();
+                        skillDialog.show(getFragmentManager(), "SahSkillDialog");
                         btnSah.setBackgroundResource(R.drawable.interest_button_pressed);
                         isItEventSah += 1;
                         selectedItems.add("Šah");
 
                     }
-                }
-                else {
+                } else {
                     btnSah.setPressed(false);
-                    if(!btnSah.isPressed()){
+                    if (!btnSah.isPressed()) {
+                        sahSkill = 0;
                         btnSah.setBackgroundResource(R.drawable.interest_button);
                         isItEventSah += 1;
                         selectedItems.remove("Šah");
@@ -478,10 +465,34 @@ public class CreateUser extends AppCompatActivity {
             }
         });
 
+        btnDruzenje.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isItEventDruzenje % 2 == 0) {
+                    btnDruzenje.setPressed(true);
+                    if (btnDruzenje.isPressed()) {
+                        btnDruzenje.setBackgroundResource(R.drawable.interest_button_pressed);
+                        isItEventDruzenje += 1;
+                        selectedItems.add("Druženje");
+
+                    }
+                } else {
+                    btnDruzenje.setPressed(false);
+                    if (!btnDruzenje.isPressed()) {
+                        btnDruzenje.setBackgroundResource(R.drawable.interest_button);
+                        isItEventDruzenje+= 1;
+                        selectedItems.remove("Druženje");
+                    }
+
+                }
+
+            }
+        });
+
         btnDrustveneIgre.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isItEventDrustvene % 2 == 0){
+                if (isItEventDrustvene % 2 == 0) {
                     btnDrustveneIgre.setPressed(true);
                     if (btnDrustveneIgre.isPressed()) {
                         btnDrustveneIgre.setBackgroundResource(R.drawable.interest_button_pressed);
@@ -489,10 +500,9 @@ public class CreateUser extends AppCompatActivity {
                         selectedItems.add("Društvene igre");
 
                     }
-                }
-                else {
+                } else {
                     btnDrustveneIgre.setPressed(false);
-                    if(!btnDrustveneIgre.isPressed()){
+                    if (!btnDrustveneIgre.isPressed()) {
                         btnDrustveneIgre.setBackgroundResource(R.drawable.interest_button);
                         isItEventDrustvene += 1;
                         selectedItems.remove("Društvene igre");
@@ -503,7 +513,31 @@ public class CreateUser extends AppCompatActivity {
             }
         });
     }
+
+
+    public void setInterestNumber(int i) {
+
+        interestNumber = i;
     }
+
+    public int getIntNumber() {
+        return interestNumber;
+    }
+
+    public void setNogmetSkill(int i) {
+        nogometSkill = i;
+    }
+
+    public void setKosarkaSkill(int i) {
+        kosarkaSkill = i;
+    }
+
+    public void setSahSkill(int i) {
+        sahSkill = i;
+    }
+
+
+}
 
 
 

@@ -8,7 +8,7 @@
     tools:context=".InsideEvent">
 
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -19,163 +19,255 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary" />
 
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginTop="56dp"
+            android:background="@color/colorPrimaryDark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/toolbar" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginTop="124dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/toolbar" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textView" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="176dp"
+            android:text="Potrebno iskustvo"
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.501"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/toolbar" />
+
 
         <Button
             android:id="@+id/btnSendEventRequest"
             android:layout_width="wrap_content"
             android:layout_height="29dp"
             android:layout_gravity="right"
-            android:layout_marginRight="16dp"
-            android:text="Podjeli"
-            android:textSize="8sp"
+            android:layout_marginTop="144dp"
             android:background="@drawable/interest_button"
+            android:clickable="false"
+            android:text="Podjeli"
             android:textColor="?android:colorBackground"
+            android:textSize="8sp"
             android:visibility="invisible"
-            android:clickable="false"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.902"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/toolbar" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="16dp"
-            android:paddingTop="16dp"
-            android:text="Event name:" />
 
         <TextView
             android:id="@+id/tvEventName"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="144dp"
+            android:layout_marginEnd="308dp"
             android:hint="name"
-            android:paddingLeft="16dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="16dp"
-            android:text="Activity played:" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.575"
+            app:layout_constraintStart_toStartOf="@+id/textView2"
+            app:layout_constraintTop_toTopOf="@+id/toolbar" />
 
         <TextView
             android:id="@+id/tvEventActivity"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="68dp"
+            android:layout_marginBottom="8dp"
             android:hint="activity"
-            android:paddingLeft="16dp" />
+            android:textColor="#ffff"
+            app:layout_constraintBottom_toTopOf="@+id/textView2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.076"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/toolbar"
+            app:layout_constraintVertical_bias="0.034" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="at what time?"
-            android:paddingLeft="16dp"
-            android:text="At what time ?" />
 
         <TextView
             android:id="@+id/tvEventTime"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="68dp"
             android:hint="at what time?"
-            android:paddingLeft="16dp" />
+            android:textColor="#ffffff"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.94"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/toolbar" />
+
+        <TextView
+            android:id="@+id/tvEventDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="104dp"
+            android:layout_marginEnd="8dp"
+            android:hint="datum"
+            android:textColor="#ffff"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.835"
+            app:layout_constraintStart_toStartOf="@+id/textView"
+            app:layout_constraintTop_toTopOf="@+id/toolbar" />
 
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/tvEventRange"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="104dp"
+            android:layout_marginEnd="8dp"
             android:hint="Place"
-            android:paddingLeft="16dp"
-            android:text="Where is the event taking place:" />
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.056"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/toolbar" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tvEventPlace"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_marginTop="400dp"
+            android:layout_marginEnd="8dp"
+            android:hint="Place"
+            android:inputType="number"
+            android:paddingLeft="16dp"
+            android:textColor="#ffff"
+            app:layout_constraintEnd_toEndOf="@+id/textView"
+            app:layout_constraintHorizontal_bias="0.086"
+            app:layout_constraintStart_toStartOf="@+id/textView"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/tvEventPlace"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Place"
-                android:inputType="number"
-                android:paddingLeft="16dp" />
-
-            <ImageView
-                android:id="@+id/ivEventPlaceMap"
-                android:layout_width="30dp"
-                android:layout_height="20dp"
-                android:layout_marginLeft="12dp"
-                android:background="#009b12"
-                android:clickable="true"
-                android:src="@android:drawable/ic_dialog_map" />
-
-
-        </LinearLayout>
+        <ImageView
+            android:id="@+id/ivEventPlaceMap"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="436dp"
+            android:layout_marginEnd="8dp"
+            android:background="#009b12"
+            android:backgroundTint="@color/white_transparency"
+            android:clickable="true"
+            android:src="@drawable/karta"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.484"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/toolbar" />
 
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="21dp"
+            android:layout_marginBottom="96dp"
             android:hint="players needed"
-            android:paddingLeft="16dp"
-            android:text="How many players are needed:" />
-
-        <TextView
-            android:id="@+id/tvPlayersNeeded"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="players needed"
-            android:paddingLeft="16dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="players entered"
-            android:paddingLeft="16dp"
-            android:text="How many players are currently in event :" />
+            android:text="Igrača trenutno u eventu:"
+            app:layout_constraintBottom_toBottomOf="@+id/btnCompleteEvent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.03"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/tvPlayersEntered"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:hint="players entered"
             android:inputType="number"
-            android:paddingLeft="16dp" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.066"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.866" />
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/tvPlayersNeeded"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="80dp"
+            android:hint="4"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.78"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="212dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="100dp"
             android:paddingLeft="16dp"
-            android:text="Event description:" />
+            android:text="Koliko igraća treba:"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/tvEventDescription"
             android:layout_width="match_parent"
             android:layout_height="100dp"
+            android:layout_marginTop="292dp"
             android:hint="Description"
-            android:paddingLeft="16dp" />
-
-        <TextView
             android:paddingLeft="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Predloženi skill level: "/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/toolbar" />
 
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="200dp"
+            android:gravity="center_horizontal"
             android:orientation="horizontal"
-            android:paddingLeft="16dp">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/toolbar">
 
             <CheckBox
                 android:id="@+id/checkBox1"
                 style="?android:attr/starStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clickable="false"
-                />
+                android:clickable="false" />
 
             <CheckBox
                 android:id="@+id/checkBox2"
                 style="?android:attr/starStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clickable="false"/>
+                android:clickable="false" />
 
             <CheckBox
                 android:id="@+id/checkBox3"
@@ -188,35 +280,37 @@
         </LinearLayout>
 
 
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/btnCompleteEvent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_gravity="right"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="568dp"
+            android:layout_marginEnd="8dp"
+            android:padding="16dp"
+            android:text="ZAVRŠITE DOGAĐAJ "
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/toolbar" />
 
-            <Button
-                android:id="@+id/btnCompleteEvent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_marginLeft="16dp"
-                android:padding="16dp"
-                android:text="ZAVRŠITE DOGAĐAJ "
-                android:visibility="invisible" />
-
-            <Button
-                android:id="@+id/btnDoSomething"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_marginLeft="70dp"
-                android:padding="16dp"
-                android:text=" "
-                android:background="@drawable/interest_button"
-                android:textColor="?android:colorBackground"/>
-
-
-        </LinearLayout>
+        <Button
+            android:id="@+id/btnDoSomething"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="132dp"
+            android:background="@drawable/interest_button"
+            android:padding="16dp"
+            android:text=" "
+            android:textColor="?android:colorBackground"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.861"
+            app:layout_constraintStart_toStartOf="parent" />
 
 
         <android.support.design.widget.FloatingActionButton
@@ -225,10 +319,15 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
-            app:srcCompat="@android:drawable/ic_dialog_email" />
+            android:layout_marginTop="256dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/tvEventDescription"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+             />
 
 
-    </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
 
 
 </ScrollView>

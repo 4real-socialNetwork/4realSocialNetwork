@@ -32,6 +32,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class EventChatRoom extends AppCompatActivity {
@@ -147,7 +148,8 @@ public class EventChatRoom extends AppCompatActivity {
 
     public void sendMessage() {
         String eventId = getIntent().getStringExtra("EVENTID");
-        textMessage = new TextMessage(currentUser.getName(), mMessageText.getText().toString(), currentUser.getUserId(), eventId, "", Calendar.getInstance().getTimeInMillis());
+        ArrayList<String> usersInChat = getIntent().getStringArrayListExtra("USERS_IN_CHAT");
+        textMessage = new TextMessage(currentUser.getName(), mMessageText.getText().toString(), currentUser.getUserId(), eventId, "", Calendar.getInstance().getTimeInMillis(),usersInChat);
         FirebaseFirestore.getInstance()
                 .collection("Events")
                 .document(eventId)

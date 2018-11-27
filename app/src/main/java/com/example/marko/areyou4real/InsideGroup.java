@@ -58,6 +58,7 @@ public class InsideGroup extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(InsideGroup.this, GroupChatRoom.class);
                 intent.putExtra("GROUPID", groupId);
+                intent.putStringArrayListExtra("USERS_IN_GROUP",usersInArray);
                 startActivity(intent);
             }
         });

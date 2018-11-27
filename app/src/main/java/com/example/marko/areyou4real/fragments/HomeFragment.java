@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.Toast;
@@ -40,7 +41,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 
 
-
 public class HomeFragment extends android.support.v4.app.Fragment {
     private RecyclerView mRecycleView;
     private EventRecyclerAdapter mAdapter;
@@ -62,7 +62,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
     TinyDB tinyDB;
     private MyEventsAdapter myEventsAdapter;
     String userToken = "";
-    String firstGroupId ="";
+    String firstGroupId = "";
 
     @Nullable
     @Override
@@ -75,7 +75,6 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         setUpMyEventsRecyclerView(view);
         setInterests(view);
         setUpAdapter(view);
-
 
 
         int resId = R.anim.layout_animation_fall_down;
@@ -96,6 +95,9 @@ public class HomeFragment extends android.support.v4.app.Fragment {
             @Override
             public void onRefresh() {
                 swipe.setRefreshing(true);
+                //disable use of view while the events load to prevent crash because of empty recyclerView
+                getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 (new Handler()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -123,16 +125,17 @@ public class HomeFragment extends android.support.v4.app.Fragment {
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     for (DocumentSnapshot dc : task.getResult()) {
                         Event event = dc.toObject(Event.class);
-                        if(!event.isPrivate()){
+                        if (!event.isPrivate()) {
                             if (distance(userLat, userLng, event.getEventLat(), event.getEventLng(), 'K') <= userRange) {
-                                if(event.isCompleted()==false){
+                                if (event.isCompleted() == false) {
                                     eventsList.add(event);
                                 }
                             }
+                            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                             setUpAdapter(view);
 
                         }
-                        }
+                    }
 
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -174,7 +177,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
                     tinyDB = new TinyDB(getContext());
                     tinyDB.putString("USERDOCREF", userDocId);
                     tinyDB.putString("USERTOKEN", userToken);
-                    tinyDB.putString("USERNAME",user.getName());
+                    tinyDB.putString("USERNAME", user.getName());
                 }
                 loadEvents(view);
                 //updateUserToken();
@@ -243,42 +246,22 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         myEventsAdapter.stopListening();
     }
 
-    public void setUpAdapter(View view){
+    public void setUpAdapter(View view) {
         mRecycleView = view.findViewById(R.id.homeRecyclerView);
         mRecycleView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(mContext);
-        mAdapter = new EventRecyclerAdapter(mContext,eventsList);
+        mAdapter = new EventRecyclerAdapter(mContext, eventsList);
+        mAdapter.notifyDataSetChanged();
         mRecycleView.setAdapter(mAdapter);
         mRecycleView.setLayoutManager(mLayoutManager);
 
 
         mAdapter.notifyDataSetChanged();
 
-    }
-    private void getUserFirstGroup(){
-        if(firstGroupId.equals("")){
-            groupsRef.whereEqualTo("groupAdmin",FirebaseAuth.getInstance().getUid())
-                    .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    for (DocumentSnapshot dc : task.getResult()){
-                        try{
-                            if (dc.toObject(Group.class).isFirstGroup()){
-                                firstGroupId = dc.toObject(Group.class).getGroupId();
-                                tinyDB.putString("FIRSTGROUPID", firstGroupId);
-                                Toast.makeText(mContext, "group id got", Toast.LENGTH_SHORT).show();
-                            }else {
-                                Toast.makeText(mContext, "not working", Toast.LENGTH_SHORT).show();
-                            }
-                        }catch(NullPointerException e){
-                            getUserFirstGroup();
-                        }
-
-                    }
-                }
-            });
-        }
 
     }
+
 
 }
+
+

@@ -26,6 +26,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class GroupChatRoom extends AppCompatActivity {
@@ -140,7 +142,8 @@ public class GroupChatRoom extends AppCompatActivity {
     }
     public void sendMessage(){
         String groupId = getIntent().getStringExtra("GROUPID");
-        textMessage = new TextMessage(currentUser.getName(), mMessageText.getText().toString(), currentUser.getUserId(),"",groupId,Calendar.getInstance().getTimeInMillis());
+        ArrayList<String> usersInChat = getIntent().getStringArrayListExtra("USERS_IN_GROUP");
+        textMessage = new TextMessage(currentUser.getName(), mMessageText.getText().toString(), currentUser.getUserId(),"",groupId,Calendar.getInstance().getTimeInMillis(),usersInChat);
         FirebaseFirestore.getInstance()
                 .collection("Groups")
                 .document(groupId)

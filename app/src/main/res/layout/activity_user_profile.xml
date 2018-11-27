@@ -10,7 +10,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_alignEnd="@id/bottomNavigation">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,6 +27,7 @@
                 android:layout_marginTop="64dp" />
 
             <Button
+                android:layout_margin="6dp"
                 android:id="@+id/btnUploadPicture"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -57,6 +59,7 @@
 
 
             <Button
+                android:layout_margin="6dp"
                 android:padding="6dp"
                 android:background="@drawable/interest_button"
                 android:textColor="?android:colorBackground"
@@ -81,6 +84,7 @@
                 android:background="@android:color/darker_gray" />
 
             <Button
+                android:layout_margin="6dp"
                 android:padding="6dp"
                 android:background="@drawable/interest_button"
                 android:textColor="?android:colorBackground"
@@ -127,6 +131,7 @@
 
 
             <Button
+                android:layout_margin="6dp"
                 android:padding="6dp"
                 android:background="@drawable/interest_button"
                 android:textColor="?android:colorBackground"
@@ -151,7 +156,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="65dp"
+                android:layout_marginBottom="85dp"
                 android:text="odjava" />
 
         </LinearLayout>

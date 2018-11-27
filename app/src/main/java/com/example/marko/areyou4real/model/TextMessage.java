@@ -2,6 +2,7 @@ package com.example.marko.areyou4real.model;
 
 import com.google.firebase.firestore.ServerTimestamp;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class TextMessage {
@@ -11,16 +12,26 @@ public class TextMessage {
     private long mTimestamp;
     private String idOfEventOfMessage;
     private String idOfGroupOfMessage;
+    private ArrayList<String> usersInChat;
 
     public TextMessage() { } // Needed for Firebase
 
-    public TextMessage(String name, String message, String uid,String idOfEventOfMessage,String idOfGroupOfMessage,long mTimestamp) {
+    public TextMessage(String name, String message, String uid,String idOfEventOfMessage,String idOfGroupOfMessage,long mTimestamp,ArrayList<String> usersInChat) {
         this.mName = name;
         this.mMessage = message;
         this.mUid = uid;
         this.idOfEventOfMessage = idOfEventOfMessage;
         this.idOfGroupOfMessage = idOfGroupOfMessage;
         this.mTimestamp = mTimestamp;
+        this.usersInChat = usersInChat;
+    }
+
+    public ArrayList<String> getUsersInChat() {
+        return usersInChat;
+    }
+
+    public void setUsersInChat(ArrayList<String> usersInChat) {
+        this.usersInChat = usersInChat;
     }
 
     public String getIdOfGroupOfMessage() {

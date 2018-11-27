@@ -22,9 +22,17 @@ public class User {
     String userToken;
     ArrayList<String> userFriends;
     String userDocRef;
+    int nogometSkill;
+    int kosarkaSkill;
+    int sahSkill;
+    int numberOfEventsParticipated = 0;
+    int positiveReview = 0;
+    int percentage = 100;
+
 
     public User(String userId, String userToken, String name, String surname, String email, String description,
-                ArrayList<String> interests, int range, ArrayList<String> userFriends, String profilePictureUrl) {
+                ArrayList<String> interests, int range, ArrayList<String> userFriends, String profilePictureUrl, int nogometSkill, int kosarkaSkill,
+                int sahSkill, int numberOfEventsParticipated, int positiveReview, int percentage) {
         this.userId = userId;
         this.name = name;
         this.surname = surname;
@@ -35,7 +43,66 @@ public class User {
         this.userToken = userToken;
         this.userFriends = userFriends;
         this.profilePictureUrl = profilePictureUrl;
+        this.nogometSkill = nogometSkill;
+        this.kosarkaSkill = kosarkaSkill;
+        this.sahSkill = sahSkill;
+        this.numberOfEventsParticipated = numberOfEventsParticipated;
+        this.positiveReview = positiveReview;
+        this.percentage = percentage;
     }
+
+    public int getPercentage() {
+        return percentage;
+    }
+
+    public void setPercentage(int percentage) {
+        this.percentage = percentage;
+    }
+
+    public int getNumberOfEventsParticipated() {
+        return numberOfEventsParticipated;
+    }
+
+    public void setNumberOfEventsParticipated(int numberOfEventsParticipated) {
+        this.numberOfEventsParticipated = numberOfEventsParticipated;
+    }
+
+    public int getPositiveReview() {
+        return positiveReview;
+    }
+
+    public void setPositiveReview(int positiveReview) {
+        this.positiveReview = positiveReview;
+    }
+
+    public void setProfilePictureUrl(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
+    }
+
+    public int getNogometSkill() {
+        return nogometSkill;
+    }
+
+    public void setNogometSkill(int nogometSkill) {
+        this.nogometSkill = nogometSkill;
+    }
+
+    public int getKosarkaSkill() {
+        return kosarkaSkill;
+    }
+
+    public void setKosarkaSkill(int kosarkaSkill) {
+        this.kosarkaSkill = kosarkaSkill;
+    }
+
+    public int getSahSkill() {
+        return sahSkill;
+    }
+
+    public void setSahSkill(int sahSkill) {
+        this.sahSkill = sahSkill;
+    }
+
 
     public String getUserDocRef() {
         return userDocRef;
@@ -166,4 +233,14 @@ public class User {
         numberOfGrades += 1;
         usersFinalGrade = userGrades / numberOfGrades;
     }
+
+    public void addPositiveReview(){
+        positiveReview +=1;
+        numberOfEventsParticipated +=1;
+    }
+    public void addNegativeReview(){
+        numberOfEventsParticipated+=1;
+
+    }
+
 }

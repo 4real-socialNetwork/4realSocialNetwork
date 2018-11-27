@@ -3,12 +3,14 @@ package com.example.marko.areyou4real.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,12 +51,11 @@ public class SearchUserRecyclerViewAdapter extends RecyclerView.Adapter<SearchUs
                 mContext.startActivity(intent);
             }
         });
+        holder.userDescription.setText(userList.get(position).getDescription());
+        GlideApp.with(mContext).load(userList.get(position).getProfilePictureUrl()).placeholder(R.drawable.avatar).circleCrop().into(holder.userPicture);
     }
 
-    public void addUser(User user) {
-        this.userList.add(user);
-        notifyItemInserted(getItemCount() - 1);
-    }
+
 
     @Override
     public int getItemCount() {
@@ -95,12 +96,16 @@ public class SearchUserRecyclerViewAdapter extends RecyclerView.Adapter<SearchUs
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView userName;
-        LinearLayout searchUserLinearLayout;
-
+        TextView userDescription;
+        ConstraintLayout searchUserLinearLayout;
+        ImageView userPicture;
         public ViewHolder(View itemView) {
             super(itemView);
             this.userName = itemView.findViewById(R.id.tvUserName);
+            this.userDescription = itemView.findViewById(R.id.tvUserDescription);
             this.searchUserLinearLayout = itemView.findViewById(R.id.searchListItemLinearLayout);
+            this.userPicture = itemView.findViewById(R.id.ivUserPicture);
+
         }
     }
 

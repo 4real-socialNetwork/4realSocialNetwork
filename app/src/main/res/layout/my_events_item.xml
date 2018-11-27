@@ -5,7 +5,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:id="@+id/myEventsLayout">
+    android:id="@+id/myEventsLayout"
+    android:layout_marginTop="6dp">
     <ImageView
         android:layout_width="60dp"
         android:layout_height="60dp"

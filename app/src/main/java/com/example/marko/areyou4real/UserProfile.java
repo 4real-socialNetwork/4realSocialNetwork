@@ -85,6 +85,8 @@ public class UserProfile extends AppCompatActivity {
     private String pictureUrl = "";
     private TinyDB tinyDB;
     private Context mContext;
+    private String userProfilePictureUrl = new String();
+    private int isPictureChanging = 0;
 
 
     @Override
@@ -152,6 +154,7 @@ public class UserProfile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 openFileChooser();
+                isPictureChanging = 1;
             }
         });
 
@@ -159,6 +162,7 @@ public class UserProfile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 uploadFile();
+                isPictureChanging = 0;
                 progressBar.setVisibility(View.VISIBLE);
             }
         });
@@ -181,6 +185,7 @@ public class UserProfile extends AppCompatActivity {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 User user = documentSnapshot.toObject(User.class);
+                userProfilePictureUrl = user.getProfilePictureUrl();
                 name.setText(user.getName());
                 if (mContext != null) {
                     GlideApp.with(UserProfile.this).load(user.getProfilePictureUrl()).
@@ -243,7 +248,7 @@ public class UserProfile extends AppCompatActivity {
 
         if (updatedInterest.size() == 0) {
             usersRef.document(userDocRef).update("range", current_range, "name", name.getText().toString(), "description",
-                    userDescription.getText().toString()
+                    userDescription.getText().toString(),"profilePictureUrl",pictureUrl
             ).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
@@ -253,7 +258,7 @@ public class UserProfile extends AppCompatActivity {
             });
         } else {
             usersRef.document(userDocRef).update("range", current_range, "name", name.getText().toString(), "description",
-                    userDescription.getText().toString(), "interests", updatedInterest
+                    userDescription.getText().toString(), "interests", updatedInterest,"profilePictureUrl",pictureUrl
             ).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
@@ -326,6 +331,7 @@ public class UserProfile extends AppCompatActivity {
                     .load(mImageUri)
                     .circleCrop()
                     .into(profilePicture);
+            Toast.makeText(mContext, "me", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -356,6 +362,7 @@ public class UserProfile extends AppCompatActivity {
                             pictureUrl = uri.toString();
                             Toast.makeText(UserProfile.this, pictureUrl, Toast.LENGTH_SHORT).show();
                             progressBar.setVisibility(View.INVISIBLE);
+                            updateUserProfile();
 
                         }
                     });
@@ -378,15 +385,18 @@ public class UserProfile extends AppCompatActivity {
                     User user = documentSnapshot.toObject(User.class);
                     name.setText(user.getName());
                     if (mContext != null) {
-                        try {
-                            GlideApp.with(UserProfile.this).load(user.getProfilePictureUrl()).
-                                    placeholder(R.drawable.avatar).circleCrop()
-                                    .into(profilePicture);
-                        } catch (IllegalArgumentException e1) {
-                            Log.d("Illegal argument", "onEvent: " + e1.getMessage());
+                        if(isPictureChanging==0){
+                            try {
+                                GlideApp.with(UserProfile.this).load(user.getProfilePictureUrl()).
+                                        placeholder(R.drawable.avatar).circleCrop()
+                                        .into(profilePicture);
+                            } catch (IllegalArgumentException e1) {
+                                Log.d("Illegal argument", "onEvent: " + e1.getMessage());
+                            }
+
+                        }
                         }
 
-                    }
 
                     userDescription.setText(user.getDescription());
                     current_range = user.getRange();

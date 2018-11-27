@@ -29,7 +29,7 @@ public class MyEventsAdapter extends FirestoreRecyclerAdapter<Event, MyEventsAda
     protected void onBindViewHolder(@NonNull MyEventsAdapter.MyEventsHolder holder, int position, @NonNull Event model) {
         final String eventId = model.getEventId();
         holder.eventName.setText(model.getName());
-        GlideApp.with(mContext).load(R.drawable.avatar).circleCrop().into(holder.eventImage);
+        GlideApp.with(mContext).load(R.drawable.football_image).circleCrop().into(holder.eventImage);
         holder.myEventsLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -83,18 +83,14 @@
                 android:layout_height="wrap_content"
                 android:text="Izaberite svoje intererse:" />
 
-            <Button
-                android:id="@+id/btnInteres"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Interesi" />
-
             <LinearLayout
+                android:layout_marginTop="6dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <Button
+                    android:padding="6dp"
                     android:id="@+id/btnNogomet"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -104,6 +100,7 @@
                     android:layout_margin="2dp"/>
 
                 <Button
+                    android:padding="6dp"
                     android:layout_margin="2dp"
                     android:id="@+id/btnKosarka"
                     android:layout_width="wrap_content"
@@ -121,6 +118,7 @@
                 android:orientation="horizontal">
 
                 <Button
+                    android:padding="6dp"
                     android:layout_margin="2dp"
                     android:id="@+id/btnSah"
                     android:layout_width="wrap_content"
@@ -130,6 +128,7 @@
                     android:textColor="#ffff" />
 
                 <Button
+
                     android:layout_margin="2dp"
                     android:id="@+id/btnDrustveneIgre"
                     android:layout_width="wrap_content"
@@ -140,6 +139,7 @@
                     android:padding="6dp"/>
 
                 <Button
+                    android:padding="6dp"
                     android:layout_margin="2dp"
                     android:id="@+id/btnDruzenje"
                     android:layout_width="wrap_content"
@@ -188,6 +188,7 @@
                 android:background="@android:color/darker_gray" />
 
             <Button
+                android:layout_marginTop="6dp"
                 android:id="@+id/btnCreateAcc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -166,26 +166,18 @@ public class OtherUserProfile extends AppCompatActivity {
                 for (DocumentSnapshot dc : queryDocumentSnapshots) {
                     FriendRequest fr = dc.toObject(FriendRequest.class);
 
-                    if (fr.getSenderId().equals(FirebaseAuth.getInstance().getUid()) && (fr.isAccepted()) == false) {
+                    if ((fr.getSenderId().equals(FirebaseAuth.getInstance().getUid())) && !(fr.isAccepted())) {
                         btnAddPlayer.setText("Zahtjev poslan");
                         btnAddPlayer.setClickable(false);
 
-                    } else if (fr.getSenderId().equals(FirebaseAuth.getInstance().getUid()) && (fr.isAccepted()) != false) {
+                    } else if (fr.getSenderId().equals(FirebaseAuth.getInstance().getUid()) && (fr.isAccepted())) {
                         btnAddPlayer.setText("Prijatelji ste");
                         btnAddPlayer.setClickable(false);
-                    } else {
-                        btnAddPlayer.setText("Dodaj prijatelja");
-                        btnAddPlayer.setClickable(true);
-                        btnAddPlayer.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                sendPlayerRequest();
-                            }
-                        });
+                    }
                     }
 
                 }
-            }
+
         });
 
     }
@@ -241,6 +233,7 @@ public class OtherUserProfile extends AppCompatActivity {
                             });
                         } else {
                             checkIfFriendRequestIsSent();
+
                         }
 
                     }
@@ -249,6 +242,8 @@ public class OtherUserProfile extends AppCompatActivity {
 
             }
         });
+        checkIfFriendRequestIsSent();
+
     }
 
     @Override
@@ -258,45 +253,51 @@ public class OtherUserProfile extends AppCompatActivity {
         otherUserDocRef = intent.getStringExtra("otherUserDocRef");
         getCurrentUserName();
 
+        try{
+            usersRef.document(otherUserDocRef).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                    otherUser = documentSnapshot.toObject(User.class);
+                    thisUserDocRef = documentSnapshot.getId();
+                    if (mContext != null) {
+                        try {
+                            if (otherUser.getProfilePictureUrl() != null) {
+                                GlideApp.with(OtherUserProfile.this).load(otherUser.getProfilePictureUrl())
+                                        .circleCrop()
+                                        .placeholder(R.drawable.avatar)
+                                        .into(ivUserProfilePicture);
+                            } else {
+                                GlideApp.with(OtherUserProfile.this).load(R.drawable.avatar).circleCrop().into(ivUserProfilePicture);
 
-        usersRef.document(otherUserDocRef).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                otherUser = documentSnapshot.toObject(User.class);
-                thisUserDocRef = documentSnapshot.getId();
-                if (mContext != null) {
-                    try {
-                        if (otherUser.getProfilePictureUrl() != null) {
-                            GlideApp.with(OtherUserProfile.this).load(otherUser.getProfilePictureUrl())
-                                    .circleCrop()
-                                    .placeholder(R.drawable.avatar)
-                                    .into(ivUserProfilePicture);
-                        } else {
-                            GlideApp.with(OtherUserProfile.this).load(R.drawable.avatar).circleCrop().into(ivUserProfilePicture);
-
-                        }
-                    } catch (IllegalArgumentException exception) {
-                        Log.d("IllegalArgument", "onEvent: " + exception.getMessage());
-
-                    }
-
-
-                    tvUserName.setText(otherUser.getName());
-                    tvUserDescription.setText(otherUser.getDescription());
-                    for (String value : otherUser.getInterests()) {
-                        if (value == otherUser.getInterests().get(otherUser.getInterests().size() - 1)) {
-                            interests += value + ".";
-                        } else {
-                            interests += value + ", ";
+                            }
+                        } catch (IllegalArgumentException exception) {
+                            Log.d("IllegalArgument", "onEvent: " + exception.getMessage());
 
                         }
+
+
+                        tvUserName.setText(otherUser.getName());
+                        tvUserDescription.setText(otherUser.getDescription());
+                        for (String value : otherUser.getInterests()) {
+                            if (value == otherUser.getInterests().get(otherUser.getInterests().size() - 1)) {
+                                interests += value + ".";
+                            } else {
+                                interests += value + ", ";
+
+                            }
+                        }
+                        // tvUserInterests.setText(interests);
+
                     }
-                    // tvUserInterests.setText(interests);
 
                 }
+            });
 
-            }
-        });
+        }catch (Exception e){
+            Log.d("OnStart", "onStart: There was an error in the onStart");
+        }
+
+
 
     }
 

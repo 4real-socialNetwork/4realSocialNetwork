@@ -111,7 +111,20 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
+
+        final int[] SELECTEDICONS = new int[]{
+                R.drawable.home_events,
+                R.drawable.groups_home
+        };
+
+
+
+        tabLayout.getTabAt(0).setIcon(SELECTEDICONS[0]);
+        tabLayout.getTabAt(1).setIcon(SELECTEDICONS[1]);
+
+
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -164,8 +177,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         SectionPagerAdapter adapter = new SectionPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new HomeFragment(), "Događaji");
-        adapter.addFragment(new GroupsFragment(), "Vaše grupe");
+        adapter.addFragment(new HomeFragment(), "");
+        adapter.addFragment(new GroupsFragment(), "");
         viewPager.setAdapter(adapter);
     }
 

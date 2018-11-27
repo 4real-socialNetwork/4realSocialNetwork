@@ -83,7 +83,7 @@ public class CreateGroup extends AppCompatActivity {
     }
 
     private void loadUsers() {
-        mUsersRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        mUsersRef.whereArrayContains("userFriends",FirebaseAuth.getInstance().getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -134,18 +134,24 @@ public class CreateGroup extends AppCompatActivity {
                 }
                 group.addUserId(FirebaseAuth.getInstance().getUid());
                 group.setGroupName(mGroupName.getText().toString().trim());
-                mGroupsRef.add(group).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentReference> task) {
-                    if(task.isSuccessful()){
-                    docRef = task.getResult();
-                    groupId = docRef.getId();
-                    docRef.update("groupId",groupId);
-                    createChat();
+                if(group.getListOfUsersInGroup().size()>1&&group.getGroupName().length()>3){
+                    mGroupsRef.add(group).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentReference> task) {
+                            if(task.isSuccessful()){
+                                docRef = task.getResult();
+                                groupId = docRef.getId();
+                                docRef.update("groupId",groupId);
+                                createChat();
 
-                    }
-                    }
-                });
+                            }
+                        }
+                    });
+                }else {
+                    Toast.makeText(mContext, "Grupa mora imati više od dva člana", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Provjerite naziv grupe", Toast.LENGTH_SHORT).show();
+                }
+
 
             }
         });
@@ -183,6 +189,7 @@ public class CreateGroup extends AppCompatActivity {
     private void dialogUsers() {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+        dialog.setTitle("Lista prijatelja");
         dialog.setContentView(R.layout.dialog_users);
         dialog.setCancelable(true);
 
@@ -224,7 +231,7 @@ public class CreateGroup extends AppCompatActivity {
         return true;
     }
     private void createChat(){
-        mGroupsRef.document(groupId).collection("chatRoom").add(new TextMessage("","","","",groupId,Calendar.getInstance().getTimeInMillis())).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+        mGroupsRef.document(groupId).collection("chatRoom").add(new TextMessage("","","","",groupId,Calendar.getInstance().getTimeInMillis(),null)).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 mTextMessageId = documentReference.getId();

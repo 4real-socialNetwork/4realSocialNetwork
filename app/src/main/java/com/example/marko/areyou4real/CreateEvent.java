@@ -336,31 +336,17 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
         } else if (requestCode == 2 && data != null) {
             if (resultCode == RESULT_OK) {
                 isPrivate = true;
-                try{
+                try {
                     usersInGroup = data.getStringArrayListExtra("users_in_group");
                     groupNames = data.getStringArrayListExtra("group_names");
                     tvEventForUsers.setText(groupNames.toString());
-                }catch (Exception e){
+                } catch (Exception e) {
                     Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
 
 
             }
         }
-    }
-
-    public void createChat() {
-        eventsRef.document(docId).collection("chatRoom").add(new TextMessage("", "", "", docId, "", Calendar.getInstance().getTimeInMillis())).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-            @Override
-            public void onSuccess(DocumentReference documentReference) {
-                mTextMessageId = documentReference.getId();
-                eventsRef.document(docId).collection("chatRoom").document(mTextMessageId)
-                        .update("eventChatId", mTextMessageId);
-
-
-            }
-        });
-        progressBar.setVisibility(View.INVISIBLE);
     }
 
 
@@ -409,7 +395,7 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
         tinyDB = new TinyDB(mContext);
         String userName = tinyDB.getString("USERNAME");
         String userDocRef = tinyDB.getString("USERDOCREF");
-        if(usersInGroup.size()>0){
+        if (usersInGroup.size() > 0) {
             for (String reciverId : usersInGroup) {
                 if (!reciverId.equals(FirebaseAuth.getInstance().getUid())) {
                     if (!duplicateCheck.contains(reciverId)) {

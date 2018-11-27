@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.marko.areyou4real.adapter.CompleteEventRecyclerAdapter;
 import com.example.marko.areyou4real.adapter.TinyDB;
 import com.example.marko.areyou4real.dialogs.ShareEventDialog;
 import com.example.marko.areyou4real.fragments.InsideEventMap;
@@ -44,6 +46,7 @@ public class InsideEvent extends AppCompatActivity {
     private TextView tvEventName;
     private TextView tvEventActivity;
     private TextView tvEventTime;
+    private TextView tvEventDate;
     private TextView tvEventDescription;
     private TextView tvEventPlace;
     private TextView tvEventPlayersNeeded;
@@ -77,11 +80,19 @@ public class InsideEvent extends AppCompatActivity {
     private TinyDB tinyDB;
     private Context mContext;
     private long eventTimeInMili;
+    private ArrayList<String> usersInEvent = new ArrayList<>();
+    private ArrayList<String> positiveUsers = new ArrayList<>();
+    private ArrayList<String> negativeUsers = new ArrayList<>();
+    private TextView tvEventRange;
+    private int range;
+    private SimpleDateFormat sdfTime = new SimpleDateFormat("mm:HH");
+    private SimpleDateFormat sdfDate = new SimpleDateFormat("EEE, d MMM yyyy");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inside_event);
+        tvEventRange = findViewById(R.id.tvEventRange);
         loadData();
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -94,6 +105,7 @@ public class InsideEvent extends AppCompatActivity {
         tvEventName = findViewById(R.id.tvEventName);
         tvEventActivity = findViewById(R.id.tvEventActivity);
         tvEventTime = findViewById(R.id.tvEventTime);
+        tvEventDate = findViewById(R.id.tvEventDate);
         tvEventDescription = findViewById(R.id.tvEventDescription);
         tvEventPlace = findViewById(R.id.tvEventPlace);
         tvEventPlayersNeeded = findViewById(R.id.tvPlayersNeeded);
@@ -106,6 +118,7 @@ public class InsideEvent extends AppCompatActivity {
         mCheckBox1 = findViewById(R.id.checkBox1);
         mCheckBox2 = findViewById(R.id.checkBox2);
         mCheckBox3 = findViewById(R.id.checkBox3);
+
 
         ivEventPlace.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,6 +137,7 @@ public class InsideEvent extends AppCompatActivity {
 
                 Intent intent = new Intent(InsideEvent.this, EventChatRoom.class);
                 intent.putExtra("EVENTID", eventId);
+                intent.putStringArrayListExtra("USERS_IN_CHAT", usersInEvent);
                 startActivity(intent);
             }
         });
@@ -163,13 +177,17 @@ public class InsideEvent extends AppCompatActivity {
                     eventCreatorId = event.getIdOfTheUserWhoCreatedIt();
                     tvEventName.setText(event.getName());
                     tvEventActivity.setText(event.getActivity());
-                    tvEventTime.setText(sdf.format(event.getEventStart()));
+                    tvEventTime.setText(sdfTime.format(event.getEventStart()));
+                    tvEventDate.setText(sdfDate.format(event.getEventStart()));
                     tvEventDescription.setText(event.getEventDescription());
                     tvEventPlace.setText(event.getEventAdress());
                     tvEventPlayersNeeded.setText("" + event.getUsersNeeded());
                     tvEventPlayersEntered.setText("" + event.getUsersEntered());
                     eventLat = event.getEventLat();
                     eventLng = event.getEventLng();
+                    usersInEvent.clear();
+                    usersInEvent = event.getListOfUsersParticipatingInEvent();
+
 
                     if (userId.equals(event.getIdOfTheUserWhoCreatedIt())) {
                         btnDoSomething.setText(btnText1);
@@ -187,10 +205,9 @@ public class InsideEvent extends AppCompatActivity {
                         fab.setClickable(true);
                     }
                     checkTime(event);
-                } catch (NullPointerException exception) {
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(intent);
-                    Toast.makeText(InsideEvent.this, "yes", Toast.LENGTH_SHORT).show();
+
+                } catch (NullPointerException e1) {
+                    Log.d("nULL", "onEvent: NULLPOINTER");
                 }
 
 
@@ -206,10 +223,14 @@ public class InsideEvent extends AppCompatActivity {
         intent = getIntent();
         eventId = intent.getStringExtra("EVENT_ID");
         eventChatId = intent.getStringExtra("CHAT_ID");
+        range = intent.getIntExtra("range", 0);
+        tvEventRange.setText(range + " km");
+
 
         eventsRef.document(eventId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
+
                 try {
                     Event event = documentSnapshot.toObject(Event.class);
                     tvEventName.setText(event.getName());
@@ -222,6 +243,9 @@ public class InsideEvent extends AppCompatActivity {
                     eventLat = event.getEventLat();
                     eventLng = event.getEventLng();
                     eventTimeInMili = event.getEventStart();
+                    usersInEvent.clear();
+                    usersInEvent = event.getListOfUsersParticipatingInEvent();
+
 
                     if (event.getSkillNeeded() == 1) {
                         mCheckBox1.setChecked(true);
@@ -259,13 +283,14 @@ public class InsideEvent extends AppCompatActivity {
                         btnDoSomething.setText(btnText2);
                         exitEvent();
                     }
+                    checkTime(event);
 
-                } catch (NullPointerException e) {
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(intent);
-                    Toast.makeText(InsideEvent.this, "yes", Toast.LENGTH_SHORT).show();
+
+                } catch (NullPointerException e2) {
+                    Toast.makeText(mContext, e2.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
+
 
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -365,20 +390,36 @@ public class InsideEvent extends AppCompatActivity {
 
     private void checkTime(final Event event) {
 
-        if (eventCreatorId.equals(userId) && event.getEventStart() + 18000000 < Calendar.getInstance().getTimeInMillis()) {
-            btnCompleteEvent.setVisibility(View.VISIBLE);
-            btnCompleteEvent.setClickable(true);
-            btnCompleteEvent.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    eventsRef.document(eventId).update("isCompleted", true).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(InsideEvent.this, "Event završen", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            });
+        if (eventCreatorId.equals(userId) && event.getEventStart() + 600000 < Calendar.getInstance().getTimeInMillis()) {
+            if(usersInEvent.size()-1 == 0){
+                btnDoSomething.setText("Obriši event");
+                btnDoSomething.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        eventsRef.document(eventId).delete();
+                        startActivity(new Intent(InsideEvent.this,MainActivity.class));
+                    }
+                });
+            }else{
+                btnSendEventRequest.setVisibility(View.INVISIBLE);
+                btnDoSomething.setVisibility(View.INVISIBLE);
+                btnDoSomething.setClickable(false);
+                btnCompleteEvent.setVisibility(View.VISIBLE);
+                btnCompleteEvent.setClickable(true);
+                btnCompleteEvent.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(InsideEvent.this, CompleteEventActivity.class);
+                        intent.putExtra("EVENT_ID", eventId);
+                        startActivityForResult(intent, 3);
+
+                    }
+                });
+            }
+
+        } else if ((!eventCreatorId.equals(userId)) && event.getEventStart() + 18000000 < Calendar.getInstance().getTimeInMillis()) {
+            btnDoSomething.setVisibility(View.INVISIBLE);
+            btnDoSomething.setClickable(false);
         }
     }
 
@@ -403,26 +444,31 @@ public class InsideEvent extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        try {
-            if (requestCode == 1) {
 
-                if (resultCode == RESULT_OK && data != null) {
-                    usersToBeInvited = data.getStringArrayListExtra("users_in_group");
-                    namesOfUsersInvited = data.getStringArrayListExtra("group_names");
-                    Toast.makeText(InsideEvent.this, usersToBeInvited.get(0), Toast.LENGTH_SHORT).show();
-                    sendEventRequest();
-                }
-            } else if (requestCode == 2) {
-                if (resultCode == RESULT_OK && data != null) {
-                    usersToBeInvited = data.getStringArrayListExtra("friends_selected");
-                    Toast.makeText(mContext, usersToBeInvited.get(0), Toast.LENGTH_SHORT).show();
-                    sendEventRequest();
-                }
+        if (requestCode == 1) {
+
+            if (resultCode == RESULT_OK && data != null) {
+                usersToBeInvited = data.getStringArrayListExtra("users_in_group");
+                namesOfUsersInvited = data.getStringArrayListExtra("group_names");
+                Toast.makeText(InsideEvent.this, usersToBeInvited.get(0), Toast.LENGTH_SHORT).show();
+                sendEventRequest();
             }
+        } else if (requestCode == 2) {
+            if (resultCode == RESULT_OK && data != null) {
+                usersToBeInvited = data.getStringArrayListExtra("friends_selected");
+                Toast.makeText(mContext, usersToBeInvited.get(0), Toast.LENGTH_SHORT).show();
+                sendEventRequest();
+            }
+        } else if (requestCode == 3) {
+            if (resultCode == RESULT_OK && data != null) {
 
-        }catch (Exception e){
-            Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
+                positiveUsers = data.getStringArrayListExtra("positive_users");
+                negativeUsers = data.getStringArrayListExtra("negative_users");
+                finishEvent();
+            }
         }
+
+
     }
 
     private void sendEventRequest() {
@@ -464,7 +510,63 @@ public class InsideEvent extends AppCompatActivity {
         }
         Toast.makeText(mContext, "Uspjeh", Toast.LENGTH_SHORT).show();
     }
+
+    private void finishEvent() {
+
+        if (positiveUsers != null && positiveUsers.size() > 0) {
+            for (String userId : positiveUsers) {
+                usersRef.document(userId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        User user = documentSnapshot.toObject(User.class);
+                        user.addPositiveReview();
+                        double positive = user.getPositiveReview();
+                        double entered = user.getNumberOfEventsParticipated();
+                        double sum = (positive/entered)*100;
+                        user.setPercentage((int)sum);
+                        usersRef.document(documentSnapshot.getId()).set(user);
+                    }
+                });
+            }
+        }
+        if (negativeUsers != null && negativeUsers.size() > 0) {
+            for (String userId : negativeUsers) {
+                usersRef.document(userId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        User user = documentSnapshot.toObject(User.class);
+                        user.addNegativeReview();
+                        double positive = user.getPositiveReview();
+                        double entered = user.getNumberOfEventsParticipated();
+                        double sum = (positive/entered)*100;
+                        user.setPercentage((int)sum);
+                        usersRef.document(documentSnapshot.getId()).set(user);
+                    }
+                });
+            }
+
+        }
+        endEvent();
+
+    }
+
+    private void endEvent() {
+        eventsRef.document(eventId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Event event = documentSnapshot.toObject(Event.class);
+                event.getListOfUsersParticipatingInEvent().clear();
+                eventsRef.document(eventId).set(event);
+                btnCompleteEvent.setVisibility(View.INVISIBLE);
+                btnCompleteEvent.setClickable(false);
+                Toast.makeText(mContext, "Event uspješno završen", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
 }
+
 
 
 
