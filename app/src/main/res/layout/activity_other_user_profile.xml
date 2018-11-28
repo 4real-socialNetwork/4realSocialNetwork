@@ -114,7 +114,6 @@
         android:padding="6dp"
         android:text="dodaj prijatelja"
         android:textColor="?android:colorBackground"
-        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/guideline18"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

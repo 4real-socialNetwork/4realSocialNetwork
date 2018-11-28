@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
@@ -170,7 +171,8 @@ public class CreateUser extends AppCompatActivity {
             }
         });
 
-
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         final String mail = email.getText().toString().trim();
         final String pass = password.getText().toString().trim();
         final String ime = name.getText().toString().trim();

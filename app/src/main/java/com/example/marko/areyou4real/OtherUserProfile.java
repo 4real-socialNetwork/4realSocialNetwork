@@ -178,6 +178,15 @@ public class OtherUserProfile extends AppCompatActivity {
                         btnAddPlayer.setVisibility(View.VISIBLE);
                         btnAddPlayer.setText("Prijatelji ste");
                         btnAddPlayer.setClickable(false);
+                    }else {
+                        btnAddPlayer.setVisibility(View.VISIBLE);
+                        btnAddPlayer.setText("Pošalji zahtjev");
+                        btnAddPlayer.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                sendPlayerRequest();
+                            }
+                        });
                     }
                     }
 
@@ -263,7 +272,12 @@ public class OtherUserProfile extends AppCompatActivity {
             usersRef.document(otherUserDocRef).addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                    otherUser = documentSnapshot.toObject(User.class);
+                    try{
+                        otherUser = documentSnapshot.toObject(User.class);
+
+                    }catch (NullPointerException e1){
+                        Log.d("log", "onEvent: ");
+                    }
                     thisUserDocRef = documentSnapshot.getId();
                     if (mContext != null) {
                         try {
