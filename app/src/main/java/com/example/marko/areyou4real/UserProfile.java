@@ -1,17 +1,13 @@
 package com.example.marko.areyou4real;
 
-import android.app.TimePickerDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSeekBar;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,34 +19,25 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestBuilder;
 import com.example.marko.areyou4real.LoginCreateUser.LoginActivity;
 import com.example.marko.areyou4real.adapter.BottomNavigationViewHelper;
 import com.example.marko.areyou4real.adapter.GlideApp;
 import com.example.marko.areyou4real.adapter.TinyDB;
-import com.example.marko.areyou4real.dialogs.InterestDialog;
-import com.example.marko.areyou4real.fragments.TimePickerFragment;
+import com.example.marko.areyou4real.dialogs.SkillDialogUserProfile;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -88,6 +75,24 @@ public class UserProfile extends AppCompatActivity {
     private String userProfilePictureUrl = new String();
     private int isPictureChanging = 0;
     private TextView tvPercent;
+    private Button btnNogomet;
+    private Button btnKosarka;
+    private Button btnSah;
+    private Button btnDrustveneIgre;
+    private Button btnDruzenje;
+    int isItEventNogomet = 4;
+    int isItEventKosarka = 4;
+    int isItEventSah = 4;
+    int isItEventDruzenje = 4;
+    int isItEventDrustvene = 4;
+    int interestNumber;
+    private int nogometSkill;
+    private int kosarkaSkill;
+    private int sahSkill;
+    private ArrayList<String> selectedItems = new ArrayList<>();
+    private TextView tvNogometSkill;
+    private TextView tvKosarkaSkill;
+    private TextView tvSahSkill;
 
 
     @Override
@@ -98,13 +103,11 @@ public class UserProfile extends AppCompatActivity {
         mContext = UserProfile.this;
 
 
-        tvInterests = findViewById(R.id.interestTextView);
         name = findViewById(R.id.etUserName);
         userDescription = findViewById(R.id.etUserDescription);
         profilePicture = findViewById(R.id.ivProfilePicture);
         tvPercent = findViewById(R.id.tvPercent);
         GlideApp.with(UserProfile.this).load(R.drawable.avatar).circleCrop().into(profilePicture);
-        btnUserInterest = findViewById(R.id.btnUserInterest);
         btnSaveChanges = findViewById(R.id.btnSaveUserChanges);
         progressBar = findViewById(R.id.progressBar);
         seekBar = findViewById(R.id.seekBar);
@@ -112,18 +115,20 @@ public class UserProfile extends AppCompatActivity {
         btnLogOut = findViewById(R.id.btnLogout);
         btnFriendsList = findViewById(R.id.btnFriendsList);
         mStorageRef = FirebaseStorage.getInstance().getReference("ProfilePictures");
+        btnNogomet = findViewById(R.id.btnNogomet);
+        btnKosarka = findViewById(R.id.btnKosarka);
+        btnSah = findViewById(R.id.btnSah);
+        btnDrustveneIgre = findViewById(R.id.btnDrustveneIgre);
+        btnDruzenje = findViewById(R.id.btnDruzenje);
+        tvNogometSkill = findViewById(R.id.tvNogometSkill);
+        tvKosarkaSkill = findViewById(R.id.tvKosarkaSkill);
+        tvSahSkill = findViewById(R.id.tvSahSkill);
 
 
         updateUI();
 
+        setUpInterestButtons();
 
-        btnUserInterest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                interesiWasClicked = 1;
-                openDialog();
-            }
-        });
 
         btnSaveChanges.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -181,37 +186,74 @@ public class UserProfile extends AppCompatActivity {
                 userProfilePictureUrl = user.getProfilePictureUrl();
                 name.setText(user.getName());
                 tvPercent.setText(user.getPercentage() + " %");
+
+                nogometSkill = user.getNogometSkill();
+                kosarkaSkill = user.getKosarkaSkill();
+                sahSkill = user.getSahSkill();
+                tvNogometSkill.setText(nogometSkill + "");
+                tvKosarkaSkill.setText(kosarkaSkill + "");
+                tvSahSkill.setText(sahSkill + "");
                 if (mContext != null) {
                     GlideApp.with(UserProfile.this).load(user.getProfilePictureUrl()).
                             placeholder(R.drawable.avatar).circleCrop()
                             .into(profilePicture);
                 }
+                Toast.makeText(UserProfile.this, user.getInterests().get(0) + "", Toast.LENGTH_SHORT).show();
 
-                for (int i = 0; i < user.getInterests().size(); i++) {
-                    if (user.getInterests().get(i) != null) {
-                        interest += user.getInterests().get(i) + ",";
+                for (String interest : user.getInterests()) {
+                    switch (interest) {
+                        case "Nogomet":
+                            btnNogomet.setPressed(true);
+                            btnNogomet.setBackgroundResource(R.drawable.interest_button_pressed);
+                            isItEventNogomet += 1;
+                            if (!selectedItems.contains("Nogomet")) {
+                                selectedItems.add("Nogomet");
+                            }
+                            break;
+                        case "Košarka":
+                            btnKosarka.setPressed(true);
+                            if (btnKosarka.isPressed()) {
+                                btnKosarka.setBackgroundResource(R.drawable.interest_button_pressed);
+                                isItEventKosarka += 1;
+                                if (!selectedItems.contains("Košarka")) {
+                                    selectedItems.add("Košarka");
+                                }
+                            }
+                            break;
+                        case "Šah":
+                            btnSah.setPressed(true);
+                            btnSah.setBackgroundResource(R.drawable.interest_button_pressed);
+                            isItEventSah += 1;
+                            if (!selectedItems.contains("Šah")) {
+                                selectedItems.add("Šah");
 
+                            }
+                            break;
+                        case "Druženje":
+                            btnDruzenje.setPressed(true);
+                            btnDruzenje.setBackgroundResource(R.drawable.interest_button_pressed);
+                            isItEventDruzenje += 1;
+                            if (!selectedItems.contains("Druženje")) {
+                                selectedItems.add("Druženje");
+                            }
+                            break;
+
+                        case "Društvene igre":
+                            btnDrustveneIgre.setPressed(true);
+                            if (btnDrustveneIgre.isPressed()) {
+                                btnDrustveneIgre.setBackgroundResource(R.drawable.interest_button_pressed);
+                                isItEventDrustvene += 1;
+                                if (!selectedItems.contains("Društvene igre")) {
+                                    selectedItems.add("Društvene igre");
+
+                                }
+                            }
                     }
                 }
-                tvInterests.setText(interest.toLowerCase());
+
             }
+
         });
-    }
-
-
-    public void openDialog() {
-        InterestDialog dialog = new InterestDialog();
-        dialog.show(getFragmentManager(), "ExampleDialog");
-    }
-
-    public void setItems(ArrayList<String> items) {
-        updatedInterest.clear();
-        String string = "";
-        updatedInterest.addAll(items);
-        for (int i = 0; i < updatedInterest.size(); i++) {
-            string += "" + updatedInterest.get(i) + ",";
-        }
-        tvInterests.setText(string);
 
     }
 
@@ -220,27 +262,15 @@ public class UserProfile extends AppCompatActivity {
         tinyDB = new TinyDB(UserProfile.this);
         String userDocRef = tinyDB.getString("USERDOCREF");
 
-        if (updatedInterest.size() == 0) {
-            usersRef.document(userDocRef).update("range", current_range, "name", name.getText().toString(), "description",
-                    userDescription.getText().toString()
-            ).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    progressBar.setVisibility(View.INVISIBLE);
-                    Toast.makeText(UserProfile.this, "Promjene spremljene", Toast.LENGTH_SHORT).show();
-                }
-            });
-        } else {
-            usersRef.document(userDocRef).update("range", current_range, "name", name.getText().toString(), "description",
-                    userDescription.getText().toString(), "interests", updatedInterest
-            ).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    progressBar.setVisibility(View.INVISIBLE);
-                    Toast.makeText(UserProfile.this, "Promjene spremljene", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
+        usersRef.document(userDocRef).update("range", current_range, "name", name.getText().toString(), "description",
+                userDescription.getText().toString(), "interests", selectedItems, "nogometSkill", nogometSkill, "kosarkaSkill", kosarkaSkill, "sahSkill", sahSkill
+        ).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                progressBar.setVisibility(View.INVISIBLE);
+                Toast.makeText(UserProfile.this, "Promjene spremljene", Toast.LENGTH_SHORT).show();
+            }
+        });
 
 
     }
@@ -341,10 +371,6 @@ public class UserProfile extends AppCompatActivity {
         return mime.getExtensionFromMimeType(cr.getType(uri));
     }
 
-    private void uploadFile() {
-
-
-    }
 
     @Override
     protected void onStart() {
@@ -382,4 +408,179 @@ public class UserProfile extends AppCompatActivity {
         });
 
     }
+
+    private void setUpInterestButtons() {
+        btnNogomet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isItEventNogomet % 2 == 0) {
+                    setInterestNumber(1);
+                    SkillDialogUserProfile skillDialog = new SkillDialogUserProfile();
+                    skillDialog.show(getFragmentManager(), "NogometSkinDialog");
+                    btnNogomet.setPressed(true);
+                    if (btnNogomet.isPressed()) {
+                        btnNogomet.setBackgroundResource(R.drawable.interest_button_pressed);
+                        isItEventNogomet += 1;
+                        if (!selectedItems.contains("Nogomet")) {
+                            selectedItems.add("Nogomet");
+
+                        }
+
+                    }
+                } else {
+                    btnNogomet.setPressed(false);
+                    if (!btnNogomet.isPressed()) {
+                        nogometSkill = 0;
+                        btnNogomet.setBackgroundResource(R.drawable.interest_button);
+                        isItEventNogomet += 1;
+                        selectedItems.remove("Nogomet");
+                    }
+
+                }
+
+            }
+        });
+
+        btnKosarka.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isItEventKosarka % 2 == 0) {
+                    btnKosarka.setPressed(true);
+                    if (btnKosarka.isPressed()) {
+                        setInterestNumber(2);
+                        SkillDialogUserProfile skillDialog = new SkillDialogUserProfile();
+                        skillDialog.show(getFragmentManager(), "KosarkaSkillDialog");
+                        btnKosarka.setBackgroundResource(R.drawable.interest_button_pressed);
+                        isItEventKosarka += 1;
+                        if (!selectedItems.contains("Košarka")) {
+                            selectedItems.add("Košarka");
+
+                        }
+
+                    }
+                } else {
+                    btnKosarka.setPressed(false);
+                    if (!btnKosarka.isPressed()) {
+                        kosarkaSkill = 0;
+                        btnKosarka.setBackgroundResource(R.drawable.interest_button);
+                        isItEventKosarka += 1;
+                        selectedItems.remove("Košarka");
+                    }
+
+                }
+
+            }
+        });
+
+
+        btnSah.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isItEventSah % 2 == 0) {
+                    btnSah.setPressed(true);
+                    if (btnSah.isPressed()) {
+                        setInterestNumber(3);
+                        SkillDialogUserProfile skillDialog = new SkillDialogUserProfile();
+                        skillDialog.show(getFragmentManager(), "SahSkillDialog");
+                        btnSah.setBackgroundResource(R.drawable.interest_button_pressed);
+                        isItEventSah += 1;
+                        if (!selectedItems.contains("Šah")) {
+                            selectedItems.add("Šah");
+
+                        }
+
+                    }
+                } else {
+                    btnSah.setPressed(false);
+                    if (!btnSah.isPressed()) {
+                        sahSkill = 0;
+                        btnSah.setBackgroundResource(R.drawable.interest_button);
+                        isItEventSah += 1;
+                        selectedItems.remove("Šah");
+                    }
+
+                }
+
+            }
+        });
+
+        btnDruzenje.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isItEventDruzenje % 2 == 0) {
+                    btnDruzenje.setPressed(true);
+                    if (btnDruzenje.isPressed()) {
+                        btnDruzenje.setBackgroundResource(R.drawable.interest_button_pressed);
+                        isItEventDruzenje += 1;
+                        if (!selectedItems.contains("Druženje")) {
+                            selectedItems.add("Druženje");
+
+                        }
+
+                    }
+                } else {
+                    btnDruzenje.setPressed(false);
+                    if (!btnDruzenje.isPressed()) {
+                        btnDruzenje.setBackgroundResource(R.drawable.interest_button);
+                        isItEventDruzenje += 1;
+                        selectedItems.remove("Druženje");
+                    }
+
+                }
+
+            }
+        });
+
+        btnDrustveneIgre.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isItEventDrustvene % 2 == 0) {
+                    btnDrustveneIgre.setPressed(true);
+                    if (btnDrustveneIgre.isPressed()) {
+                        btnDrustveneIgre.setBackgroundResource(R.drawable.interest_button_pressed);
+                        isItEventDrustvene += 1;
+                        if (!selectedItems.contains("Društvene igre")) {
+                            selectedItems.add("Društvene igre");
+
+                        }
+
+                    }
+                } else {
+                    btnDrustveneIgre.setPressed(false);
+                    if (!btnDrustveneIgre.isPressed()) {
+                        btnDrustveneIgre.setBackgroundResource(R.drawable.interest_button);
+                        isItEventDrustvene += 1;
+                        selectedItems.remove("Društvene igre");
+                    }
+
+                }
+
+            }
+        });
+    }
+
+    public void setInterestNumber(int i) {
+
+        interestNumber = i;
+    }
+
+    public int getIntNumber() {
+        return interestNumber;
+    }
+
+    public void setNogmetSkill(int i) {
+        nogometSkill = i;
+        tvNogometSkill.setText(nogometSkill + "");
+    }
+
+    public void setKosarkaSkill(int i) {
+        kosarkaSkill = i;
+        tvKosarkaSkill.setText(kosarkaSkill + "");
+    }
+
+    public void setSahSkill(int i) {
+        sahSkill = i;
+        tvSahSkill.setText(sahSkill + "");
+    }
+
 }

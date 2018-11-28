@@ -22,7 +22,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="64dp"/>
+                android:layout_height="64dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -34,7 +34,6 @@
                     android:layout_width="160dp"
                     android:layout_height="160dp"
                     android:layout_gravity="center_horizontal" />
-
 
 
                 <TextView
@@ -53,10 +52,10 @@
                 android:layout_height="16dp" />
             <!-- ************************************Ovo us dva nova gumba nema ih u javi************************+ -->
             <LinearLayout
-                android:visibility="invisible"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="invisible">
 
                 <Button
                     android:layout_width="0dp"
@@ -87,29 +86,7 @@
                 android:layout_height="16dp" />
 
             <!-- ************************************interesi, drukciji drawable za ovaj button, sa radijusom zakrivljenja itd..************************+ -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
 
-
-                <Button
-                    android:id="@+id/btnUserInterest"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/btn_rounded_primary"
-                    android:text="Odaberi Interese"
-                    android:paddingRight="16dp"
-                    android:paddingLeft="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:textColor="?android:colorBackground" />
-
-                <TextView
-                    android:id="@+id/interestTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
 
             <!-- ************************************interesi************************+ -->
 
@@ -153,7 +130,7 @@
                     android:id="@+id/btnFriendsList"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/btn_rounded_primary"
+                    android:background="@drawable/interest_button"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
                     android:text="Moji Prijatelji"
@@ -186,11 +163,12 @@
                         android:textColor="@color/colorBlack" />
 
                     <TextView
+                        android:textColor="@color/colorPrimaryDark"
                         android:id="@+id/tvSeekBarShower"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:hint="100km"
-                        android:textColor="@color/colorGrey" />
+                         />
 
                 </LinearLayout>
 
@@ -215,24 +193,24 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="130dp">
+                android:layout_height="101dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Vjerodostojnost:"
                     android:textColor="@color/colorBlack"
-                    android:textSize="20sp"/>
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/tvPercent"
-                    android:layout_marginTop="32dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="75sp"
-                    android:textColor="@color/colorBlack"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="32dp"
                     android:text="75%"
-                    android:layout_centerInParent="true"/>
+                    android:textColor="@color/colorBlack"
+                    android:textSize="30sp" />
 
                 <android.support.design.widget.CoordinatorLayout
                     android:layout_width="match_parent"
@@ -241,10 +219,147 @@
 
                 </android.support.design.widget.CoordinatorLayout>
 
+
             </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnNogomet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/interest_button"
+                    android:padding="6dp"
+                    android:text="Nogomet"
+                    android:textColor="#ffff" />
+
+                <Button
+                    android:id="@+id/btnKosarka"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/interest_button"
+                    android:padding="6dp"
+                    android:text="Košarka"
+                    android:textColor="#ffff" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnSah"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/interest_button"
+                    android:padding="6dp"
+                    android:text="Šah"
+                    android:textColor="#ffff" />
+
+                <Button
+
+                    android:id="@+id/btnDrustveneIgre"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/interest_button"
+                    android:padding="6dp"
+                    android:text="Društvene igre"
+                    android:textColor="#ffff" />
+
+                <Button
+                    android:id="@+id/btnDruzenje"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/interest_button"
+                    android:padding="6dp"
+                    android:text="Druženje"
+                    android:textColor="#ffff" />
+
+
+            </LinearLayout>
 
 
             <!-- ************************************slavna vjerodostojnost************************+ -->
+            <View
+                android:layout_width="0dp"
+                android:layout_height="16dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:textColor="@color/colorPrimaryDark"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nogomet skill" />
+
+                    <TextView
+                        android:textColor="@color/colorPrimaryDark"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Košarka skill" />
+
+                    <TextView
+                        android:textColor="@color/colorPrimaryDark"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Šah skill" />
+
+
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="8dp">
+
+
+                    <TextView
+                        android:id="@+id/tvNogometSkill"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="3"
+                        android:textColor="@color/colorPrimaryDark"/>
+                    <TextView
+                        android:id="@+id/tvKosarkaSkill"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="3"/>
+                    <TextView
+                        android:id="@+id/tvSahSkill"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="3"/>
+                </LinearLayout>
+
+
+            </LinearLayout>
+
 
             <View
                 android:layout_width="0dp"
@@ -262,7 +377,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@drawable/btn_rounded_primary"
+                    android:background="@drawable/interest_button"
                     android:text="spremi promjene"
                     android:textColor="?android:colorBackground" />
 

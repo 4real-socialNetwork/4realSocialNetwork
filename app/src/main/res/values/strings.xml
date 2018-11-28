@@ -27,4 +27,5 @@
     </string-array>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_inside_event_map">Map</string>
+    <string name="help_to_location">Kliknite na crvenu oznaku a zatim gumb u donjem desnom kutu za upute do lokacije</string>
 </resources>

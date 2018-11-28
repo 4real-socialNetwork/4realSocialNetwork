@@ -1,6 +1,5 @@
 package com.example.marko.areyou4real.dialogs;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -16,12 +15,11 @@ import com.example.marko.areyou4real.LoginCreateUser.CreateUser;
 import com.example.marko.areyou4real.R;
 import com.example.marko.areyou4real.UserProfile;
 
-public class SkillDialog extends DialogFragment {
+public class SkillDialogUserProfile extends DialogFragment {
 
     CheckBox mCheckBox1;
     CheckBox mCheckBox2;
     CheckBox mCheckBox3;
-    CreateUser activity;
     UserProfile activity1;
 
 
@@ -41,12 +39,8 @@ public class SkillDialog extends DialogFragment {
         mCheckBox1 = v.findViewById(R.id.checkBox1);
         mCheckBox2 = v.findViewById(R.id.checkBox2);
         mCheckBox3 = v.findViewById(R.id.checkBox3);
-        try{
-            activity = (CreateUser) getActivity();
 
-        }catch (Exception e){
             activity1 = (UserProfile) getActivity();
-        }
 
         setUpCheckBoxes();
 
@@ -56,21 +50,21 @@ public class SkillDialog extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (skill > 0) {
-                    switch (activity.getIntNumber()) {
+                    switch (activity1.getIntNumber()) {
 
                         case 1:
-                            activity.setNogmetSkill(skill);
+                            activity1.setNogmetSkill(skill);
                             break;
                         case 2:
-                            activity.setKosarkaSkill(skill);
+                            activity1.setKosarkaSkill(skill);
                             break;
                         case 3:
-                            activity.setSahSkill(skill);
+                            activity1.setSahSkill(skill);
                             break;
 
                     }
                 } else {
-                    Toast.makeText(activity, "Izaberite razinu", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity1, "Izaberite razinu", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -79,7 +73,7 @@ public class SkillDialog extends DialogFragment {
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Toast.makeText(activity, "", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity1, "", Toast.LENGTH_SHORT).show();
 
             }
         });

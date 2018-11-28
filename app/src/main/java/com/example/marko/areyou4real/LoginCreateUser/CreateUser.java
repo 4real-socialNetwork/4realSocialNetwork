@@ -1,12 +1,10 @@
 package com.example.marko.areyou4real.LoginCreateUser;
 
-import android.app.TimePickerDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSeekBar;
@@ -21,26 +19,16 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.marko.areyou4real.MainActivity;
 import com.example.marko.areyou4real.R;
 import com.example.marko.areyou4real.User;
-import com.example.marko.areyou4real.UserProfile;
 import com.example.marko.areyou4real.adapter.GlideApp;
 import com.example.marko.areyou4real.adapter.TinyDB;
-import com.example.marko.areyou4real.dialogs.DialogCallback;
-import com.example.marko.areyou4real.dialogs.InterestDialog;
 import com.example.marko.areyou4real.dialogs.SkillDialog;
-import com.example.marko.areyou4real.fragments.TimePickerFragment;
-import com.example.marko.areyou4real.model.FriendRequest;
-import com.example.marko.areyou4real.model.Group;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -48,14 +36,11 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
-import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class CreateUser extends AppCompatActivity {
 
@@ -281,21 +266,9 @@ public class CreateUser extends AppCompatActivity {
         return result;
     }
 
-    public void openDialog() {
-        InterestDialog dialog = new InterestDialog();
-        dialog.show(getFragmentManager(), "ExampleDialog");
-    }
 
-    public void setItems(ArrayList<String> items) {
-        selectedItems.clear();
-        String string = "";
-        selectedItems.addAll(items);
-        for (int i = 0; i < selectedItems.size(); i++) {
-            string += "" + selectedItems.get(i) + ",";
-        }
-        tvShowInterest.setText(string);
 
-    }
+
 
     private void setUpToolbar() {
         android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbar);
@@ -526,6 +499,7 @@ public class CreateUser extends AppCompatActivity {
 
     public void setNogmetSkill(int i) {
         nogometSkill = i;
+
     }
 
     public void setKosarkaSkill(int i) {

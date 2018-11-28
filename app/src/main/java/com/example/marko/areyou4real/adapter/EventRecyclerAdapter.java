@@ -206,7 +206,7 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
         final String eventId = eventList.get(position).getEventId();
         calculateRange(eventList.get(position).getEventLat(),eventList.get(position).getEventLng());
         holder.sport.setText(eventList.get(position).getActivity());
-        holder.place.setText(((int) range + 1) + " km");
+        holder.place.setText((int) range + " km");
         holder.eventTime.setText(sdf.format(eventList.get(position).getEventStart()));
         holder.eventDate.setText(sdfDate.format(eventList.get(position).getEventStart()));
         holder.usersMissing.setText(eventList.get(position).getUsersNeeded() - eventList.get(position).getUsersEntered() + "");
@@ -218,7 +218,7 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, InsideEvent.class);
                 intent.putExtra("EVENT_ID", eventId);
-                intent.putExtra("range", (int) range + 1);
+                intent.putExtra("range", (int) range );
                 mContext.startActivity(intent);
 
             }

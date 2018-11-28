@@ -7,7 +7,8 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary" />
+        android:background="@color/colorPrimary"
+        android:theme="@style/ToolbarTheme"/>
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -19,6 +20,20 @@
         android:layout_alignParentStart="true"
         android:layout_marginStart="0dp"
         tools:context=".MapsActivity" />
+
+    <TextView
+        android:layout_width="167dp"
+        android:layout_height="125dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="245dp"
+        android:layout_marginTop="465dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="69dp"
+        android:text="@string/help_to_location"
+        android:textColor="@color/colorPrimaryDark" />
 
 
 

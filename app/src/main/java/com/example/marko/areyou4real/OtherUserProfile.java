@@ -58,6 +58,7 @@ public class OtherUserProfile extends AppCompatActivity {
     private String friendRequestDocRef = "";
     private Context mContext;
     private String currentUserId = "";
+    private TextView tvPercent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +76,7 @@ public class OtherUserProfile extends AppCompatActivity {
         btnAddPlayer = findViewById(R.id.btnAddPlayer);
         btnDeclinePlayer = findViewById(R.id.btnDeclinePlayer);
         ivUserProfilePicture = findViewById(R.id.ivProfilePicture);
+        tvPercent = findViewById(R.id.tvPercent);
         GlideApp.with(OtherUserProfile.this).load(R.drawable.avatar).circleCrop().into(ivUserProfilePicture);
         loadData();
         getCurrentUserName();
@@ -103,6 +105,7 @@ public class OtherUserProfile extends AppCompatActivity {
                 otherUser = documentSnapshot.toObject(User.class);
                 thisUserDocRef = documentSnapshot.getId();
                 currentUserId = documentSnapshot.toObject(User.class).getUserId();
+                tvPercent.setText(otherUser.getPercentage()+" %") ;
                 if (otherUser.getProfilePictureUrl() != null) {
                     GlideApp.with(OtherUserProfile.this).load(otherUser.getProfilePictureUrl())
                             .circleCrop()
@@ -117,8 +120,8 @@ public class OtherUserProfile extends AppCompatActivity {
                 tvUserName.setText(otherUser.getName());
                 tvUserDescription.setText(otherUser.getDescription());
                 for (String value : otherUser.getInterests()) {
-                    if (value == otherUser.getInterests().get(otherUser.getInterests().size() - 1)) {
-                        interests += value + ".";
+                    if (value.equals(otherUser.getInterests().get(otherUser.getInterests().size() - 1))) {
+                        interests += value ;
                     } else {
                         interests += value + ", ";
 
@@ -280,16 +283,7 @@ public class OtherUserProfile extends AppCompatActivity {
 
 
                         tvUserName.setText(otherUser.getName());
-                        tvUserDescription.setText(otherUser.getDescription());
-                        for (String value : otherUser.getInterests()) {
-                            if (value == otherUser.getInterests().get(otherUser.getInterests().size() - 1)) {
-                                interests += value + ".";
-                            } else {
-                                interests += value + ", ";
 
-                            }
-                        }
-                        // tvUserInterests.setText(interests);
 
                     }
 
