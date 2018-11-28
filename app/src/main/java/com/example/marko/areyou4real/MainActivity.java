@@ -177,8 +177,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         SectionPagerAdapter adapter = new SectionPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new HomeFragment(), "");
-        adapter.addFragment(new GroupsFragment(), "");
+        adapter.addFragment(new HomeFragment(), "Eventi");
+        adapter.addFragment(new GroupsFragment(), "Grupe");
         viewPager.setAdapter(adapter);
     }
 

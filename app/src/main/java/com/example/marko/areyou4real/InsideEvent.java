@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.marko.areyou4real.adapter.CompleteEventRecyclerAdapter;
+import com.example.marko.areyou4real.adapter.GlideApp;
 import com.example.marko.areyou4real.adapter.TinyDB;
 import com.example.marko.areyou4real.dialogs.ShareEventDialog;
 import com.example.marko.areyou4real.fragments.InsideEventMap;
@@ -48,7 +49,6 @@ public class InsideEvent extends AppCompatActivity {
     private TextView tvEventTime;
     private TextView tvEventDate;
     private TextView tvEventDescription;
-    private TextView tvEventPlace;
     private TextView tvEventPlayersNeeded;
     private TextView tvEventPlayersEntered;
     private Button btnDoSomething;
@@ -59,13 +59,12 @@ public class InsideEvent extends AppCompatActivity {
     private String eventChatId;
     private CollectionReference eventsRef = db.collection("Events");
     private Intent intent;
-    private FloatingActionButton fab;
+    private Button fab;
     private String userId = FirebaseAuth.getInstance().getUid();
     private String btnText1 = "delete event";
     private String btnText2 = "exit event";
     private String btnText3 = "join event";
     private boolean isUserInEvent = false;
-    private SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm", Locale.getDefault());
     private Button btnCompleteEvent;
     private String eventCreatorId = new String();
     private ImageView ivEventPlace;
@@ -85,8 +84,11 @@ public class InsideEvent extends AppCompatActivity {
     private ArrayList<String> negativeUsers = new ArrayList<>();
     private TextView tvEventRange;
     private int range;
-    private SimpleDateFormat sdfTime = new SimpleDateFormat("mm:HH");
-    private SimpleDateFormat sdfDate = new SimpleDateFormat("EEE, d MMM yyyy");
+    private SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm", Locale.getDefault());
+    private SimpleDateFormat sdfDate = new SimpleDateFormat("d MMM yyyy", Locale.getDefault());
+    private ImageView ivEventIcon;
+    private TextView tvEventAdress;
+    private TextView textView4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,19 +103,21 @@ public class InsideEvent extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mContext = InsideEvent.this;
 
-        fab = findViewById(R.id.fab);
+        tvEventAdress = findViewById(R.id.tvEventAdress);
+        ivEventIcon = findViewById(R.id.ivEventPicture);
+        fab = findViewById(R.id.btnChat);
         tvEventName = findViewById(R.id.tvEventName);
         tvEventActivity = findViewById(R.id.tvEventActivity);
         tvEventTime = findViewById(R.id.tvEventTime);
         tvEventDate = findViewById(R.id.tvEventDate);
         tvEventDescription = findViewById(R.id.tvEventDescription);
-        tvEventPlace = findViewById(R.id.tvEventPlace);
         tvEventPlayersNeeded = findViewById(R.id.tvPlayersNeeded);
         tvEventPlayersEntered = findViewById(R.id.tvPlayersEntered);
         btnDoSomething = findViewById(R.id.btnDoSomething);
         btnCompleteEvent = findViewById(R.id.btnCompleteEvent);
         btnSendEventRequest = findViewById(R.id.btnSendEventRequest);
         ivEventPlace = findViewById(R.id.ivEventPlaceMap);
+        textView4 = findViewById(R.id.textView4);
 
         mCheckBox1 = findViewById(R.id.checkBox1);
         mCheckBox2 = findViewById(R.id.checkBox2);
@@ -149,6 +153,22 @@ public class InsideEvent extends AppCompatActivity {
                 dialog.show(getFragmentManager(), "ShareDialog");
             }
         });
+        tvEventPlayersEntered.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(InsideEvent.this,UsersInEventActivity.class);
+                intent.putExtra("EVENT_ID",eventId);
+                startActivity(intent);
+            }
+        });
+        textView4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(InsideEvent.this,UsersInEventActivity.class);
+                intent.putExtra("EVENT_ID",eventId);
+                startActivity(intent);
+            }
+        });
 
     }
 
@@ -177,10 +197,11 @@ public class InsideEvent extends AppCompatActivity {
                     eventCreatorId = event.getIdOfTheUserWhoCreatedIt();
                     tvEventName.setText(event.getName());
                     tvEventActivity.setText(event.getActivity());
+                    whatEvent(event.getActivity());
                     tvEventTime.setText(sdfTime.format(event.getEventStart()));
                     tvEventDate.setText(sdfDate.format(event.getEventStart()));
+                    tvEventAdress.setText(event.getEventAdress());
                     tvEventDescription.setText(event.getEventDescription());
-                    tvEventPlace.setText(event.getEventAdress());
                     tvEventPlayersNeeded.setText("" + event.getUsersNeeded());
                     tvEventPlayersEntered.setText("" + event.getUsersEntered());
                     eventLat = event.getEventLat();
@@ -206,7 +227,7 @@ public class InsideEvent extends AppCompatActivity {
                     }
                     checkTime(event);
 
-                } catch (NullPointerException e1) {
+                } catch (Exception e1) {
                     Log.d("nULL", "onEvent: NULLPOINTER");
                 }
 
@@ -235,9 +256,9 @@ public class InsideEvent extends AppCompatActivity {
                     Event event = documentSnapshot.toObject(Event.class);
                     tvEventName.setText(event.getName());
                     tvEventActivity.setText(event.getActivity());
-                    tvEventTime.setText(sdf.format(event.getEventStart()));
+                    whatEvent(event.getActivity());
+                    tvEventTime.setText(sdfTime.format(event.getEventStart()));
                     tvEventDescription.setText(event.getEventDescription());
-                    tvEventPlace.setText(event.getEventAdress());
                     tvEventPlayersNeeded.setText("" + event.getUsersNeeded());
                     tvEventPlayersEntered.setText("" + event.getUsersEntered());
                     eventLat = event.getEventLat();
@@ -249,13 +270,14 @@ public class InsideEvent extends AppCompatActivity {
 
                     if (event.getSkillNeeded() == 1) {
                         mCheckBox1.setChecked(true);
-                        mCheckBox2.setVisibility(View.INVISIBLE);
-                        mCheckBox3.setVisibility(View.INVISIBLE);
+                        mCheckBox2.setVisibility(View.VISIBLE);
+                        mCheckBox3.setVisibility(View.VISIBLE);
+
 
                     } else if (event.getSkillNeeded() == 2) {
                         mCheckBox1.setChecked(true);
                         mCheckBox2.setChecked(true);
-                        mCheckBox3.setVisibility(View.INVISIBLE);
+                        mCheckBox3.setVisibility(View.VISIBLE);
 
 
                     } else if (event.getSkillNeeded() == 3) {
@@ -286,8 +308,8 @@ public class InsideEvent extends AppCompatActivity {
                     checkTime(event);
 
 
-                } catch (NullPointerException e2) {
-                    Toast.makeText(mContext, e2.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                } catch (Exception e2) {
+                    Log.d("exception", "onSuccess: "+ e2.getLocalizedMessage());
                 }
             }
 
@@ -391,16 +413,16 @@ public class InsideEvent extends AppCompatActivity {
     private void checkTime(final Event event) {
 
         if (eventCreatorId.equals(userId) && event.getEventStart() + 600000 < Calendar.getInstance().getTimeInMillis()) {
-            if(usersInEvent.size()-1 == 0){
+            if (usersInEvent.size() - 1 == 0) {
                 btnDoSomething.setText("Obriši event");
                 btnDoSomething.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         eventsRef.document(eventId).delete();
-                        startActivity(new Intent(InsideEvent.this,MainActivity.class));
+                        startActivity(new Intent(InsideEvent.this, MainActivity.class));
                     }
                 });
-            }else{
+            } else {
                 btnSendEventRequest.setVisibility(View.INVISIBLE);
                 btnDoSomething.setVisibility(View.INVISIBLE);
                 btnDoSomething.setClickable(false);
@@ -522,8 +544,8 @@ public class InsideEvent extends AppCompatActivity {
                         user.addPositiveReview();
                         double positive = user.getPositiveReview();
                         double entered = user.getNumberOfEventsParticipated();
-                        double sum = (positive/entered)*100;
-                        user.setPercentage((int)sum);
+                        double sum = (positive / entered) * 100;
+                        user.setPercentage((int) sum);
                         usersRef.document(documentSnapshot.getId()).set(user);
                     }
                 });
@@ -538,8 +560,8 @@ public class InsideEvent extends AppCompatActivity {
                         user.addNegativeReview();
                         double positive = user.getPositiveReview();
                         double entered = user.getNumberOfEventsParticipated();
-                        double sum = (positive/entered)*100;
-                        user.setPercentage((int)sum);
+                        double sum = (positive / entered) * 100;
+                        user.setPercentage((int) sum);
                         usersRef.document(documentSnapshot.getId()).set(user);
                     }
                 });
@@ -562,6 +584,27 @@ public class InsideEvent extends AppCompatActivity {
                 Toast.makeText(mContext, "Event uspješno završen", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void whatEvent(String activity) {
+        switch (activity) {
+            case "Nogomet":
+                GlideApp.with(mContext).load(R.drawable.nogomet_in_event).circleCrop().into(ivEventIcon);
+                break;
+            case "Košarka":
+                GlideApp.with(mContext).load(R.drawable.kosarka_inside_event).circleCrop().into(ivEventIcon);
+                break;
+            case "Šah":
+                GlideApp.with(mContext).load(R.drawable.sah_inside_event).circleCrop().into(ivEventIcon);
+                break;
+            case "Društvene igre":
+                GlideApp.with(mContext).load(R.drawable.drustvene_inside_event).circleCrop().into(ivEventIcon);
+                break;
+            case "Druženje":
+                GlideApp.with(mContext).load(R.drawable.druzenja_inside_event).circleCrop().into(ivEventIcon);
+                break;
+        }
+
     }
 
 

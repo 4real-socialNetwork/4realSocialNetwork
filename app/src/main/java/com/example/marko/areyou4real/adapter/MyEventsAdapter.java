@@ -25,11 +25,115 @@ public class MyEventsAdapter extends FirestoreRecyclerAdapter<Event, MyEventsAda
         this.mContext = mContext;
     }
 
+    private void photoCheck(@NonNull MyEventsAdapter.MyEventsHolder holder, int position, @NonNull Event model) {
+        String activity = model.getActivity();
+        int random = model.getPictureNumber();
+        switch (activity) {
+            case "Nogomet":
+                switch (random) {
+                    case 1:
+                        GlideApp.with(mContext).load(R.drawable.nogomet_first).circleCrop().into(holder.eventImage);
+                        break;
+                    case 2:
+                        GlideApp.with(mContext).load(R.drawable.nogomet_two).circleCrop().into(holder.eventImage);
+                        break;
+                    case 3:
+                        GlideApp.with(mContext).load(R.drawable.nogomet_three).circleCrop().into(holder.eventImage);
+                        break;
+                    case 4:
+                        GlideApp.with(mContext).load(R.drawable.nogomet_four).circleCrop().into(holder.eventImage);
+                        break;
+                    case 5:
+                        GlideApp.with(mContext).load(R.drawable.nogomet_five).circleCrop().into(holder.eventImage);
+                        break;
+                }
+                break;
+            case "Košarka":
+                switch (random) {
+                    case 1:
+                        GlideApp.with(mContext).load(R.drawable.kosarka_one).circleCrop().into(holder.eventImage);
+                        break;
+                    case 2:
+                        GlideApp.with(mContext).load(R.drawable.kosarka_two).circleCrop().into(holder.eventImage);
+                        break;
+                    case 3:
+                        GlideApp.with(mContext).load(R.drawable.kosarka_three).circleCrop().into(holder.eventImage);
+                        break;
+                    case 4:
+                        GlideApp.with(mContext).load(R.drawable.kosarka_four).circleCrop().into(holder.eventImage);
+                        break;
+                    case 5:
+                        GlideApp.with(mContext).load(R.drawable.kosarka_five).circleCrop().into(holder.eventImage);
+                        break;
+                }
+                break;
+
+            case "Šah":
+                switch (random) {
+                    case 1:
+                        GlideApp.with(mContext).load(R.drawable.sah_one).circleCrop().into(holder.eventImage);
+                        break;
+                    case 2:
+                        GlideApp.with(mContext).load(R.drawable.sah_two).circleCrop().into(holder.eventImage);
+                        break;
+                    case 3:
+                        GlideApp.with(mContext).load(R.drawable.sah_three).circleCrop().into(holder.eventImage);
+                        break;
+                    case 4:
+                        GlideApp.with(mContext).load(R.drawable.sah_four).circleCrop().into(holder.eventImage);
+                        break;
+                    case 5:
+                        GlideApp.with(mContext).load(R.drawable.sah_five).circleCrop().into(holder.eventImage);
+                        break;
+                }
+                break;
+            case "Društvene igre":
+                switch (random) {
+                    case 1:
+                        GlideApp.with(mContext).load(R.drawable.drustvene_igre_one).circleCrop().into(holder.eventImage);
+                        break;
+                    case 2:
+                        GlideApp.with(mContext).load(R.drawable.drustvene_igre_two).circleCrop().into(holder.eventImage);
+                        break;
+                    case 3:
+                        GlideApp.with(mContext).load(R.drawable.drustvene_igre_three).circleCrop().into(holder.eventImage);
+                        break;
+                    case 4:
+                        GlideApp.with(mContext).load(R.drawable.drustvene_igre_four).circleCrop().into(holder.eventImage);
+                        break;
+                    case 5:
+                        GlideApp.with(mContext).load(R.drawable.drustvene_igre_five).circleCrop().into(holder.eventImage);
+                        break;
+                }
+                break;
+            case "Druženje":
+                switch (random) {
+                    case 1:
+                        GlideApp.with(mContext).load(R.drawable.druzenje_one).circleCrop().into(holder.eventImage);
+                        break;
+                    case 2:
+                        GlideApp.with(mContext).load(R.drawable.druzenje_two).circleCrop().into(holder.eventImage);
+                        break;
+                    case 3:
+                        GlideApp.with(mContext).load(R.drawable.druzenje_three).circleCrop().into(holder.eventImage);
+                        break;
+                    case 4:
+                        GlideApp.with(mContext).load(R.drawable.druzenje_four).circleCrop().into(holder.eventImage);
+                        break;
+                    case 5:
+                        GlideApp.with(mContext).load(R.drawable.druzenje_five).circleCrop().into(holder.eventImage);
+                        break;
+                }
+                break;
+        }
+    }
+
+
     @Override
     protected void onBindViewHolder(@NonNull MyEventsAdapter.MyEventsHolder holder, int position, @NonNull Event model) {
         final String eventId = model.getEventId();
         holder.eventName.setText(model.getName());
-        GlideApp.with(mContext).load(R.drawable.football_image).circleCrop().into(holder.eventImage);
+        photoCheck(holder,position,model);
         holder.myEventsLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

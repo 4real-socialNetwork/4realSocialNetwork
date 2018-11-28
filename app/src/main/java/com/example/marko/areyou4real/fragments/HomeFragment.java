@@ -125,7 +125,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     for (DocumentSnapshot dc : task.getResult()) {
                         Event event = dc.toObject(Event.class);
-                        if (!event.isPrivate()) {
+                        if (!event.isPrivate()&&!(event.getUsersEntered()==event.getUsersNeeded())) {
                             if (distance(userLat, userLng, event.getEventLat(), event.getEventLng(), 'K') <= userRange) {
                                 if (event.isCompleted() == false) {
                                     eventsList.add(event);

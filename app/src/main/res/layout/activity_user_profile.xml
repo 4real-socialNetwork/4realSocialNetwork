@@ -1,166 +1,298 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".UserProfile">
 
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignEnd="@id/bottomNavigation">
+        android:layout_alignEnd="@id/bottomNavigation"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:focusableInTouchMode="true"
             android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/ivProfilePicture"
-                android:layout_width="160dp"
-                android:layout_height="160dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="64dp" />
-
-            <Button
-                android:layout_margin="6dp"
-                android:id="@+id/btnUploadPicture"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:background="@drawable/interest_button"
-                android:padding="6dp"
-                android:text="Upload"
-                android:textColor="?android:colorBackground" />
-
-            <EditText
-                android:id="@+id/etUserName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="16dp"
-                android:textSize="20sp" />
-
-            <EditText
-                android:id="@+id/etUserDescription"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:paddingLeft="16dp"
-                android:textSize="20sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="16dp"
-                android:text="Moji interesi : " />
-
-
-            <Button
-                android:layout_margin="6dp"
-                android:padding="6dp"
-                android:background="@drawable/interest_button"
-                android:textColor="?android:colorBackground"
-                android:id="@+id/btnUserInterest"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:text="Interesi" />
-
-
-            <TextView
-                android:id="@+id/interestTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="16dp" />
+            <!-- *******************************Input slika i ime korisnika*****************************+ -->
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentBottom="true"
-                android:background="@android:color/darker_gray" />
+                android:layout_height="64dp"/>
 
-            <Button
-                android:layout_margin="6dp"
-                android:padding="6dp"
-                android:background="@drawable/interest_button"
-                android:textColor="?android:colorBackground"
-                android:id="@+id/btnFriendsList"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:text="Moji Prijatelji" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
+                <ImageView
+                    android:id="@+id/ivProfilePicture"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
+                    android:layout_gravity="center_horizontal" />
+
+
+
+                <TextView
+                    android:id="@+id/etUserName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Ime i prezime"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="20sp" />
+
+            </LinearLayout>
+            <!-- ******************************Input slika i ime korisnika**************************** -->
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentBottom="true"
-                android:background="@drawable/interest_button"
-                android:padding="6dp"
-                android:textColor="?android:colorBackground" />
-
-
-            <TextView
+                android:layout_height="16dp" />
+            <!-- ************************************Ovo us dva nova gumba nema ih u javi************************+ -->
+            <LinearLayout
+                android:visibility="invisible"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="16dp"
-                android:text="Najdalja udaljenost događaja : " />
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/tvSeekBarShower"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_rounded_primary"
+                    android:text="Dodaj prijatelja"
+                    android:textColor="#fff" />
 
-            <android.support.v7.widget.AppCompatSeekBar
-                android:id="@+id/seekBar"
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:max="100"
-                android:paddingLeft="16dp" />
+                <View
+                    android:layout_width="16dp"
+                    android:layout_height="0dp" />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_rounded_primary"
+                    android:text="Pozovi u event"
+                    android:textColor="#fff" />
+
+            </LinearLayout>
+
+            <!-- ************************************Ovo us dva nova gumba nema ih u javi, ovaj interest button cu svugdi koristiti************************+ -->
 
             <View
+                android:layout_width="0dp"
+                android:layout_height="16dp" />
+
+            <!-- ************************************interesi, drukciji drawable za ovaj button, sa radijusom zakrivljenja itd..************************+ -->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentBottom="true"
-                android:background="@android:color/darker_gray" />
-
-
-            <Button
-                android:layout_margin="6dp"
-                android:padding="6dp"
-                android:background="@drawable/interest_button"
-                android:textColor="?android:colorBackground"
-                android:id="@+id/btnSaveUserChanges"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:text="spremi promjene" />
+                android:orientation="vertical">
 
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:visibility="invisible" />
 
-            <Button
-                android:padding="6dp"
-                android:background="@drawable/interest_button_pressed"
-                android:textColor="?android:colorBackground"
-                android:id="@+id/btnLogout"
-                android:layout_width="wrap_content"
+                <Button
+                    android:id="@+id/btnUserInterest"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_rounded_primary"
+                    android:text="Odaberi Interese"
+                    android:paddingRight="16dp"
+                    android:paddingLeft="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:textColor="?android:colorBackground" />
+
+                <TextView
+                    android:id="@+id/interestTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <!-- ************************************interesi************************+ -->
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="16dp" />
+
+            <!-- ************************************o meni opis************************+ -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="85dp"
-                android:text="odjava" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="O meni:"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/etUserDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <!-- ************************************o meni opis************************+ -->
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="16dp" />
+
+            <!-- ************************************moji prijatelji************************+ -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/btnFriendsList"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_rounded_primary"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:text="Moji Prijatelji"
+                    android:textColor="?android:colorBackground" />
+
+            </LinearLayout>
+
+            <!-- ************************************moji prijatelji************************+ -->
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="16dp" />
+
+            <!-- ************************************udaljenost od dogadjaja************************+ -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Najdalja udaljenost događaja : "
+                        android:textColor="@color/colorBlack" />
+
+                    <TextView
+                        android:id="@+id/tvSeekBarShower"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="100km"
+                        android:textColor="@color/colorGrey" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="8dp" />
+
+                <android.support.v7.widget.AppCompatSeekBar
+                    android:id="@+id/seekBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="100" />
+
+            </LinearLayout>
+
+            <!-- ************************************udaljenost od dogadjaja************************+ -->
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="16dp" />
+            <!-- ************************************slavna vjerodostojnost************************+ -->
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="130dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Vjerodostojnost:"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="20sp"/>
+
+                <TextView
+                    android:id="@+id/tvPercent"
+                    android:layout_marginTop="32dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="75sp"
+                    android:textColor="@color/colorBlack"
+                    android:text="75%"
+                    android:layout_centerInParent="true"/>
+
+                <android.support.design.widget.CoordinatorLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+                </android.support.design.widget.CoordinatorLayout>
+
+            </RelativeLayout>
+
+
+            <!-- ************************************slavna vjerodostojnost************************+ -->
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="16dp" />
+
+            <!-- ************************************spremi promjene i odjava************************+ -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnSaveUserChanges"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_rounded_primary"
+                    android:text="spremi promjene"
+                    android:textColor="?android:colorBackground" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:visibility="invisible" />
+
+                <Button
+                    android:id="@+id/btnLogout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_rounded_primary"
+                    android:text="odjava"
+                    android:textColor="?android:colorBackground" />
+
+            </LinearLayout>
+
+            <!-- ************************************spremi promjene i odjava************************+ -->
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="82dp" />
 
         </LinearLayout>
-    </ScrollView>
+
+    </android.support.v4.widget.NestedScrollView>
 
     <com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
         android:id="@+id/bottomNavigation"
@@ -172,4 +304,4 @@
         app:menu="@menu/bottom_navigation" />
 
 
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

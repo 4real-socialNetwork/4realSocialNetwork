@@ -114,6 +114,11 @@
             android:name=".CompleteEventActivity"
             android:label="FriendSelector"
             android:screenOrientation="portrait"></activity>
+
+        <activity
+            android:name=".UsersInEventActivity"
+            android:label="FriendSelector"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 

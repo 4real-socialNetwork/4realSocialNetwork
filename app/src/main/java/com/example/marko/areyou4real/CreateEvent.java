@@ -52,6 +52,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Locale;
+import java.util.Random;
 
 public class CreateEvent extends AppCompatActivity implements AdapterView.OnItemSelectedListener, TimePickerDialog.OnTimeSetListener
         , DatePickerDialog.OnDateSetListener {
@@ -192,10 +193,12 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
         if (!isPrivate) {
             String eventName = name.getText().toString();
             String activity = selectedInteres;
+            Random rand = new Random();
+            int random = rand.nextInt(5 - 1 + 1) + 1;
             int peopleNeeded = Integer.parseInt(playersNeeded.getText().toString());
             String description = eventDescription.getText().toString();
             if (eventName.length() > 0 && activity.length() > 0 && peopleNeeded > 0 && description.length() > 0 && calendar.getTimeInMillis() != 0) {
-                Event event = new Event(userId, eventName, activity, skillRequired, calendar.getTimeInMillis(), eventLat, eventLng, peopleNeeded, description, eventAddress, false, isPrivate);
+                Event event = new Event(userId, eventName, activity, skillRequired, calendar.getTimeInMillis(), eventLat, eventLng, peopleNeeded, description, eventAddress, false, isPrivate, random);
                 event.addCreatorUserToArray(userId);
 
                 eventsRef.add(event).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -230,8 +233,10 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
             String activity = selectedInteres;
             int peopleNeeded = Integer.parseInt(playersNeeded.getText().toString());
             String description = eventDescription.getText().toString();
+            Random rand = new Random();
+            int random = rand.nextInt(5 - 1 + 1) + 1;
             if (eventName.length() > 0 && activity.length() > 0 && peopleNeeded > 0 && description.length() > 0 && calendar.getTimeInMillis() != 0) {
-                Event event = new Event(userId, eventName, activity, 0, calendar.getTimeInMillis(), eventLat, eventLng, peopleNeeded, description, eventAddress, false, isPrivate);
+                Event event = new Event(userId, eventName, activity, 0, calendar.getTimeInMillis(), eventLat, eventLng, peopleNeeded, description, eventAddress, false, isPrivate, random);
                 event.addCreatorUserToArray(userId);
 
                 eventsRef.add(event).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {

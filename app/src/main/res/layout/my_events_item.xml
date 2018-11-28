@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/myEventsLayout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:id="@+id/myEventsLayout"
-    android:layout_marginTop="6dp">
+    android:layout_marginTop="6dp"
+    android:orientation="vertical">
+
     <ImageView
+        android:id="@+id/ivEventPicture"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@drawable/avatar"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
-        android:id="@+id/ivEventPicture"/>
+        android:src="@drawable/avatar" />
+
     <TextView
+        android:id="@+id/tvEventName"
         android:layout_width="60dp"
         android:layout_height="20dp"
+        android:gravity="center"
         android:text="Fuca"
-        android:id="@+id/tvEventName"
-        android:paddingLeft="24dp" />
+        android:layout_marginLeft="16dp"
+        android:textColor="@color/colorPrimaryDark"/>
+
 
 </LinearLayout>

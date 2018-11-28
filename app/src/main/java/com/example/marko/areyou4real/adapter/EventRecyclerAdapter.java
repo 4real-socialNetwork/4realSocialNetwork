@@ -29,14 +29,14 @@ import java.util.Locale;
 public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdapter.MyViewHolder> {
     private Context mContext;
     private ArrayList<Event> eventList;
-    private SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy HH:mm", Locale.getDefault());
+    private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+    private SimpleDateFormat sdfDate = new SimpleDateFormat("d MMM yyyy", Locale.getDefault());
     private double lat;
     private double lng;
-    private double eventLat;
-    private double eventLng;
+
     private double range;
 
-    private void calculateRange() {
+    private void calculateRange(final double eventLat, final double eventLng) {
         TinyDB tinyDB = new TinyDB(mContext);
         String userDocRef = tinyDB.getString("USERDOCREF");
         FirebaseFirestore.getInstance().collection("Users").document(userDocRef).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -51,6 +51,7 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
             }
         });
     }
+
     private double distance(double lat1, double lon1, double lat2, double lon2, char unit) {
         double theta = lon1 - lon2;
         double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
@@ -66,6 +67,108 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
     }
 
 
+    private void photoCheck(@NonNull EventRecyclerAdapter.MyViewHolder holder, int position) {
+        String activity = eventList.get(position).getActivity();
+        int random = eventList.get(position).getPictureNumber();
+        switch (activity) {
+            case "Nogomet":
+                switch (random) {
+                    case 1:
+                        GlideApp.with(mContext).load(R.drawable.nogomet_first).circleCrop().into(holder.eventPicture);
+                        break;
+                    case 2:
+                        GlideApp.with(mContext).load(R.drawable.nogomet_two).circleCrop().into(holder.eventPicture);
+                        break;
+                    case 3:
+                        GlideApp.with(mContext).load(R.drawable.nogomet_three).circleCrop().into(holder.eventPicture);
+                        break;
+                    case 4:
+                        GlideApp.with(mContext).load(R.drawable.nogomet_four).circleCrop().into(holder.eventPicture);
+                        break;
+                    case 5:
+                        GlideApp.with(mContext).load(R.drawable.nogomet_five).circleCrop().into(holder.eventPicture);
+                        break;
+                }
+                break;
+            case "Košarka":
+                switch (random) {
+                    case 1:
+                        GlideApp.with(mContext).load(R.drawable.kosarka_one).circleCrop().into(holder.eventPicture);
+                        break;
+                    case 2:
+                        GlideApp.with(mContext).load(R.drawable.kosarka_two).circleCrop().into(holder.eventPicture);
+                        break;
+                    case 3:
+                        GlideApp.with(mContext).load(R.drawable.kosarka_three).circleCrop().into(holder.eventPicture);
+                        break;
+                    case 4:
+                        GlideApp.with(mContext).load(R.drawable.kosarka_four).circleCrop().into(holder.eventPicture);
+                        break;
+                    case 5:
+                        GlideApp.with(mContext).load(R.drawable.kosarka_five).circleCrop().into(holder.eventPicture);
+                        break;
+                }
+                break;
+
+            case "Šah":
+                switch (random) {
+                    case 1:
+                        GlideApp.with(mContext).load(R.drawable.sah_one).circleCrop().into(holder.eventPicture);
+                        break;
+                    case 2:
+                        GlideApp.with(mContext).load(R.drawable.sah_two).circleCrop().into(holder.eventPicture);
+                        break;
+                    case 3:
+                        GlideApp.with(mContext).load(R.drawable.sah_three).circleCrop().into(holder.eventPicture);
+                        break;
+                    case 4:
+                        GlideApp.with(mContext).load(R.drawable.sah_four).circleCrop().into(holder.eventPicture);
+                        break;
+                    case 5:
+                        GlideApp.with(mContext).load(R.drawable.sah_five).circleCrop().into(holder.eventPicture);
+                        break;
+                }
+                break;
+            case "Društvene igre":
+                switch (random) {
+                    case 1:
+                        GlideApp.with(mContext).load(R.drawable.drustvene_igre_one).circleCrop().into(holder.eventPicture);
+                        break;
+                    case 2:
+                        GlideApp.with(mContext).load(R.drawable.drustvene_igre_two).circleCrop().into(holder.eventPicture);
+                        break;
+                    case 3:
+                        GlideApp.with(mContext).load(R.drawable.drustvene_igre_three).circleCrop().into(holder.eventPicture);
+                        break;
+                    case 4:
+                        GlideApp.with(mContext).load(R.drawable.drustvene_igre_four).circleCrop().into(holder.eventPicture);
+                        break;
+                    case 5:
+                        GlideApp.with(mContext).load(R.drawable.drustvene_igre_five).circleCrop().into(holder.eventPicture);
+                        break;
+                }
+                break;
+            case "Druženje":
+                switch (random) {
+                    case 1:
+                        GlideApp.with(mContext).load(R.drawable.druzenje_one).circleCrop().into(holder.eventPicture);
+                        break;
+                    case 2:
+                        GlideApp.with(mContext).load(R.drawable.druzenje_two).circleCrop().into(holder.eventPicture);
+                        break;
+                    case 3:
+                        GlideApp.with(mContext).load(R.drawable.druzenje_three).circleCrop().into(holder.eventPicture);
+                        break;
+                    case 4:
+                        GlideApp.with(mContext).load(R.drawable.druzenje_four).circleCrop().into(holder.eventPicture);
+                        break;
+                    case 5:
+                        GlideApp.with(mContext).load(R.drawable.druzenje_five).circleCrop().into(holder.eventPicture);
+                        break;
+                }
+                break;
+        }
+    }
 
     private double deg2rad(double deg) {
         return (deg * Math.PI / 180.0);
@@ -88,7 +191,8 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
 
     @NonNull
     @Override
-    public EventRecyclerAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public EventRecyclerAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
+                                                                int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         View contactView = inflater.inflate(R.layout.home_event_item, parent, false);
@@ -100,27 +204,25 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
     public void onBindViewHolder(@NonNull EventRecyclerAdapter.MyViewHolder holder, int position) {
 
         final String eventId = eventList.get(position).getEventId();
-        eventLat = eventList.get(position).getEventLat();
-        eventLng = eventList.get(position).getEventLng();
-        calculateRange();
+        calculateRange(eventList.get(position).getEventLat(),eventList.get(position).getEventLng());
         holder.sport.setText(eventList.get(position).getActivity());
-        holder.place.setText(((int)range+1)+" km");
-        holder.usersNeeded.setText(eventList.get(position).getUsersNeeded() + "");
+        holder.place.setText(((int) range + 1) + " km");
         holder.eventTime.setText(sdf.format(eventList.get(position).getEventStart()));
+        holder.eventDate.setText(sdfDate.format(eventList.get(position).getEventStart()));
+        holder.usersMissing.setText(eventList.get(position).getUsersNeeded() - eventList.get(position).getUsersEntered() + "");
+        photoCheck(holder, position);
 
-        GlideApp.with(mContext).load(R.drawable.football_image).circleCrop().into(holder.eventPicture);
 
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, InsideEvent.class);
                 intent.putExtra("EVENT_ID", eventId);
-                intent.putExtra("range",(int)range);
+                intent.putExtra("range", (int) range + 1);
                 mContext.startActivity(intent);
 
             }
         });
-
 
 
     }
@@ -135,7 +237,9 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
         TextView sport;
         TextView place;
         TextView usersNeeded;
+        TextView usersMissing;
         TextView eventTime;
+        TextView eventDate;
         ImageView eventPicture;
 
         public MyViewHolder(View itemView) {
@@ -144,15 +248,15 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
             this.relativeLayout = itemView.findViewById(R.id.home_event_item);
             this.sport = itemView.findViewById(R.id.tvEventName);
             this.usersNeeded = itemView.findViewById(R.id.tvPlayersNeeded);
+            this.usersMissing = itemView.findViewById(R.id.tvPlayersMissing);
             this.eventTime = itemView.findViewById(R.id.tvEventStart);
+            this.eventDate = itemView.findViewById(R.id.tvEventDate);
             this.eventPicture = itemView.findViewById(R.id.imageView);
 
         }
 
 
-
-
-        }
+    }
 
 
     public void clearAll() {
@@ -161,3 +265,4 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
 
 
 }
+

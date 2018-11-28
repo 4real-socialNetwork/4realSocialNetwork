@@ -20,6 +20,15 @@ public class Event {
     private boolean isCompleted = false;
     private boolean isPrivate;
     private int skillNeeded;
+    private int pictureNumber;
+
+    public int getPictureNumber() {
+        return pictureNumber;
+    }
+
+    public void setPictureNumber(int pictureNumber) {
+        this.pictureNumber = pictureNumber;
+    }
 
     public int getSkillNeeded() {
         return skillNeeded;
@@ -91,7 +100,8 @@ public class Event {
         this.eventDescription = eventDescription;
     }
 
-    public Event(String idOfTheUserWhoCreatedIt, String name, String activity,int skillNeeded ,long eventStart, double eventLat, double eventLng, int usersNeeded, String eventDescription, String eventAdress, boolean isCompleted, boolean isPrivate) {
+    public Event(String idOfTheUserWhoCreatedIt, String name, String activity,int skillNeeded ,long eventStart, double eventLat, double eventLng, int usersNeeded,
+                 String eventDescription, String eventAdress, boolean isCompleted, boolean isPrivate, int pictureNumber) {
         this.idOfTheUserWhoCreatedIt = idOfTheUserWhoCreatedIt;
         this.name = name;
         this.activity = activity;
@@ -104,6 +114,7 @@ public class Event {
         this.eventAdress = eventAdress;
         this.isCompleted = isCompleted;
         this.isPrivate = isPrivate;
+        this.pictureNumber = pictureNumber;
 
     }
 

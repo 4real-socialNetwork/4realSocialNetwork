@@ -167,10 +167,12 @@ public class OtherUserProfile extends AppCompatActivity {
                     FriendRequest fr = dc.toObject(FriendRequest.class);
 
                     if ((fr.getSenderId().equals(FirebaseAuth.getInstance().getUid())) && !(fr.isAccepted())) {
+                        btnAddPlayer.setVisibility(View.VISIBLE);
                         btnAddPlayer.setText("Zahtjev poslan");
                         btnAddPlayer.setClickable(false);
 
                     } else if (fr.getSenderId().equals(FirebaseAuth.getInstance().getUid()) && (fr.isAccepted())) {
+                        btnAddPlayer.setVisibility(View.VISIBLE);
                         btnAddPlayer.setText("Prijatelji ste");
                         btnAddPlayer.setClickable(false);
                     }
@@ -215,6 +217,7 @@ public class OtherUserProfile extends AppCompatActivity {
                                     btnDeclinePlayer.setVisibility(View.INVISIBLE);
                                 }
                             });
+                            btnAddPlayer.setVisibility(View.VISIBLE);
                             btnAddPlayer.setText("Potvrdi prijatelja");
                             btnAddPlayer.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -306,6 +309,7 @@ public class OtherUserProfile extends AppCompatActivity {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.toObject(User.class).getUserFriends().contains(otherUser.getUserId())) {
+                    btnAddPlayer.setVisibility(View.VISIBLE);
                     btnAddPlayer.setText("Prijatelji ste");
                     btnAddPlayer.setClickable(false);
                 } else {

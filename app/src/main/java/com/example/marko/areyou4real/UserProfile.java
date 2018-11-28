@@ -61,7 +61,7 @@ public class UserProfile extends AppCompatActivity {
     private String userId = auth.getCurrentUser().getUid();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference usersRef = db.collection("Users");
-    private EditText name;
+    private TextView name;
     private EditText userDescription;
     private ImageView profilePicture;
     private Uri mImageUri;
@@ -79,7 +79,7 @@ public class UserProfile extends AppCompatActivity {
     private static final int ACTIVITY_NUM = 3;
     private Button btnLogOut;
     private Button btnFriendsList;
-    private Button btnUploadPicture;
+    private TextView btnUploadPicture;
     private static final int PICK_IMAGE_REQUEST = 1;
     private StorageReference mStorageRef;
     private String pictureUrl = "";
@@ -87,6 +87,7 @@ public class UserProfile extends AppCompatActivity {
     private Context mContext;
     private String userProfilePictureUrl = new String();
     private int isPictureChanging = 0;
+    private TextView tvPercent;
 
 
     @Override
@@ -101,6 +102,7 @@ public class UserProfile extends AppCompatActivity {
         name = findViewById(R.id.etUserName);
         userDescription = findViewById(R.id.etUserDescription);
         profilePicture = findViewById(R.id.ivProfilePicture);
+        tvPercent = findViewById(R.id.tvPercent);
         GlideApp.with(UserProfile.this).load(R.drawable.avatar).circleCrop().into(profilePicture);
         btnUserInterest = findViewById(R.id.btnUserInterest);
         btnSaveChanges = findViewById(R.id.btnSaveUserChanges);
@@ -109,7 +111,6 @@ public class UserProfile extends AppCompatActivity {
         showSeekBar = findViewById(R.id.tvSeekBarShower);
         btnLogOut = findViewById(R.id.btnLogout);
         btnFriendsList = findViewById(R.id.btnFriendsList);
-        btnUploadPicture = findViewById(R.id.btnUploadPicture);
         mStorageRef = FirebaseStorage.getInstance().getReference("ProfilePictures");
 
 
@@ -158,14 +159,6 @@ public class UserProfile extends AppCompatActivity {
             }
         });
 
-        btnUploadPicture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                uploadFile();
-                isPictureChanging = 0;
-                progressBar.setVisibility(View.VISIBLE);
-            }
-        });
 
     }
 
@@ -187,6 +180,7 @@ public class UserProfile extends AppCompatActivity {
                 User user = documentSnapshot.toObject(User.class);
                 userProfilePictureUrl = user.getProfilePictureUrl();
                 name.setText(user.getName());
+                tvPercent.setText(user.getPercentage() + " %");
                 if (mContext != null) {
                     GlideApp.with(UserProfile.this).load(user.getProfilePictureUrl()).
                             placeholder(R.drawable.avatar).circleCrop()
@@ -200,30 +194,10 @@ public class UserProfile extends AppCompatActivity {
                     }
                 }
                 tvInterests.setText(interest.toLowerCase());
-                //setBar();
             }
         });
     }
 
-    public void getDocumentRefId() {
-        usersRef.whereEqualTo("userId", userId)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        for (DocumentSnapshot dc : queryDocumentSnapshots) {
-                            value = dc.getId();
-
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(UserProfile.this, e.toString(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-    }
 
     public void openDialog() {
         InterestDialog dialog = new InterestDialog();
@@ -248,7 +222,7 @@ public class UserProfile extends AppCompatActivity {
 
         if (updatedInterest.size() == 0) {
             usersRef.document(userDocRef).update("range", current_range, "name", name.getText().toString(), "description",
-                    userDescription.getText().toString(),"profilePictureUrl",pictureUrl
+                    userDescription.getText().toString()
             ).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
@@ -258,7 +232,7 @@ public class UserProfile extends AppCompatActivity {
             });
         } else {
             usersRef.document(userDocRef).update("range", current_range, "name", name.getText().toString(), "description",
-                    userDescription.getText().toString(), "interests", updatedInterest,"profilePictureUrl",pictureUrl
+                    userDescription.getText().toString(), "interests", updatedInterest
             ).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
@@ -331,7 +305,33 @@ public class UserProfile extends AppCompatActivity {
                     .load(mImageUri)
                     .circleCrop()
                     .into(profilePicture);
-            Toast.makeText(mContext, "me", Toast.LENGTH_SHORT).show();
+            if (mImageUri != null) {
+                final StorageReference fileReferance = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(mImageUri));
+                fileReferance.putFile(mImageUri).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        Toast.makeText(UserProfile.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        taskSnapshot.getMetadata();
+                        taskSnapshot.getUploadSessionUri();
+
+                        fileReferance.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                pictureUrl = uri.toString();
+                                progressBar.setVisibility(View.INVISIBLE);
+                                updateUserProfile();
+                                isPictureChanging = 0;
+                                Toast.makeText(mContext, "Slika profila postavljena", Toast.LENGTH_SHORT).show();
+
+                            }
+                        });
+                    }
+                });
+            }
         }
     }
 
@@ -342,33 +342,6 @@ public class UserProfile extends AppCompatActivity {
     }
 
     private void uploadFile() {
-
-        if (mImageUri != null) {
-            final StorageReference fileReferance = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(mImageUri));
-            fileReferance.putFile(mImageUri).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    Toast.makeText(UserProfile.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    taskSnapshot.getMetadata();
-                    taskSnapshot.getUploadSessionUri();
-
-                    fileReferance.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            pictureUrl = uri.toString();
-                            Toast.makeText(UserProfile.this, pictureUrl, Toast.LENGTH_SHORT).show();
-                            progressBar.setVisibility(View.INVISIBLE);
-                            updateUserProfile();
-
-                        }
-                    });
-                }
-            });
-        }
 
 
     }
@@ -384,8 +357,9 @@ public class UserProfile extends AppCompatActivity {
                 if (documentSnapshot != null) {
                     User user = documentSnapshot.toObject(User.class);
                     name.setText(user.getName());
+                    tvPercent.setText(user.getPercentage() + " %");
                     if (mContext != null) {
-                        if(isPictureChanging==0){
+                        if (isPictureChanging == 0) {
                             try {
                                 GlideApp.with(UserProfile.this).load(user.getProfilePictureUrl()).
                                         placeholder(R.drawable.avatar).circleCrop()
@@ -395,7 +369,7 @@ public class UserProfile extends AppCompatActivity {
                             }
 
                         }
-                        }
+                    }
 
 
                     userDescription.setText(user.getDescription());
@@ -409,4 +383,3 @@ public class UserProfile extends AppCompatActivity {
 
     }
 }
-
