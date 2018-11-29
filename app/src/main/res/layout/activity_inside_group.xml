@@ -12,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        app:titleTextColor="@color/colorAccent"/>
+        app:titleTextColor="@color/colorAccent"
+        android:theme="@style/ToolbarTheme"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -23,9 +24,9 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/container"
-        android:layout_width="match_parent"
-        android:layout_height="399dp"
-        android:padding="16dp" />
+        android:layout_width="424dp"
+        android:layout_height="483dp"
+         />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

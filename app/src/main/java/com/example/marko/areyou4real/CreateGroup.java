@@ -1,8 +1,10 @@
 package com.example.marko.areyou4real;
 
 import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,10 +14,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.marko.areyou4real.LoginCreateUser.CreateUser;
+import com.example.marko.areyou4real.adapter.GlideApp;
 import com.example.marko.areyou4real.adapter.UsersAdapter;
 import com.example.marko.areyou4real.model.Group;
 import com.example.marko.areyou4real.model.TextMessage;
@@ -29,6 +36,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.pchmn.materialchips.ChipsInput;
 import com.pchmn.materialchips.model.Chip;
 import com.pchmn.materialchips.model.ChipInterface;
@@ -53,6 +63,7 @@ public class CreateGroup extends AppCompatActivity {
 
     private Map<String, User> mItemsUsers = new HashMap<>();
     private List<User> mUsers = new ArrayList<>();
+    private StorageReference mStorageRef;
 
     private List<User> mNewGroup = new ArrayList<>();
 
@@ -67,12 +78,30 @@ public class CreateGroup extends AppCompatActivity {
     private String groupId = "";
 
     private String mTextMessageId = "";
+    private Uri mPictureUri;
+    private String profilePictureUrl = new String();
+    private ImageView profilePicture;
+    private static final int PICK_IMAGE_REQUEST = 1;
+    Group group = new Group();
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
         setUpToolbar();
+        profilePicture = findViewById(R.id.ivGroupPicture);
+
+        mStorageRef = FirebaseStorage.getInstance().getReference("GroupPictures");
+        profilePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFileChooser();
+            }
+        });
+        progressBar = findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.INVISIBLE);
+        GlideApp.with(mContext).load(R.drawable.druzenje_three).circleCrop().into(profilePicture);
 
         mChipsInput = findViewById(R.id.chips_input);
         mAddToGroup = findViewById(R.id.btn_create_group);
@@ -83,7 +112,7 @@ public class CreateGroup extends AppCompatActivity {
     }
 
     private void loadUsers() {
-        mUsersRef.whereArrayContains("userFriends",FirebaseAuth.getInstance().getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        mUsersRef.whereArrayContains("userFriends", FirebaseAuth.getInstance().getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -118,15 +147,19 @@ public class CreateGroup extends AppCompatActivity {
 
         final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        final Group group = new Group();
 
         mAddToGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mAddToGroup.setVisibility(View.INVISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
                 System.out.println("Add to group triggered");
                 List<Chip> contactsSelected = (List<Chip>) mChipsInput.getSelectedChipList();
                 for (Chip chip : contactsSelected) {
-                    mNewGroup.add(mItemsUsers.get(chip.getLabel()));
+                    if (!mNewGroup.contains(mItemsUsers.get(chip.getLabel()))) {
+                        mNewGroup.add(mItemsUsers.get(chip.getLabel()));
+
+                    }
 
                 }
                 for (User user : mNewGroup) {
@@ -134,20 +167,21 @@ public class CreateGroup extends AppCompatActivity {
                 }
                 group.addUserId(FirebaseAuth.getInstance().getUid());
                 group.setGroupName(mGroupName.getText().toString().trim());
-                if(group.getListOfUsersInGroup().size()>1&&group.getGroupName().length()>3){
+                group.setGroupPictureUrl(profilePictureUrl);
+                if (group.getListOfUsersInGroup().size() > 1 && group.getGroupName().length() > 2) {
                     mGroupsRef.add(group).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentReference> task) {
-                            if(task.isSuccessful()){
+                            if (task.isSuccessful()) {
                                 docRef = task.getResult();
                                 groupId = docRef.getId();
-                                docRef.update("groupId",groupId);
+                                docRef.update("groupId", groupId, "groupPictureUrl", profilePictureUrl);
                                 createChat();
 
                             }
                         }
                     });
-                }else {
+                } else {
                     Toast.makeText(mContext, "Grupa mora imati više od dva člana", Toast.LENGTH_SHORT).show();
                     Toast.makeText(mContext, "Provjerite naziv grupe", Toast.LENGTH_SHORT).show();
                 }
@@ -230,20 +264,88 @@ public class CreateGroup extends AppCompatActivity {
         }
         return true;
     }
-    private void createChat(){
-        mGroupsRef.document(groupId).collection("chatRoom").add(new TextMessage("","","","",groupId,Calendar.getInstance().getTimeInMillis(),null)).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+
+    private void createChat() {
+        mGroupsRef.document(groupId).collection("chatRoom").add(new TextMessage("", "Nova grupa stvorena", "", "", groupId, Calendar.getInstance().getTimeInMillis(), null)).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 mTextMessageId = documentReference.getId();
                 mGroupsRef.document(groupId).collection("chatRoom").document(mTextMessageId)
-                        .update("eventChatId",mTextMessageId);
+                        .update("eventChatId", mTextMessageId);
                 Intent intent = new Intent(mContext, InsideGroup.class);
-                intent.putExtra("GROUP_ID",groupId);
+                intent.putExtra("GROUP_ID", groupId);
                 startActivity(intent);
                 finish();
 
             }
         });
     }
+
+    private void uploadFile() {
+        if (mPictureUri != null) {
+            final StorageReference fileReferance = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(mPictureUri));
+
+            UploadTask uploadTask = fileReferance.putFile(mPictureUri);
+
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Toast.makeText(CreateGroup.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    taskSnapshot.getMetadata();
+                    taskSnapshot.getUploadSessionUri();
+
+                    fileReferance.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            profilePictureUrl = uri.toString();
+                            progressBar.setVisibility(View.INVISIBLE);
+                            mAddToGroup.setVisibility(View.VISIBLE);
+                        }
+                    });
+                }
+            });
+        } else {
+
+        }
+
+
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            progressBar.setVisibility(View.VISIBLE);
+            mPictureUri = data.getData();
+            GlideApp
+                    .with(CreateGroup.this)
+                    .load(mPictureUri)
+                    .circleCrop()
+                    .into(profilePicture);
+
+            uploadFile();
+        }
+    }
+
+    private void openFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    private String getFileExtension(Uri uri) {
+        ContentResolver cr = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cr.getType(uri));
+    }
+
+
+}
 

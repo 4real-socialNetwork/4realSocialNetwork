@@ -138,7 +138,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
-        builder.setSmallIcon(R.drawable.ic_person_white_24dp)
+        builder.setSmallIcon(R.drawable.logo_transparent_two)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setContentTitle(title)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -171,7 +171,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
-        builder.setSmallIcon(R.drawable.ic_person_white_24dp)
+        builder.setSmallIcon(R.drawable.logo_transparent_two)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setContentTitle(title)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -205,7 +205,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
-        builder.setSmallIcon(R.drawable.ic_person_white_24dp)
+        builder.setSmallIcon(R.drawable.logo_transparent_two)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setContentTitle(title)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -238,7 +238,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
-        builder.setSmallIcon(R.drawable.ic_person_white_24dp)
+        builder.setSmallIcon(R.drawable.logo_transparent_two)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setContentTitle(title)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)

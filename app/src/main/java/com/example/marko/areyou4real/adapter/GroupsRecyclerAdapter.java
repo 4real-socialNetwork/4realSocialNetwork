@@ -52,6 +52,7 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
             }
         });
         holder.groupName.setText(grupsList.get(position).getGroupName());
+        GlideApp.with(mContext).load(grupsList.get(position).getGroupPictureUrl()).circleCrop().into(holder.groupImage);
     }
 
     @Override

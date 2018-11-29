@@ -119,6 +119,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline9" />
 
+    <Button
+        android:id="@+id/btnChangeToPublic"
+        android:layout_width="wrap_content"
+        android:layout_height="29dp"
+        android:layout_gravity="right"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="148dp"
+        android:background="@drawable/interest_button"
+        android:clickable="false"
+        android:text="Javni event"
+        android:textColor="?android:colorBackground"
+        android:textSize="8sp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@+id/emptyWhiteTextView"
+        app:layout_constraintTop_toTopOf="@+id/guideline9" />
+
     <TextView
         android:id="@+id/tvEventActivity"
         android:layout_width="wrap_content"
@@ -324,29 +340,33 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="180dp"
         android:paddingLeft="4dp"
-        android:text="Broj igrača u eventu:"
+        android:text="Igrači u eventu:"
         android:textColor="@color/colorPrimaryDark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline11"
-        app:layout_constraintVertical_bias="0.918" />
+        app:layout_constraintVertical_bias="0.91" />
 
-    <TextView
+    <Button
         android:id="@+id/tvPlayersEntered"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="144dp"
-        android:text="3"
-        android:textColor="@color/colorAccent"
+        android:layout_width="105dp"
+        android:layout_height="42dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:textColor="#ffff"
+        android:background="@drawable/interest_button_pressed"
         app:layout_constraintBottom_toTopOf="@+id/guideline13"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.142"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView4"
+        app:layout_constraintVertical_bias="0.0" />
+
+
+
 
     <TextView
         android:id="@+id/tvPlayersNeeded"

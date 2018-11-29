@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,24 +11,44 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary" />
+        android:background="@color/colorPrimary"
+        android:theme="@style/ToolbarTheme" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:minHeight="15dp"
+        android:text="Prijatelji:"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintBottom_toTopOf="@+id/guideline20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline19"
+        app:layout_constraintVertical_bias="0.738" />
 
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:id="@+id/linearLayout2"
+        android:layout_width="354dp"
+        android:layout_height="94dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/guideline21"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintVertical_bias="0.251"
+        app:layout_goneMarginTop="8dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:gravity="center"
-            android:minHeight="15dp"
-            android:text="To"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@color/colorPrimary" />
 
         <com.pchmn.materialchips.ChipsInput
             android:id="@+id/chips_input"
@@ -36,37 +56,127 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             app:chip_deletable="true"
-            app:maxRows="3"
             app:showChipDetailed="false" />
 
         <ImageButton
             android:id="@+id/users"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:tint="@color/colorAccent"
-            android:src="@drawable/ic_search_black_24dp"/>
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@color/white_transparency"
+            android:src="@drawable/ic_search_black_24dp"
+            android:tint="@color/colorAccent" />
 
     </LinearLayout>
 
+
     <Button
+        android:visibility="invisible"
         android:id="@+id/btn_create_group"
         android:layout_width="wrap_content"
-        android:layout_margin="50dp"
         android:layout_height="wrap_content"
-        android:text="Stvori grupu"
+        android:layout_margin="50dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/interest_button"
+        android:padding="6dp"
+        android:text="Stvori grupu"
         android:textColor="?android:colorBackground"
-        android:padding="6dp"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline22"
+        app:layout_constraintVertical_bias="0.594" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivGroupPicture"
+        app:layout_constraintVertical_bias="0.257" />
 
     <EditText
         android:id="@+id/group_name"
         android:layout_width="wrap_content"
+        android:layout_height="49dp"
         android:layout_margin="50dp"
+        android:layout_marginTop="116dp"
+        android:gravity="center"
+        android:hint="Upišite naziv grupe"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline20" />
+
+    <ImageView
+        android:id="@+id/ivGroupPicture"
+        android:layout_width="153dp"
+        android:layout_height="152dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline23"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline21"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Group name"/>
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Odaberite sliku : "
+        app:layout_constraintBottom_toTopOf="@+id/ivGroupPicture"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline21" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline19"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.0"
+        app:layout_constraintGuide_begin="20dp" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.25"
+        app:layout_constraintGuide_begin="20dp" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline21"
+        android:layout_width="wrap_content"
+        app:layout_constraintGuide_percent="0.5"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="20dp" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline22"
+        android:layout_width="wrap_content"
+        app:layout_constraintGuide_percent="0.75"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="20dp" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline23"
+        android:layout_width="wrap_content"
+        app:layout_constraintGuide_percent="1.0"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="20dp" />
 
 
-
-
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="80dp"
     android:orientation="horizontal">
 
@@ -8,9 +8,9 @@
         android:id="@+id/ivUserProfile"
         android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:src="@drawable/avatar"
         android:layout_gravity="left"
-        android:layout_marginLeft="16dp"/>
+        android:layout_marginLeft="16dp"
+        android:src="@drawable/avatar" />
 
     <TextView
         android:id="@+id/tvUserName"
@@ -20,6 +20,7 @@
         android:layout_marginLeft="16dp"
         android:paddingTop="28dp"
         android:textSize="20sp" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

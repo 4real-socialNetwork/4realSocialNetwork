@@ -145,6 +145,8 @@ public class HomeFragment extends android.support.v4.app.Fragment {
                 }
             });
         }
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
     }
 
 

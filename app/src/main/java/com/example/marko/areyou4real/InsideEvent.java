@@ -20,6 +20,7 @@ import com.example.marko.areyou4real.adapter.CompleteEventRecyclerAdapter;
 import com.example.marko.areyou4real.adapter.GlideApp;
 import com.example.marko.areyou4real.adapter.TinyDB;
 import com.example.marko.areyou4real.dialogs.ShareEventDialog;
+import com.example.marko.areyou4real.dialogs.WarningDialog;
 import com.example.marko.areyou4real.fragments.InsideEventMap;
 import com.example.marko.areyou4real.model.Event;
 import com.example.marko.areyou4real.model.EventRequest;
@@ -50,7 +51,7 @@ public class InsideEvent extends AppCompatActivity {
     private TextView tvEventDate;
     private TextView tvEventDescription;
     private TextView tvEventPlayersNeeded;
-    private TextView tvEventPlayersEntered;
+    private Button tvEventPlayersEntered;
     private Button btnDoSomething;
     private Button btnSendEventRequest;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -89,7 +90,7 @@ public class InsideEvent extends AppCompatActivity {
     private ImageView ivEventIcon;
     private TextView tvEventAdress;
     private TextView textView4;
-
+    private Button btnChangeToPublic;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,6 +119,7 @@ public class InsideEvent extends AppCompatActivity {
         btnSendEventRequest = findViewById(R.id.btnSendEventRequest);
         ivEventPlace = findViewById(R.id.ivEventPlaceMap);
         textView4 = findViewById(R.id.textView4);
+        btnChangeToPublic = findViewById(R.id.btnChangeToPublic);
 
         mCheckBox1 = findViewById(R.id.checkBox1);
         mCheckBox2 = findViewById(R.id.checkBox2);
@@ -170,6 +172,17 @@ public class InsideEvent extends AppCompatActivity {
             }
         });
 
+
+
+        btnChangeToPublic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                WarningDialog warningDialog = new WarningDialog();
+                warningDialog.setCancelable(true);
+                warningDialog.show(getFragmentManager(), "WarningDialog");
+            }
+        });
+
     }
 
     @Override
@@ -203,7 +216,7 @@ public class InsideEvent extends AppCompatActivity {
                     tvEventAdress.setText(event.getEventAdress());
                     tvEventDescription.setText(event.getEventDescription());
                     tvEventPlayersNeeded.setText("" + event.getUsersNeeded());
-                    tvEventPlayersEntered.setText("" + event.getUsersEntered());
+                    tvEventPlayersEntered.setText(event.getUsersEntered());
                     eventLat = event.getEventLat();
                     eventLng = event.getEventLng();
                     usersInEvent.clear();
@@ -211,6 +224,9 @@ public class InsideEvent extends AppCompatActivity {
 
 
                     if (userId.equals(event.getIdOfTheUserWhoCreatedIt())) {
+                        if(event.isPrivate()){
+                            btnChangeToPublic.setVisibility(View.VISIBLE);
+                        }
                         btnDoSomething.setText(btnText1);
                         fab.setVisibility(View.VISIBLE);
                         fab.setClickable(true);
@@ -287,6 +303,9 @@ public class InsideEvent extends AppCompatActivity {
                     }
 
                     if (userId.equals(event.getIdOfTheUserWhoCreatedIt())) {
+                        if(event.isPrivate()){
+                            btnChangeToPublic.setVisibility(View.VISIBLE);
+                        }
                         btnDoSomething.setText(btnText1);
                         btnSendEventRequest.setVisibility(View.VISIBLE);
                         btnSendEventRequest.setClickable(true);
@@ -578,6 +597,7 @@ public class InsideEvent extends AppCompatActivity {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 Event event = documentSnapshot.toObject(Event.class);
                 event.getListOfUsersParticipatingInEvent().clear();
+                event.setCompleted(true);
                 eventsRef.document(eventId).set(event);
                 btnCompleteEvent.setVisibility(View.INVISIBLE);
                 btnCompleteEvent.setClickable(false);
@@ -605,6 +625,10 @@ public class InsideEvent extends AppCompatActivity {
                 break;
         }
 
+    }
+
+    public String getEventId(){
+        return eventId;
     }
 
 

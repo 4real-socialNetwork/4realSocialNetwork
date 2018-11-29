@@ -9,6 +9,15 @@ public class Group {
     private String groupAdmin;
     private boolean firstGroup;
     private boolean isSelected;
+    private String groupPictureUrl;
+
+    public String getGroupPictureUrl() {
+        return groupPictureUrl;
+    }
+
+    public void setGroupPictureUrl(String groupPictureUrl) {
+        this.groupPictureUrl = groupPictureUrl;
+    }
 
     public boolean isSelected() {
         return isSelected;
@@ -26,12 +35,13 @@ public class Group {
         this.firstGroup = firstGroup;
     }
 
-    public Group(String groupName, ArrayList<String> listOfUsersInGroup, String groupId, String groupAdmin, boolean firstGroup) {
+    public Group(String groupName, ArrayList<String> listOfUsersInGroup, String groupId, String groupAdmin, boolean firstGroup,String groupPictureUrl) {
         this.groupName = groupName;
         this.listOfUsersInGroup = listOfUsersInGroup;
         this.groupId = groupId;
         this.groupAdmin = groupAdmin;
         this.firstGroup = firstGroup;
+        this.groupPictureUrl = groupPictureUrl;
 
     }
 

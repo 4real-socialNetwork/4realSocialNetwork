@@ -5,44 +5,34 @@ admin.initializeApp();
 
 var db = admin.firestore();
 
-//const firestore = admin.firestore;
-//const settings = {/ your settings... / timestampsInSnapshots: true};
-//firestore.settings(settings);
 
-
-exports.sendPush2 = functions.firestore.document('Events/{eventId}/chatRoom')
-    .onCreate((change, context) => {
+exports.eventJoining = functions.firestore.document('Events/{eventId}')
+    .onWrite((change, context) => {
 
         const newValue = change.after.data();
-        const previousValue = change.before.data(); // treba prikazati zadnju izmjenu u notification poruci putem ovoga
-	
-		
-		let currentEventUrl = change.doc.ref.path.split("/").slice(0, ) //path to eventa unutar kojeg je chatRoom 
-		currentEventUrl = currentEventUrl.split("/").slice(0, currentEventUrl.split("/").length - 1).join("/")
-		var docRef = db.collection(currentEventUrl);
-        docRef.get()
-            .then(snapshot => {
-				const listOfUsers = snapshot.listOfUsersParticipatingInEvent; //dobijemo usere koji su u eventu
-				
-				//dalje nije dirao
-				//sretno care
-				
-				var docRef = db.collection('Users');
-				docRef.get()
-					.then(snapshot => {
-						snapshot.forEach(doc => {
-							console.log(doc.id, '=>', doc.data());
-							users.push(doc.data());
-						});
-			})
-       
+        const previousValue = change.before.data();
+
+        const usersAfterChange = newValue.usersEntered;
+        const usersBeforeChange = previousValue.usersEntered;
+
+        const eventCreatorUserId = newValue.idOfTheUserWhoCreatedIt
+        const eventDescription = previousValue.eventDescription;
+        const eventId = newValue.eventId;
+
+        const listOfUsers = previousValue.listOfUsersParticipatingInEvent;
+
+        if (usersAfterChange == usersBeforeChange) return null;
+
+        let messageText = "Novi korisnik se pridružio"
+        if (usersAfterChange < usersBeforeChange) {
+            messageText = "Jedan korisnik je izašao"
+            listOfUsers = newValue.listOfUsersParticipatingInEvent;
+        }
         let users = [];
-		
         var docRef = db.collection('Users');
         docRef.get()
             .then(snapshot => {
                 snapshot.forEach(doc => {
-                    console.log(doc.id, '=>', doc.data());
                     users.push(doc.data());
                 });
 
@@ -54,17 +44,184 @@ exports.sendPush2 = functions.firestore.document('Events/{eventId}/chatRoom')
                 }
                 let payload = {
                     data: {
-                        data_type : "direct_message",
-                        title: messageText + eventDescription,
-                        message: messageText + eventDescription,
+                        data_type : "event_joining",
+                        title: messageText,
+                        message: eventDescription,
                         messageId: eventId,
-                        eventId: eventId,
+                        extraId: eventId,
+                    }
+                };
+
+				        let log = admin.messaging().sendToDevice(tokens, payload);
+
+            })
+
+        return 0;
+    });
+
+exports.chatRoomEvents = functions.firestore.document('Events/{eventId}/chatRoom/{chatId}')
+    .onCreate((snap, context) => {
+
+		const wholeDocument = snap.data();
+		const usersInChat = wholeDocument.usersInChat;
+		const senderId = wholeDocument.uid;
+		const dataMessage = wholeDocument.message
+		const senderName = wholeDocument.name;
+		const eventId = wholeDocument.idOfEventOfMessage;
+
+        let users = [];
+
+        var docRef = db.collection('Users');
+        docRef.get()
+            .then(snapshot => {
+                snapshot.forEach(doc => {
+                    users.push(doc.data());
+                });
+
+                let tokens = [];
+                for (let user of users) {
+                    if (usersInChat.indexOf(user.userId) > -1 && user.userId != senderId){
+                      tokens.push(user.userToken)
+                    }
+                }
+                let payload = {
+                    data: {
+                        data_type : "event_message",
+						            title:senderName,
+                        message: dataMessage,
+						            messageId: eventId,
+                        extraId: eventId,
                     }
                 };
 
 				        let log = admin.messaging().sendToDevice(tokens, payload);
 				        console.log("Result: ", log);
-            })
+            });
 
         return 0;
     });
+
+exports.chatRoomGroups = functions.firestore.document('Groups/{groupId}/chatRoom/{chatId}')
+    .onCreate((snap, context) => {
+
+		const wholeDocument = snap.data();
+		const usersInChat = wholeDocument.usersInChat;
+		const senderId = wholeDocument.uid;
+		const dataMessage = wholeDocument.message
+		const senderName = wholeDocument.name;
+		const eventId = wholeDocument.idOfGroupOfMessage;
+
+        let users = [];
+
+        var docRef = db.collection('Users');
+        docRef.get()
+            .then(snapshot => {
+                snapshot.forEach(doc => {
+                    users.push(doc.data());
+                });
+
+                let tokens = [];
+                for (let user of users) {
+                    if (usersInChat.indexOf(user.userId) > -1 && user.userId != senderId){
+                      tokens.push(user.userToken)
+                    }
+                }
+                let payload = {
+                    data: {
+                        data_type : "group_message",
+						            title:senderName,
+                        message: dataMessage,
+						            messageId: eventId,
+                        extraId: eventId,
+                    }
+                };
+
+				        let log = admin.messaging().sendToDevice(tokens, payload);
+				        console.log("Result: ", log);
+            });
+
+        return 0;
+    });
+
+exports.eventRequest = functions.firestore.document('Users/{userId}/EventRequests/{pushId}')
+        .onCreate((snap, context) => {
+
+            const wholeDocument = snap.data();
+            const recieverId = wholeDocument.reciverDocRef;
+            const senderName = wholeDocument.senderName;
+            const eventId = wholeDocument.eventId;
+            const eventActivity = wholeDocument.eventActivity;
+            const dataMessage = "Pridruži se mom eventu: ";
+
+            let users = [];
+
+            var docRef = db.collection('Users');
+            docRef.get()
+                .then(snapshot => {
+                    snapshot.forEach(doc => {
+                        users.push(doc.data());
+                    });
+
+                    let tokens = [];
+                    for (let user of users) {
+                        if (user.userId == recieverId){
+                          tokens.push(user.userToken)
+                        }
+                    }
+                    let payload = {
+                        data: {
+                            data_type : "event_request",
+                            title: senderName,
+                            message: dataMessage + eventActivity,
+                            messageId: eventId,
+                            extraId: eventId,
+
+                        }
+                    };
+
+    				        let log = admin.messaging().sendToDevice(tokens, payload);
+    				        console.log("Result: ", log);
+                });
+
+            return 0;
+        });
+
+exports.friendRequest = functions.firestore.document('Users/{userId}/FriendRequest/{pushId}')
+                .onCreate((snap, context) => {
+
+                    const wholeDocument = snap.data();
+                    const recieverId = wholeDocument.reciverId;
+                    const senderDocRef = wholeDocument.senderDocRef;
+                    const senderName = wholeDocument.senderName;
+                    const dataMessage = "Zahjev za prijateljstvo";
+
+                    let users = [];
+
+                    var docRef = db.collection('Users');
+                    docRef.get()
+                        .then(snapshot => {
+                            snapshot.forEach(doc => {
+                                users.push(doc.data());
+                            });
+
+                            let tokens = [];
+                            for (let user of users) {
+                                if (user.userId == recieverId){
+                                  tokens.push(user.userToken)
+                                }
+                            }
+                            let payload = {
+                                data: {
+                                    data_type : "friend_request",
+                                    title: senderName,
+                                    message: dataMessage,
+                                    messageId: senderDocRef,
+                                    extraId: senderDocRef,
+                                }
+                            };
+            				        let log = admin.messaging().sendToDevice(tokens, payload);
+            				        console.log("Result: ", log);
+                        });
+
+                    return 0;
+                });

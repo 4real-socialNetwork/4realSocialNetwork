@@ -58,5 +58,6 @@ dependencies {
 
     implementation "android.arch.core:runtime:1.1.1"
     implementation "android.arch.core:common:1.1.1"
+    implementation 'q.rorbin:badgeview:1.1.0'
 
 }

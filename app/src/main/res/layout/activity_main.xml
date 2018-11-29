@@ -10,14 +10,18 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:theme="@style/MyTheme">
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
+            android:gravity="left"
+            android:layout_gravity="left"
+            app:navigationIcon="@drawable/logo_transparent_tab"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary"
             app:layout_scrollFlags="enterAlways"
-            app:popupTheme="@style/AppTheme.AppBarOverlay">
+            android:theme="@style/MyTheme"
+            app:popupTheme="@style/MyTheme">
 
         </android.support.v7.widget.Toolbar>
 

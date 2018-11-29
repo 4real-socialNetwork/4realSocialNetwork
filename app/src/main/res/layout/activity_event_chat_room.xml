@@ -11,7 +11,8 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary" />
+        android:background="@color/colorPrimary"
+        android:theme="@style/ToolbarTheme"/>
 
 
     <android.support.v7.widget.RecyclerView
@@ -33,7 +34,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="8dp"
+            android:hint="Napišite poruku"/>
 
         <Button
             android:id="@+id/btnSendMessage"
@@ -41,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:background="@drawable/interest_button_pressed"
-            android:text="SendMessage"
+            android:text="Pošalji poruku"
             android:textColor="?android:colorBackground" />
 
     </LinearLayout>
