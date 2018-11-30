@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:810754595495:android:7842f48323d53c88",
         "android_client_info": {
-          "package_name": "com.example.marko.areyou4real"
+          "package_name": "com.generalAwesome.marko.areyou4real"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "810754595495-c56fprmal835repskmp6lv5qh061o6ho.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.marko.areyou4real",
+            "package_name": "com.generalAwesome.marko.areyou4real",
             "certificate_hash": "c2509f856ca0b16217f5f9e498114970b2cb3ea3"
           }
         },

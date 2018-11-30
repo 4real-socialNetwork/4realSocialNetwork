@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,6 +60,21 @@ public class OtherUserProfile extends AppCompatActivity {
     private Context mContext;
     private String currentUserId = "";
     private TextView tvPercent;
+    private CheckBox c1;
+    private CheckBox c2;
+    private CheckBox c3;
+    private CheckBox c4;
+    private CheckBox c5;
+    private CheckBox c6;
+    private CheckBox c7;
+    private CheckBox c8;
+    private CheckBox c9;
+    private CheckBox c10;
+    private CheckBox c11;
+    private CheckBox c12;
+    private CheckBox c13;
+    private CheckBox c14;
+    private CheckBox c15;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +82,7 @@ public class OtherUserProfile extends AppCompatActivity {
         setContentView(R.layout.activity_other_user_profile);
         toolbar = findViewById(R.id.toolbar);
         mContext = OtherUserProfile.this;
+        initiliaseCheckBox();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -105,7 +122,7 @@ public class OtherUserProfile extends AppCompatActivity {
                 otherUser = documentSnapshot.toObject(User.class);
                 thisUserDocRef = documentSnapshot.getId();
                 currentUserId = documentSnapshot.toObject(User.class).getUserId();
-                tvPercent.setText(otherUser.getPercentage()+" % dolazaka") ;
+                tvPercent.setText(otherUser.getPercentage() + " % dolazaka");
                 if (otherUser.getProfilePictureUrl() != null) {
                     GlideApp.with(OtherUserProfile.this).load(otherUser.getProfilePictureUrl())
                             .circleCrop()
@@ -121,7 +138,7 @@ public class OtherUserProfile extends AppCompatActivity {
                 tvUserDescription.setText(otherUser.getDescription());
                 for (String value : otherUser.getInterests()) {
                     if (value.equals(otherUser.getInterests().get(otherUser.getInterests().size() - 1))) {
-                        interests += value ;
+                        interests += value;
                     } else {
                         interests += value + ", ";
 
@@ -151,7 +168,7 @@ public class OtherUserProfile extends AppCompatActivity {
 
     private void sendPlayerRequest() {
         usersRef.document(thisUserDocRef).collection("FriendRequest").add(new FriendRequest(FirebaseAuth.getInstance().getUid(), false, currentUserName, currentUserDocId, ""
-                , thisUserDocRef,currentUserId))
+                , thisUserDocRef, currentUserId))
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
@@ -178,7 +195,7 @@ public class OtherUserProfile extends AppCompatActivity {
                         btnAddPlayer.setVisibility(View.VISIBLE);
                         btnAddPlayer.setText("Prijatelji ste");
                         btnAddPlayer.setClickable(false);
-                    }else {
+                    } else {
                         btnAddPlayer.setVisibility(View.VISIBLE);
                         btnAddPlayer.setText("Pošalji zahtjev");
                         btnAddPlayer.setOnClickListener(new View.OnClickListener() {
@@ -188,9 +205,9 @@ public class OtherUserProfile extends AppCompatActivity {
                             }
                         });
                     }
-                    }
-
                 }
+
+            }
 
         });
 
@@ -268,14 +285,15 @@ public class OtherUserProfile extends AppCompatActivity {
         otherUserDocRef = intent.getStringExtra("otherUserDocRef");
         getCurrentUserName();
 
-        try{
+        try {
             usersRef.document(otherUserDocRef).addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                    try{
+                    try {
                         otherUser = documentSnapshot.toObject(User.class);
+                        setSkillStar(otherUser);
 
-                    }catch (NullPointerException e1){
+                    } catch (NullPointerException e1) {
                         Log.d("log", "onEvent: ");
                     }
                     thisUserDocRef = documentSnapshot.getId();
@@ -304,10 +322,9 @@ public class OtherUserProfile extends AppCompatActivity {
                 }
             });
 
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.d("OnStart", "onStart: There was an error in the onStart");
         }
-
 
 
     }
@@ -325,5 +342,113 @@ public class OtherUserProfile extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void initiliaseCheckBox() {
+        c1 = findViewById(R.id.checkBox1);
+        c2 = findViewById(R.id.checkBox2);
+        c3 = findViewById(R.id.checkBox3);
+        c4 = findViewById(R.id.checkBox4);
+        c5 = findViewById(R.id.checkBox5);
+        c6 = findViewById(R.id.checkBox6);
+        c7 = findViewById(R.id.checkBox7);
+        c8 = findViewById(R.id.checkBox8);
+        c9 = findViewById(R.id.checkBox9);
+        c10 = findViewById(R.id.checkBox10);
+        c11 = findViewById(R.id.checkBox11);
+        c12 = findViewById(R.id.checkBox12);
+        c13 = findViewById(R.id.checkBox13);
+        c14 = findViewById(R.id.checkBox14);
+        c15 = findViewById(R.id.checkBox15);
+    }
+
+    private void setSkillStar(User user) {
+        switch (user.getNogometSkill()) {
+            case 0:
+                break;
+            case 1:
+                c1.setChecked(true);
+                break;
+            case 2:
+                c1.setChecked(true);
+                c2.setChecked(true);
+                break;
+            case 3:
+                c1.setChecked(true);
+                c2.setChecked(true);
+                c3.setChecked(true);
+                break;
+            case 4:
+                c1.setChecked(true);
+                c2.setChecked(true);
+                c3.setChecked(true);
+                c4.setChecked(true);
+                break;
+            case 5:
+                c1.setChecked(true);
+                c2.setChecked(true);
+                c3.setChecked(true);
+                c4.setChecked(true);
+                c5.setChecked(true);
+                break;
+        }
+        switch (user.getKosarkaSkill()) {
+            case 0:
+                break;
+            case 1:
+                c6.setChecked(true);
+                break;
+            case 2:
+                c6.setChecked(true);
+                c7.setChecked(true);
+                break;
+            case 3:
+                c6.setChecked(true);
+                c7.setChecked(true);
+                c8.setChecked(true);
+                break;
+            case 4:
+                c6.setChecked(true);
+                c7.setChecked(true);
+                c8.setChecked(true);
+                c9.setChecked(true);
+                break;
+            case 5:
+                c6.setChecked(true);
+                c7.setChecked(true);
+                c8.setChecked(true);
+                c9.setChecked(true);
+                c10.setChecked(true);
+                break;
+        }switch (user.getSahSkill()) {
+            case 0:
+                break;
+            case 1:
+                c11.setChecked(true);
+                break;
+            case 2:
+                c11.setChecked(true);
+                c12.setChecked(true);
+                break;
+            case 3:
+                c11.setChecked(true);
+                c12.setChecked(true);
+                c13.setChecked(true);
+                break;
+            case 4:
+                c11.setChecked(true);
+                c12.setChecked(true);
+                c13.setChecked(true);
+                c14.setChecked(true);
+                break;
+            case 5:
+                c11.setChecked(true);
+                c12.setChecked(true);
+                c13.setChecked(true);
+                c14.setChecked(true);
+                c15.setChecked(true);
+                break;
+        }
+
     }
 }
