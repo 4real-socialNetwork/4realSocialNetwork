@@ -105,7 +105,7 @@ public class OtherUserProfile extends AppCompatActivity {
                 otherUser = documentSnapshot.toObject(User.class);
                 thisUserDocRef = documentSnapshot.getId();
                 currentUserId = documentSnapshot.toObject(User.class).getUserId();
-                tvPercent.setText(otherUser.getPercentage()+" %") ;
+                tvPercent.setText(otherUser.getPercentage()+" % dolazaka") ;
                 if (otherUser.getProfilePictureUrl() != null) {
                     GlideApp.with(OtherUserProfile.this).load(otherUser.getProfilePictureUrl())
                             .circleCrop()

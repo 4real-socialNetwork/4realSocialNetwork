@@ -226,6 +226,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="false" />
+        <CheckBox
+            android:id="@+id/checkBox4"
+            style="?android:attr/starStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="false" />
+        <CheckBox
+            android:id="@+id/checkBox5"
+            style="?android:attr/starStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="false" />
 
 
     </LinearLayout>
@@ -268,6 +280,7 @@
 
 
     <Button
+        android:background="@drawable/interest_button_pressed"
         android:id="@+id/btnCompleteEvent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -319,6 +332,7 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <Button
+        android:visibility="invisible"
         android:id="@+id/btnChat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

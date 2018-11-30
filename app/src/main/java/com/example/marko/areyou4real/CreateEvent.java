@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -107,6 +108,7 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
     private CheckBox mCheckBox4;
     private CheckBox mCheckBox5;
     private int skillRequired;
+    private TextView tvSkillRequred;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +128,7 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
         eventTypeSpinner = findViewById(R.id.eventTypeSpinner);
 
         progressBar = findViewById(R.id.progressBar);
+        tvSkillRequred = findViewById(R.id.tvSkillRequired);
 
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.interests, android.R.layout.simple_spinner_item);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -137,6 +140,8 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
         mCheckBox1 = findViewById(R.id.checkBox1);
         mCheckBox2 = findViewById(R.id.checkBox2);
         mCheckBox3 = findViewById(R.id.checkBox3);
+        mCheckBox4 = findViewById(R.id.checkBox4);
+        mCheckBox5 = findViewById(R.id.checkBox5);
 
         setUpCheckBoxes();
 
@@ -189,7 +194,9 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
     }
 
     public void createEvent() {
-
+        if (!validateForm()) {
+           return;
+        }
         if (!isPrivate) {
             String eventName = name.getText().toString();
             String activity = selectedInteres;
@@ -268,6 +275,7 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
 
         }
 
+
     }
 
 
@@ -337,6 +345,9 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
                 tvEventLocationAddress.setText(eventAddress);
                 eventLat = data.getDoubleExtra("LAT", 0);
                 eventLng = data.getDoubleExtra("LNG", 0);
+                tvEventTime.setError(null);
+                tvEventDate.setError(null);
+                tvEventLocationAddress.setError(null);
             }
         } else if (requestCode == 2 && data != null) {
             if (resultCode == RESULT_OK) {
@@ -447,7 +458,6 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-
                     mCheckBox1.setChecked(true);
                     mCheckBox2.setChecked(false);
                     mCheckBox3.setChecked(false);
@@ -490,12 +500,117 @@ public class CreateEvent extends AppCompatActivity implements AdapterView.OnItem
                     mCheckBox1.setChecked(true);
                     mCheckBox2.setChecked(true);
                     mCheckBox3.setChecked(false);
+                    mCheckBox4.setChecked(false);
+                    mCheckBox5.setChecked(false);
+                }
+
+
+            }
+        });
+        mCheckBox4.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mCheckBox1.setChecked(true);
+                    mCheckBox2.setChecked(true);
+                    mCheckBox3.setChecked(true);
+                    mCheckBox4.setChecked(true);
+                    skillRequired = 4;
+                } else {
+                    mCheckBox1.setChecked(true);
+                    mCheckBox2.setChecked(true);
+                    mCheckBox3.setChecked(true);
+                    mCheckBox4.setChecked(false);
+                    mCheckBox5.setChecked(false);
+                }
+
+
+            }
+        });
+        mCheckBox5.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mCheckBox1.setChecked(true);
+                    mCheckBox2.setChecked(true);
+                    mCheckBox3.setChecked(true);
+                    mCheckBox4.setChecked(true);
+                    mCheckBox5.setChecked(true);
+                    skillRequired = 5;
+                } else {
+                    mCheckBox1.setChecked(true);
+                    mCheckBox2.setChecked(true);
+                    mCheckBox3.setChecked(true);
+                    mCheckBox4.setChecked(true);
+                    mCheckBox5.setChecked(false);
                 }
 
 
             }
         });
 
+
+    }
+
+    private boolean validateForm() {
+        boolean result = true;
+        if (TextUtils.isEmpty(name.getText().toString())) {
+            name.setError("Obavezno ispuniti");
+            result = false;
+            btnCreateEvent.setEnabled(false);
+            progressBar.setVisibility(View.INVISIBLE);
+        } else {
+            name.setError(null);
+        }
+        if (TextUtils.isEmpty(playersNeeded.getText().toString())) {
+            playersNeeded.setError("Obavezno ispuniti");
+            result = false;
+            progressBar.setVisibility(View.INVISIBLE);
+
+
+        } else {
+            playersNeeded.setError(null);
+        }
+        if (TextUtils.isEmpty(eventDescription.getText().toString())) {
+            eventDescription.setError("Obavezno ispuniti");
+            result = false;
+            progressBar.setVisibility(View.INVISIBLE);
+
+
+        } else {
+            eventDescription.setError(null);
+        }
+
+
+        if (TextUtils.isEmpty(tvEventTime.getText().toString())) {
+            tvEventTime.setError("Obavezno ispuniti");
+            result = false;
+            progressBar.setVisibility(View.INVISIBLE);
+
+
+        } else {
+            tvEventTime.setError(null);
+        }
+        if (TextUtils.isEmpty(tvEventDate.getText().toString())) {
+            tvEventDate.setError("Obavezno ispuniti");
+            result = false;
+            progressBar.setVisibility(View.INVISIBLE);
+
+
+        } else {
+            tvEventDate.setError(null);
+        }
+        if (TextUtils.isEmpty(tvEventLocationAddress.getText().toString())) {
+            tvEventLocationAddress.setError("Obavezno ispuniti");
+            result = false;
+            progressBar.setVisibility(View.INVISIBLE);
+
+
+        } else {
+            tvEventLocationAddress.setError(null);
+        }
+
+        return result;
     }
 
 

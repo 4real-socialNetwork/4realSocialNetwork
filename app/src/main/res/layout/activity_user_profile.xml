@@ -52,30 +52,23 @@
                 android:layout_height="16dp" />
             <!-- ************************************Ovo us dva nova gumba nema ih u javi************************+ -->
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:visibility="invisible">
+                android:layout_gravity="center_horizontal"
+                >
 
-                <Button
-                    android:layout_width="0dp"
+                <ProgressBar
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/btn_rounded_primary"
-                    android:text="Dodaj prijatelja"
-                    android:textColor="#fff" />
-
+                    android:id="@+id/progressBarPicture"
+                    android:visibility="invisible"
+                    android:layout_gravity="center_horizontal"/>
                 <View
                     android:layout_width="16dp"
                     android:layout_height="0dp" />
 
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/btn_rounded_primary"
-                    android:text="Pozovi u event"
-                    android:textColor="#fff" />
+
 
             </LinearLayout>
 
@@ -106,7 +99,7 @@
                     android:layout_height="wrap_content"
                     android:text="O meni:"
                     android:textColor="@color/colorBlack"
-                    android:textSize="20sp" />
+                    android:textSize="16sp" />
 
                 <EditText
                     android:id="@+id/etUserDescription"
@@ -198,9 +191,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Vjerodostojnost:"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="20sp" />
+                    android:text="Postotak dolazaka:"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/tvPercent"
@@ -209,7 +202,7 @@
                     android:layout_centerInParent="true"
                     android:layout_marginTop="32dp"
                     android:text="75%"
-                    android:textColor="@color/colorBlack"
+                    android:textColor="@color/colorPrimaryDark"
                     android:textSize="30sp" />
 
                 <android.support.design.widget.CoordinatorLayout
@@ -247,6 +240,16 @@
                     android:padding="6dp"
                     android:text="Košarka"
                     android:textColor="#ffff" />
+                <Button
+                    android:padding="6dp"
+                    android:layout_margin="2dp"
+                    android:id="@+id/btnOstalo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/interest_button"
+                    android:text="Ostalo"
+                    android:textColor="#ffff" />
+
 
 
             </LinearLayout>
@@ -286,6 +289,7 @@
                     android:padding="6dp"
                     android:text="Druženje"
                     android:textColor="#ffff" />
+
 
 
             </LinearLayout>
@@ -393,7 +397,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@drawable/btn_rounded_primary"
+                    android:background="@drawable/interest_button_pressed"
                     android:text="odjava"
                     android:textColor="?android:colorBackground" />
 

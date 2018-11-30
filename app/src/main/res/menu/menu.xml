@@ -8,7 +8,7 @@
         android:id="@+id/myEvents"
         android:focusableInTouchMode="false"
         android:title="Moji eventi"
-        android:icon="@drawable/event"
+        android:icon="@drawable/event_red"
         app:showAsAction="always"></item>
 
 

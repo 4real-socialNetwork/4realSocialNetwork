@@ -68,8 +68,6 @@ public class NotificationsActivity extends AppCompatActivity {
         MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
         menuItem.setIcon(R.drawable.nav_notif_selected);
         menuItem.setChecked(true);
-        addBadgeAt(bottomNavigationViewEx,1);
-
     }
 
     @Override

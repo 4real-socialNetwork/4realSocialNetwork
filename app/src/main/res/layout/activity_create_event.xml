@@ -11,7 +11,8 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary" />
+        android:background="@color/colorPrimary"
+        android:theme="@style/ToolbarTheme"/>
 
 
     <ScrollView
@@ -24,6 +25,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:textColor="@color/colorPrimaryDark"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -31,6 +33,7 @@
                 android:text="Vrsta događaja:" />
 
             <Spinner
+                android:layout_margin="4dp"
                 android:id="@+id/eventTypeSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -38,6 +41,8 @@
                 android:padding="16dp" />
 
             <TextView
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_margin="4dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -45,6 +50,7 @@
                 android:text="Za grupu : " />
 
             <TextView
+                android:textColor="@color/colorPrimaryDark"
                 android:id="@+id/tvEventForUsers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -67,12 +73,15 @@
                 android:padding="16dp" />
 
             <TextView
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_margin="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="16dp"
                 android:text="Vrsta aktivnosti:" />
 
             <Spinner
+                android:layout_margin="4dp"
                 android:id="@+id/spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -87,16 +96,20 @@
                 android:background="@android:color/darker_gray" />
 
             <TextView
+                android:id="@+id/tvSkillRequired"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_margin="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="16dp"
                 android:text="Predložena razina skilla za sudjelovanje : " />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_margin="4dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingLeft="16dp">
+                android:layout_gravity="center">
 
                 <CheckBox
                     android:id="@+id/checkBox1"
@@ -115,6 +128,16 @@
                     style="?android:attr/starStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
+                <CheckBox
+                    android:id="@+id/checkBox4"
+                    style="?android:attr/starStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <CheckBox
+                    android:id="@+id/checkBox5"
+                    style="?android:attr/starStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
 
             </LinearLayout>
@@ -128,6 +151,8 @@
                 android:background="@android:color/darker_gray" />
 
             <TextView
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_margin="4dp"
                 android:id="@+id/tvEventTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -135,6 +160,7 @@
                 android:text="Odredite vrijeme održavanja eventa:" />
 
             <Button
+
                 android:id="@+id/btnTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -145,10 +171,13 @@
                 android:textColor="?android:colorBackground" />
 
             <TextView
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_margin="4dp"
                 android:id="@+id/tvTimeStart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="16dp" />
+                android:paddingLeft="16dp"
+                android:layout_gravity="center"/>
 
             <View
                 android:layout_width="match_parent"
@@ -169,10 +198,13 @@
                 android:textColor="?android:colorBackground" />
 
             <TextView
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_margin="4dp"
                 android:id="@+id/tvDateOfEvent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="16dp" />
+                android:paddingLeft="16dp"
+                android:layout_gravity="center"/>
 
 
             <View
@@ -183,10 +215,13 @@
                 android:background="@android:color/darker_gray" />
 
             <TextView
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_margin="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="16dp"
-                android:text="Izaberite mjesto:" />
+                android:text="Izaberite mjesto:"
+                />
 
             <Button
                 android:id="@+id/btnMap"
@@ -199,10 +234,13 @@
                 android:textColor="?android:colorBackground" />
 
             <TextView
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_margin="4dp"
                 android:id="@+id/tvPlaceAdress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="16dp" />
+                android:paddingLeft="16dp"
+                android:layout_gravity="center"/>
 
             <View
                 android:layout_width="match_parent"
@@ -212,6 +250,7 @@
                 android:background="@android:color/darker_gray" />
 
             <EditText
+                android:layout_margin="4dp"
                 android:id="@+id/etPlayersNeeded"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -220,27 +259,26 @@
                 android:padding="16dp" />
 
             <EditText
+                android:layout_margin="4dp"
                 android:id="@+id/etEventDescription"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:hint="Opis događaja"
                 android:padding="16dp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <ProgressBar
 
-                <ProgressBar
-                    android:id="@+id/progressBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="175dp"
-                    android:visibility="invisible" />
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:visibility="invisible" />
+
+
+
 
                 <Button
-                    android:layout_margin="6dp"
+                    android:layout_margin="12dp"
                     android:id="@+id/btnCreateEvent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -248,12 +286,10 @@
                     android:layout_marginLeft="50dp"
                     android:background="@drawable/interest_button"
                     android:padding="16dp"
-                    android:text="Stvori
-događaj"
+                    android:text="Napravi"
                     android:textColor="?android:colorBackground" />
 
 
-            </LinearLayout>
 
 
         </LinearLayout>

@@ -167,6 +167,25 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<EventRecyclerAdap
                         break;
                 }
                 break;
+            case "Ostalo":
+                switch (random) {
+                    case 1:
+                        GlideApp.with(mContext).load(R.drawable.random_one).circleCrop().into(holder.eventPicture);
+                        break;
+                    case 2:
+                        GlideApp.with(mContext).load(R.drawable.random_six).circleCrop().into(holder.eventPicture);
+                        break;
+                    case 3:
+                        GlideApp.with(mContext).load(R.drawable.random_three).circleCrop().into(holder.eventPicture);
+                        break;
+                    case 4:
+                        GlideApp.with(mContext).load(R.drawable.random_four).circleCrop().into(holder.eventPicture);
+                        break;
+                    case 5:
+                        GlideApp.with(mContext).load(R.drawable.random_five).circleCrop().into(holder.eventPicture);
+                        break;
+                }
+                break;
         }
     }
 

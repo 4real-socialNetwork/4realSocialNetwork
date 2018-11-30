@@ -18,6 +18,7 @@
         <item>Šah</item>
         <item>Društvene igre</item>
         <item>Druženje</item>
+        <item>Ostalo</item>
     </string-array>
 
     <string-array name="eventType">

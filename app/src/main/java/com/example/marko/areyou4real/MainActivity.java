@@ -17,15 +17,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
-import android.widget.Toast;
 
-import com.example.marko.areyou4real.LoginCreateUser.LoginActivity;
 import com.example.marko.areyou4real.adapter.BottomNavigationViewHelper;
 import com.example.marko.areyou4real.adapter.TinyDB;
 import com.example.marko.areyou4real.fragments.GroupsFragment;
 import com.example.marko.areyou4real.fragments.HomeFragment;
 import com.example.marko.areyou4real.adapter.SectionPagerAdapter;
-import com.example.marko.areyou4real.model.Event;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -43,7 +40,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
@@ -96,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         client = LocationServices.getFusedLocationProviderClient(MainActivity.this);
@@ -160,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onFailure: "+e.getMessage());
             }
         });
     }
@@ -193,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(), FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             if (ContextCompat.checkSelfPermission(this.getApplicationContext(), COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 mLocationPermissionGranted = true;
-                getLastKnownLocation();
+                //getLastKnownLocation();
             } else {
                 ActivityCompat.requestPermissions(MainActivity.this, new String[]{ACCESS_FINE_LOCATION}, LOCATION_REQUEST_PERMISSION_RESULT);
             }
@@ -251,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        getLastKnownLocation();
+        //getLastKnownLocation();
     }
 
 
@@ -283,8 +278,8 @@ public class MainActivity extends AppCompatActivity {
 
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10000);
-        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setInterval(1000000);
+        mLocationRequest.setFastestInterval(500000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()

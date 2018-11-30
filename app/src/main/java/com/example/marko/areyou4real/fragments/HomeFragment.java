@@ -10,6 +10,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -131,8 +132,13 @@ public class HomeFragment extends android.support.v4.app.Fragment {
                                     eventsList.add(event);
                                 }
                             }
-                            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                            setUpAdapter(view);
+                            try{
+                                getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                setUpAdapter(view);
+                            }catch (NullPointerException e){
+                                Log.d("TAG", "onComplete: "+e.getMessage());
+                            }
+
 
                         }
                     }

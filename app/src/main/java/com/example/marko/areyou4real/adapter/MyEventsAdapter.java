@@ -125,6 +125,25 @@ public class MyEventsAdapter extends FirestoreRecyclerAdapter<Event, MyEventsAda
                         break;
                 }
                 break;
+            case "Ostalo":
+                switch (random) {
+                    case 1:
+                        GlideApp.with(mContext).load(R.drawable.random_one).circleCrop().into(holder.eventImage);
+                        break;
+                    case 2:
+                        GlideApp.with(mContext).load(R.drawable.random_six).circleCrop().into(holder.eventImage);
+                        break;
+                    case 3:
+                        GlideApp.with(mContext).load(R.drawable.random_three).circleCrop().into(holder.eventImage);
+                        break;
+                    case 4:
+                        GlideApp.with(mContext).load(R.drawable.random_four).circleCrop().into(holder.eventImage);
+                        break;
+                    case 5:
+                        GlideApp.with(mContext).load(R.drawable.random_five).circleCrop().into(holder.eventImage);
+                        break;
+                }
+                break;
         }
     }
 

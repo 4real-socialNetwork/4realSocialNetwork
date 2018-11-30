@@ -12,10 +12,16 @@ import android.view.MenuItem;
 
 import com.example.marko.areyou4real.adapter.BottomNavigationViewHelper;
 import com.example.marko.areyou4real.adapter.PlacesReyclerAdapter;
-import com.example.marko.areyou4real.model.Place;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 public class PlacesActivity extends AppCompatActivity {
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference arenasRef = db.collection("Arenas");
     private static final int ACTIVITY_NUM = 2;
     private RecyclerView recyclerView;
     private PlacesReyclerAdapter adapter;
@@ -45,15 +51,19 @@ public class PlacesActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         manager = new LinearLayoutManager(mContext);
         adapter = new PlacesReyclerAdapter(mContext);
-        adapter.addItem(new Place("SD Martinovka", "Stjepana Radića 23", null, 3881654, 150.00, "Marinovka je kul"));
-        adapter.addItem(new Place("SD Martinovka", "Stjepana Radića 23", null, 3881654, 150.00, "Marinovka je kul"));
-        adapter.addItem(new Place("SD Martinovka", "Stjepana Radića 23", null, 3881654, 150.00, "Marinovka je kul"));
-        adapter.addItem(new Place("SD Martinovka", "Stjepana Radića 23", null, 3881654, 150.00, "Marinovka je kul"));
-        adapter.addItem(new Place("SD Martinovka", "Stjepana Radića 23", null, 3881654, 150.00, "Marinovka je kul"));
-        adapter.addItem(new Place("SD Martinovka", "Stjepana Radića 23", null, 3881654, 150.00, "Marinovka je kul"));
-        adapter.addItem(new Place("SD Martinovka", "Stjepana Radića 23", null, 3881654, 150.00, "Marinovka je kul"));
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
+        arenasRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (DocumentSnapshot dc : queryDocumentSnapshots){
+                    Arena arena = dc.toObject(Arena.class);
+                    adapter.addItem(arena);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
+
 
     }
 

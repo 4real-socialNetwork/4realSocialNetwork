@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -151,8 +152,10 @@ public class CreateGroup extends AppCompatActivity {
         mAddToGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mAddToGroup.setVisibility(View.INVISIBLE);
-                progressBar.setVisibility(View.VISIBLE);
+                if(!validateForm()){
+                    return;
+                }
+                mAddToGroup.setClickable(false);
                 System.out.println("Add to group triggered");
                 List<Chip> contactsSelected = (List<Chip>) mChipsInput.getSelectedChipList();
                 for (Chip chip : contactsSelected) {
@@ -168,22 +171,25 @@ public class CreateGroup extends AppCompatActivity {
                 group.addUserId(FirebaseAuth.getInstance().getUid());
                 group.setGroupName(mGroupName.getText().toString().trim());
                 group.setGroupPictureUrl(profilePictureUrl);
-                if (group.getListOfUsersInGroup().size() > 1 && group.getGroupName().length() > 2) {
+                if (group.getListOfUsersInGroup().size() > 1 ) {
+                    mAddToGroup.setVisibility(View.INVISIBLE);
+                    progressBar.setVisibility(View.VISIBLE);
                     mGroupsRef.add(group).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentReference> task) {
                             if (task.isSuccessful()) {
                                 docRef = task.getResult();
                                 groupId = docRef.getId();
-                                docRef.update("groupId", groupId, "groupPictureUrl", profilePictureUrl);
+                                docRef.update("groupId", groupId, "groupPictureUrl", profilePictureUrl, "groupAdmin", FirebaseAuth.getInstance().getUid());
                                 createChat();
 
                             }
                         }
                     });
                 } else {
-                    Toast.makeText(mContext, "Grupa mora imati više od dva člana", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(mContext, "Provjerite naziv grupe", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Grupa mora imati više od jednoga člana", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.INVISIBLE);
+                    mAddToGroup.setClickable(true);
                 }
 
 
@@ -344,6 +350,19 @@ public class CreateGroup extends AppCompatActivity {
         ContentResolver cr = getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(cr.getType(uri));
+    }
+
+    private boolean validateForm() {
+        boolean result = true;
+        if (TextUtils.isEmpty(mGroupName.getText().toString())) {
+            mGroupName.setError("Obavezno ispuniti");
+            result = false;
+            progressBar.setVisibility(View.INVISIBLE);
+        } else {
+            mGroupName.setError(null);
+        }
+
+        return result;
     }
 
 

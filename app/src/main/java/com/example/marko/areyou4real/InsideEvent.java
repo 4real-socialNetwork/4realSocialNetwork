@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +22,7 @@ import com.example.marko.areyou4real.adapter.GlideApp;
 import com.example.marko.areyou4real.adapter.TinyDB;
 import com.example.marko.areyou4real.dialogs.ShareEventDialog;
 import com.example.marko.areyou4real.dialogs.WarningDialog;
+import com.example.marko.areyou4real.fragments.HomeFragment;
 import com.example.marko.areyou4real.fragments.InsideEventMap;
 import com.example.marko.areyou4real.model.Event;
 import com.example.marko.areyou4real.model.EventRequest;
@@ -33,6 +35,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -62,9 +65,9 @@ public class InsideEvent extends AppCompatActivity {
     private Intent intent;
     private Button fab;
     private String userId = FirebaseAuth.getInstance().getUid();
-    private String btnText1 = "delete event";
-    private String btnText2 = "exit event";
-    private String btnText3 = "join event";
+    private String btnText1 = "obriši event";
+    private String btnText2 = "izađi iz eventa";
+    private String btnText3 = "pridruži se eventu";
     private boolean isUserInEvent = false;
     private Button btnCompleteEvent;
     private String eventCreatorId = new String();
@@ -74,6 +77,8 @@ public class InsideEvent extends AppCompatActivity {
     private CheckBox mCheckBox1;
     private CheckBox mCheckBox2;
     private CheckBox mCheckBox3;
+    private CheckBox mCheckBox4;
+    private CheckBox mCheckBox5;
     private ArrayList<String> usersToBeInvited = new ArrayList<>();
     private ArrayList<String> duplicateCheck = new ArrayList<>();
     private ArrayList<String> namesOfUsersInvited = new ArrayList<>();
@@ -91,6 +96,10 @@ public class InsideEvent extends AppCompatActivity {
     private TextView tvEventAdress;
     private TextView textView4;
     private Button btnChangeToPublic;
+    private ArrayList<String> usersToBeRemoved = new ArrayList<>();
+    private Event event;
+    private HomeFragment homeFragment = new HomeFragment();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,6 +133,8 @@ public class InsideEvent extends AppCompatActivity {
         mCheckBox1 = findViewById(R.id.checkBox1);
         mCheckBox2 = findViewById(R.id.checkBox2);
         mCheckBox3 = findViewById(R.id.checkBox3);
+        mCheckBox4 = findViewById(R.id.checkBox4);
+        mCheckBox5 = findViewById(R.id.checkBox5);
 
 
         ivEventPlace.setOnClickListener(new View.OnClickListener() {
@@ -158,20 +169,19 @@ public class InsideEvent extends AppCompatActivity {
         tvEventPlayersEntered.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(InsideEvent.this,UsersInEventActivity.class);
-                intent.putExtra("EVENT_ID",eventId);
+                Intent intent = new Intent(InsideEvent.this, UsersInEventActivity.class);
+                intent.putExtra("EVENT_ID", eventId);
                 startActivity(intent);
             }
         });
         textView4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(InsideEvent.this,UsersInEventActivity.class);
-                intent.putExtra("EVENT_ID",eventId);
+                Intent intent = new Intent(InsideEvent.this, UsersInEventActivity.class);
+                intent.putExtra("EVENT_ID", eventId);
                 startActivity(intent);
             }
         });
-
 
 
         btnChangeToPublic.setOnClickListener(new View.OnClickListener() {
@@ -186,9 +196,26 @@ public class InsideEvent extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        if (eventCreatorId.equals(FirebaseAuth.getInstance().getUid())) {
+            getMenuInflater().inflate(R.menu.event_menu, menu);
+
+        }
+
+
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
+        }
+        if (item.getItemId() == R.id.leaveGroup) {
+            Intent intent = new Intent(InsideEvent.this, RemovePlayerActivity.class);
+            intent.putExtra("EVENT_ID", eventId);
+            startActivityForResult(intent, 4);
         }
         return true;
     }
@@ -206,7 +233,7 @@ public class InsideEvent extends AppCompatActivity {
                 }
 
                 try {
-                    Event event = documentSnapshot.toObject(Event.class);
+                    event = documentSnapshot.toObject(Event.class);
                     eventCreatorId = event.getIdOfTheUserWhoCreatedIt();
                     tvEventName.setText(event.getName());
                     tvEventActivity.setText(event.getActivity());
@@ -224,7 +251,7 @@ public class InsideEvent extends AppCompatActivity {
 
 
                     if (userId.equals(event.getIdOfTheUserWhoCreatedIt())) {
-                        if(event.isPrivate()){
+                        if (event.isPrivate()) {
                             btnChangeToPublic.setVisibility(View.VISIBLE);
                         }
                         btnDoSomething.setText(btnText1);
@@ -286,29 +313,53 @@ public class InsideEvent extends AppCompatActivity {
 
                     if (event.getSkillNeeded() == 1) {
                         mCheckBox1.setChecked(true);
-                        mCheckBox2.setVisibility(View.VISIBLE);
-                        mCheckBox3.setVisibility(View.VISIBLE);
+                        mCheckBox2.setChecked(false);
+                        mCheckBox3.setChecked(false);
+                        mCheckBox4.setChecked(false);
+                        mCheckBox5.setChecked(false);
 
 
                     } else if (event.getSkillNeeded() == 2) {
                         mCheckBox1.setChecked(true);
                         mCheckBox2.setChecked(true);
-                        mCheckBox3.setVisibility(View.VISIBLE);
+                        mCheckBox3.setChecked(false);
+                        mCheckBox4.setChecked(false);
+                        mCheckBox5.setChecked(false);
 
 
                     } else if (event.getSkillNeeded() == 3) {
                         mCheckBox1.setChecked(true);
                         mCheckBox2.setChecked(true);
                         mCheckBox3.setChecked(true);
+                        mCheckBox4.setChecked(false);
+                        mCheckBox5.setChecked(false);
+
+                    } else if (event.getSkillNeeded() == 4) {
+                        mCheckBox1.setChecked(true);
+                        mCheckBox2.setChecked(true);
+                        mCheckBox3.setChecked(true);
+                        mCheckBox4.setChecked(true);
+                        mCheckBox5.setChecked(false);
+
+                    } else if (event.getSkillNeeded() == 5) {
+                        mCheckBox1.setChecked(true);
+                        mCheckBox2.setChecked(true);
+                        mCheckBox3.setChecked(true);
+                        mCheckBox4.setChecked(true);
+                        mCheckBox5.setChecked(true);
                     }
 
                     if (userId.equals(event.getIdOfTheUserWhoCreatedIt())) {
-                        if(event.isPrivate()){
+                        if (event.isPrivate()) {
                             btnChangeToPublic.setVisibility(View.VISIBLE);
                         }
+                        fab.setVisibility(View.VISIBLE);
                         btnDoSomething.setText(btnText1);
-                        btnSendEventRequest.setVisibility(View.VISIBLE);
-                        btnSendEventRequest.setClickable(true);
+                        if (event.getUsersNeeded() - event.getUsersEntered() > 0) {
+                            btnSendEventRequest.setVisibility(View.VISIBLE);
+                            btnSendEventRequest.setClickable(true);
+                        }
+
                         deleteEvent();
 
 
@@ -321,6 +372,7 @@ public class InsideEvent extends AppCompatActivity {
 
                         }
                     } else {
+                        fab.setVisibility(View.VISIBLE);
                         btnDoSomething.setText(btnText2);
                         exitEvent();
                     }
@@ -328,7 +380,7 @@ public class InsideEvent extends AppCompatActivity {
 
 
                 } catch (Exception e2) {
-                    Log.d("exception", "onSuccess: "+ e2.getLocalizedMessage());
+                    Log.d("exception", "onSuccess: " + e2.getLocalizedMessage());
                 }
             }
 
@@ -507,6 +559,15 @@ public class InsideEvent extends AppCompatActivity {
                 negativeUsers = data.getStringArrayListExtra("negative_users");
                 finishEvent();
             }
+        } else if (requestCode == 4) {
+            if (resultCode == RESULT_OK && data != null) {
+                usersToBeRemoved = data.getStringArrayListExtra("to_be_removed");
+                for (String userId : usersToBeRemoved) {
+                    removePlayer(userId);
+
+                }
+
+            }
         }
 
 
@@ -623,13 +684,23 @@ public class InsideEvent extends AppCompatActivity {
             case "Druženje":
                 GlideApp.with(mContext).load(R.drawable.druzenja_inside_event).circleCrop().into(ivEventIcon);
                 break;
+            case "Ostalo":
+                GlideApp.with(mContext).load(R.drawable.inside_event_ostalo).circleCrop().into(ivEventIcon);
+
         }
 
     }
 
-    public String getEventId(){
+    public String getEventId() {
         return eventId;
     }
+
+    private void removePlayer(String userId) {
+        event.removeUserFromEvent(userId);
+        eventsRef.document(eventId).set(event);
+
+    }
+
 
 
 }

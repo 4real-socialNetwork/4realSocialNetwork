@@ -78,11 +78,13 @@ public class CreateUser extends AppCompatActivity {
     private Button btnSah;
     private Button btnDrustveneIgre;
     private Button btnDruzenje;
+    private Button btnOstalo;
     int isItEventNogomet = 4;
     int isItEventKosarka = 4;
     int isItEventSah = 4;
     int isItEventDruzenje = 4;
     int isItEventDrustvene = 4;
+    int isItEventOstalo = 4;
     int interestNumber;
     private int nogometSkill;
     private int kosarkaSkill;
@@ -114,6 +116,7 @@ public class CreateUser extends AppCompatActivity {
         btnSah = findViewById(R.id.btnSah);
         btnDrustveneIgre = findViewById(R.id.btnDrustveneIgre);
         btnDruzenje = findViewById(R.id.btnDruzenje);
+        btnOstalo = findViewById(R.id.btnOstalo);
 
 
         btnCreateAccount.setClickable(false);
@@ -187,7 +190,7 @@ public class CreateUser extends AppCompatActivity {
                         @Override
                         public void onSuccess(AuthResult authResult) {
                             User user = new User(FirebaseAuth.getInstance().getUid(), mToken, ime, prezime, mail, opis, selectedItems, udaljenost, friendsList, profilePictureUrl,
-                                    nogometSkill, kosarkaSkill, sahSkill,0,0,100);
+                                    nogometSkill, kosarkaSkill, sahSkill, 0, 0, 100);
                             mUsersRef.add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(final DocumentReference documentReference) {
@@ -206,7 +209,7 @@ public class CreateUser extends AppCompatActivity {
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Log.d(TAG, "onFailure: "+e.getMessage());
+                    Log.d(TAG, "onFailure: " + e.getMessage());
                     progressBar.setVisibility(View.INVISIBLE);
                 }
             });
@@ -267,9 +270,6 @@ public class CreateUser extends AppCompatActivity {
 
         return result;
     }
-
-
-
 
 
     private void setUpToolbar() {
@@ -365,7 +365,10 @@ public class CreateUser extends AppCompatActivity {
                     if (btnNogomet.isPressed()) {
                         btnNogomet.setBackgroundResource(R.drawable.interest_button_pressed);
                         isItEventNogomet += 1;
-                        selectedItems.add("Nogomet");
+                        if (!selectedItems.contains("Nogomet")) {
+                            selectedItems.add("Nogomet");
+
+                        }
 
                     }
                 } else {
@@ -393,7 +396,11 @@ public class CreateUser extends AppCompatActivity {
                         skillDialog.show(getFragmentManager(), "KosarkaSkillDialog");
                         btnKosarka.setBackgroundResource(R.drawable.interest_button_pressed);
                         isItEventKosarka += 1;
-                        selectedItems.add("Košarka");
+                        if (!selectedItems.contains("Košarka")) {
+                            selectedItems.add("Košarka");
+
+                        }
+
 
                     }
                 } else {
@@ -411,7 +418,6 @@ public class CreateUser extends AppCompatActivity {
         });
 
 
-
         btnSah.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -423,7 +429,10 @@ public class CreateUser extends AppCompatActivity {
                         skillDialog.show(getFragmentManager(), "SahSkillDialog");
                         btnSah.setBackgroundResource(R.drawable.interest_button_pressed);
                         isItEventSah += 1;
-                        selectedItems.add("Šah");
+                        if (!selectedItems.contains("Šah")) {
+                            selectedItems.add("Šah");
+
+                        }
 
                     }
                 } else {
@@ -448,14 +457,16 @@ public class CreateUser extends AppCompatActivity {
                     if (btnDruzenje.isPressed()) {
                         btnDruzenje.setBackgroundResource(R.drawable.interest_button_pressed);
                         isItEventDruzenje += 1;
-                        selectedItems.add("Druženje");
+                        if (!selectedItems.contains("Druženje")) {
+                            selectedItems.add("Druženje");
+                        }
 
                     }
                 } else {
                     btnDruzenje.setPressed(false);
                     if (!btnDruzenje.isPressed()) {
                         btnDruzenje.setBackgroundResource(R.drawable.interest_button);
-                        isItEventDruzenje+= 1;
+                        isItEventDruzenje += 1;
                         selectedItems.remove("Druženje");
                     }
 
@@ -472,7 +483,9 @@ public class CreateUser extends AppCompatActivity {
                     if (btnDrustveneIgre.isPressed()) {
                         btnDrustveneIgre.setBackgroundResource(R.drawable.interest_button_pressed);
                         isItEventDrustvene += 1;
-                        selectedItems.add("Društvene igre");
+                        if (!selectedItems.contains("Društvene igre")) {
+                            selectedItems.add("Društvene igre");
+                        }
 
                     }
                 } else {
@@ -481,6 +494,31 @@ public class CreateUser extends AppCompatActivity {
                         btnDrustveneIgre.setBackgroundResource(R.drawable.interest_button);
                         isItEventDrustvene += 1;
                         selectedItems.remove("Društvene igre");
+                    }
+
+                }
+
+            }
+        });
+
+        btnOstalo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isItEventOstalo % 2 == 0) {
+                    btnOstalo.setPressed(true);
+                    if (btnOstalo.isPressed()) {
+                        btnOstalo.setBackgroundResource(R.drawable.interest_button_pressed);
+                        isItEventOstalo += 1;
+                        if (!selectedItems.contains("Ostalo")) {
+                            selectedItems.add("Ostalo");
+                        }
+                    }
+                } else {
+                    btnOstalo.setPressed(false);
+                    if (!btnOstalo.isPressed()) {
+                        btnOstalo.setBackgroundResource(R.drawable.interest_button);
+                        isItEventOstalo += 1;
+                        selectedItems.remove("Ostalo");
                     }
 
                 }

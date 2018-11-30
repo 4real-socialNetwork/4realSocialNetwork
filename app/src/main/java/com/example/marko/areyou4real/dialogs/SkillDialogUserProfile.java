@@ -20,6 +20,8 @@ public class SkillDialogUserProfile extends DialogFragment {
     CheckBox mCheckBox1;
     CheckBox mCheckBox2;
     CheckBox mCheckBox3;
+    CheckBox mCheckBox4;
+    CheckBox mCheckBox5;
     UserProfile activity1;
 
 
@@ -39,6 +41,8 @@ public class SkillDialogUserProfile extends DialogFragment {
         mCheckBox1 = v.findViewById(R.id.checkBox1);
         mCheckBox2 = v.findViewById(R.id.checkBox2);
         mCheckBox3 = v.findViewById(R.id.checkBox3);
+        mCheckBox4 = v.findViewById(R.id.checkBox4);
+        mCheckBox5 = v.findViewById(R.id.checkBox5);
 
             activity1 = (UserProfile) getActivity();
 
@@ -133,6 +137,46 @@ public class SkillDialogUserProfile extends DialogFragment {
                     mCheckBox1.setChecked(true);
                     mCheckBox2.setChecked(true);
                     mCheckBox3.setChecked(false);
+                }
+
+
+            }
+        });
+        mCheckBox4.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mCheckBox1.setChecked(true);
+                    mCheckBox2.setChecked(true);
+                    mCheckBox3.setChecked(true);
+                    mCheckBox4.setChecked(true);
+                    skill = 4;
+                } else {
+                    mCheckBox1.setChecked(true);
+                    mCheckBox2.setChecked(true);
+                    mCheckBox3.setChecked(true);
+                    mCheckBox4.setChecked(false);
+                }
+
+
+            }
+        });
+        mCheckBox5.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mCheckBox1.setChecked(true);
+                    mCheckBox2.setChecked(true);
+                    mCheckBox3.setChecked(true);
+                    mCheckBox4.setChecked(true);
+                    mCheckBox5.setChecked(true);
+                    skill = 5;
+                } else {
+                    mCheckBox1.setChecked(true);
+                    mCheckBox2.setChecked(true);
+                    mCheckBox3.setChecked(true);
+                    mCheckBox4.setChecked(true);
+                    mCheckBox5.setChecked(false);
                 }
 
 

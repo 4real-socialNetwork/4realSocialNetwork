@@ -80,11 +80,13 @@ public class UserProfile extends AppCompatActivity {
     private Button btnSah;
     private Button btnDrustveneIgre;
     private Button btnDruzenje;
+    private Button btnOstalo;
     int isItEventNogomet = 4;
     int isItEventKosarka = 4;
     int isItEventSah = 4;
     int isItEventDruzenje = 4;
     int isItEventDrustvene = 4;
+    int isItEventOstalo = 4;
     int interestNumber;
     private int nogometSkill;
     private int kosarkaSkill;
@@ -93,6 +95,7 @@ public class UserProfile extends AppCompatActivity {
     private TextView tvNogometSkill;
     private TextView tvKosarkaSkill;
     private TextView tvSahSkill;
+    private ProgressBar progressBarPicture;
 
 
     @Override
@@ -123,6 +126,8 @@ public class UserProfile extends AppCompatActivity {
         tvNogometSkill = findViewById(R.id.tvNogometSkill);
         tvKosarkaSkill = findViewById(R.id.tvKosarkaSkill);
         tvSahSkill = findViewById(R.id.tvSahSkill);
+        progressBarPicture = findViewById(R.id.progressBarPicture);
+        btnOstalo = findViewById(R.id.btnOstalo);
 
 
         updateUI();
@@ -186,7 +191,7 @@ public class UserProfile extends AppCompatActivity {
                 userProfilePictureUrl = user.getProfilePictureUrl();
                 name.setText(user.getName());
                 tvPercent.setText(user.getPercentage() + " %");
-
+                pictureUrl = userProfilePictureUrl;
                 nogometSkill = user.getNogometSkill();
                 kosarkaSkill = user.getKosarkaSkill();
                 sahSkill = user.getSahSkill();
@@ -248,6 +253,15 @@ public class UserProfile extends AppCompatActivity {
 
                                 }
                             }
+                        case "Ostalo":
+                            btnOstalo.setPressed(true);
+                            if(btnOstalo.isPressed()){
+                                btnOstalo.setBackgroundResource(R.drawable.interest_button_pressed);
+                                isItEventOstalo +=1;
+                                if(!selectedItems.contains("Ostalo")){
+                                    selectedItems.add("Ostalo");
+                                }
+                            }
                     }
                 }
 
@@ -263,11 +277,13 @@ public class UserProfile extends AppCompatActivity {
         String userDocRef = tinyDB.getString("USERDOCREF");
 
         usersRef.document(userDocRef).update("range", current_range, "name", name.getText().toString(), "description",
-                userDescription.getText().toString(), "interests", selectedItems, "nogometSkill", nogometSkill, "kosarkaSkill", kosarkaSkill, "sahSkill", sahSkill
+                userDescription.getText().toString(), "interests", selectedItems, "nogometSkill", nogometSkill, "kosarkaSkill", kosarkaSkill, "sahSkill", sahSkill,
+                "profilePictureUrl",pictureUrl
         ).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 progressBar.setVisibility(View.INVISIBLE);
+                isPictureChanging = 0;
                 Toast.makeText(UserProfile.this, "Promjene spremljene", Toast.LENGTH_SHORT).show();
             }
         });
@@ -330,6 +346,7 @@ public class UserProfile extends AppCompatActivity {
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
                 && data != null && data.getData() != null) {
+            progressBarPicture.setVisibility(View.VISIBLE);
             mImageUri = data.getData();
             GlideApp.with(UserProfile.this)
                     .load(mImageUri)
@@ -356,6 +373,7 @@ public class UserProfile extends AppCompatActivity {
                                 updateUserProfile();
                                 isPictureChanging = 0;
                                 Toast.makeText(mContext, "Slika profila postavljena", Toast.LENGTH_SHORT).show();
+                                progressBarPicture.setVisibility(View.INVISIBLE);
 
                             }
                         });
@@ -551,6 +569,30 @@ public class UserProfile extends AppCompatActivity {
                         btnDrustveneIgre.setBackgroundResource(R.drawable.interest_button);
                         isItEventDrustvene += 1;
                         selectedItems.remove("Društvene igre");
+                    }
+
+                }
+
+            }
+        });
+        btnOstalo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isItEventOstalo % 2 == 0) {
+                    btnOstalo.setPressed(true);
+                    if (btnOstalo.isPressed()) {
+                        btnOstalo.setBackgroundResource(R.drawable.interest_button_pressed);
+                        isItEventOstalo += 1;
+                        if (!selectedItems.contains("Ostalo")) {
+                            selectedItems.add("Ostalo");
+                        }
+                    }
+                } else {
+                    btnOstalo.setPressed(false);
+                    if (!btnOstalo.isPressed()) {
+                        btnOstalo.setBackgroundResource(R.drawable.interest_button);
+                        isItEventOstalo += 1;
+                        selectedItems.remove("Ostalo");
                     }
 
                 }

@@ -16,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.marko.areyou4real.adapter.SearchUserRecyclerViewAdapter;
+import com.example.marko.areyou4real.dialogs.DeleteGroupWarning;
+import com.example.marko.areyou4real.dialogs.WarningDialog;
 import com.example.marko.areyou4real.model.Group;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -44,8 +46,9 @@ public class InsideGroup extends AppCompatActivity {
     private ArrayList<String> usersInArray = new ArrayList<>();
     private String groupName = "";
     private FloatingActionButton fab;
-    private ArrayList<User> userList= new ArrayList<>();
-
+    private ArrayList<User> userList = new ArrayList<>();
+    private Group group;
+    private boolean admin = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,11 +62,12 @@ public class InsideGroup extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(InsideGroup.this, GroupChatRoom.class);
                 intent.putExtra("GROUPID", groupId);
-                intent.putStringArrayListExtra("USERS_IN_GROUP",usersInArray);
+                intent.putStringArrayListExtra("USERS_IN_GROUP", usersInArray);
                 startActivity(intent);
             }
         });
 
+        invalidateOptionsMenu();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -81,22 +85,61 @@ public class InsideGroup extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         if (item.getItemId() == android.R.id.home) {
             finish();
+        }
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.leaveGroup: if(item.getTitle().equals("Izađi iz grupe")){
+                ArrayList<String> usersInGroup = group.getListOfUsersInGroup();
+                usersInGroup.remove(FirebaseAuth.getInstance().getUid());
+                groupsRef.document(groupId).set(group);
+                Toast.makeText(getApplicationContext(), "Izašli ste iz grupe " + groupName, Toast.LENGTH_LONG).show();
+                finish();
+
+            }else if(item.getTitle().equals("Obriši grupu")){
+                DeleteGroupWarning warningDialog = new DeleteGroupWarning();
+                warningDialog.setCancelable(true);
+                warningDialog.show(getFragmentManager(), "WarningDialog");
+            }
+
+
+                return true;
+            case R.id.inviteFriend:
+                Toast.makeText(getApplicationContext(), "Item 2 Selected", Toast.LENGTH_LONG).show();
+                return true;
         }
         return true;
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (admin) {
+            menu.findItem(R.id.leaveGroup).setTitle("Obriši grupu");
+        } else {
+            menu.findItem(R.id.leaveGroup).setTitle("Izađi iz grupe");
+        }
+
+        return super.onPrepareOptionsMenu(menu);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.group_menu, menu);
+
+
+        return true;
+    }
+
 
     public void setmAdapter() {
         mRecyclerView = findViewById(R.id.container);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(mContext);
-        mAdapter = new SearchUserRecyclerViewAdapter(mContext,userList);
+        mAdapter = new SearchUserRecyclerViewAdapter(mContext, userList);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter.notifyDataSetChanged();
@@ -110,7 +153,10 @@ public class InsideGroup extends AppCompatActivity {
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Group group = documentSnapshot.toObject(Group.class);
+                group = documentSnapshot.toObject(Group.class);
+                if (group.getGroupAdmin().equals(FirebaseAuth.getInstance().getUid())) {
+                    admin = true;
+                }
                 usersInArray.addAll(group.getListOfUsersInGroup());
                 setmAdapter();
                 for (String value : usersInArray) {
@@ -121,7 +167,7 @@ public class InsideGroup extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 for (DocumentSnapshot dc : task.getResult()) {
                                     User user = dc.toObject(User.class);
-                                    if(!user.getUserId().equals(FirebaseAuth.getInstance().getUid())){
+                                    if (!user.getUserId().equals(FirebaseAuth.getInstance().getUid())) {
                                         userList.add(user);
                                         mAdapter.notifyDataSetChanged();
                                     }
@@ -141,4 +187,9 @@ public class InsideGroup extends AppCompatActivity {
 
 
     }
+    public void deleteGroup(){
+        groupsRef.document(groupId).delete();
+
+    }
+
 }
