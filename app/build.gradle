@@ -4,7 +4,7 @@ apply plugin: 'com.google.gms.google-services'
 android {
     compileSdkVersion 27
     defaultConfig {
-        applicationId "com.whyWontYouWork.marko.areyou4real"
+        applicationId "com.real4real.marko.areyou4real"
         minSdkVersion 19
         targetSdkVersion 27
         versionCode 1
