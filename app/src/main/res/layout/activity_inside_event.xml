@@ -112,7 +112,7 @@
         android:layout_marginEnd="32dp"
         android:background="@drawable/interest_button"
         android:clickable="false"
-        android:text="Podjeli"
+        android:text="Podijeli"
         android:textColor="?android:colorBackground"
         android:textSize="8sp"
         android:visibility="invisible"

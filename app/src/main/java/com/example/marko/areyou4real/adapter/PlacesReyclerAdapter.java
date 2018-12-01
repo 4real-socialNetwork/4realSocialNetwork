@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +52,7 @@ public class PlacesReyclerAdapter extends RecyclerView.Adapter<PlacesReyclerAdap
                 Toast.makeText(mContext, "not yet", Toast.LENGTH_SHORT).show();
             }
         });
+        GlideApp.with(mContext).load(R.drawable.logo).circleCrop().into(holder.placePicture);
     }
 
     @Override
@@ -62,12 +64,14 @@ public class PlacesReyclerAdapter extends RecyclerView.Adapter<PlacesReyclerAdap
         TextView mPlaceName;
         TextView mPlacePrice;
         LinearLayout mLayout;
+        ImageView placePicture;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             this.mPlaceName = itemView.findViewById(R.id.tvPlace_name);
             this.mPlacePrice = itemView.findViewById(R.id.tvPlace_price);
             this.mLayout = itemView.findViewById(R.id.mPlaceLayout);
+            this.placePicture = itemView.findViewById(R.id.placePicture);
 
         }
     }

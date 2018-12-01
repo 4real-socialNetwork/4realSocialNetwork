@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         client = LocationServices.getFusedLocationProviderClient(MainActivity.this);
         getLocationPermission();
         createLocationRequest();
+        getLastKnownLocation();
         getUserDocumentId();
 
 
@@ -246,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        //getLastKnownLocation();
+        getLastKnownLocation();
     }
 
 
