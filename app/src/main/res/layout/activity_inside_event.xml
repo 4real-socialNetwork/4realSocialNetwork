@@ -128,7 +128,7 @@
         android:layout_marginTop="148dp"
         android:background="@drawable/interest_button"
         android:clickable="false"
-        android:text="Javni event"
+        android:text="Učini javnim"
         android:textColor="?android:colorBackground"
         android:textSize="8sp"
         android:visibility="invisible"
@@ -428,6 +428,41 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline12"
         app:layout_constraintVertical_bias="0.392" />
+
+    <TextView
+        android:id="@+id/tvInvisible"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+            android:text="DOGAĐAJ ZAVRŠEN"
+        android:textSize="25sp"
+        android:textColor="@color/colorRed"
+        app:layout_constraintBottom_toTopOf="@+id/guideline13"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.527"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline11"
+        app:layout_constraintVertical_bias="0.133" />
+
+    <TextView
+        android:id="@+id/tvAdmin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Moj event"
+        android:visibility="invisible"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintBottom_toTopOf="@+id/guideline13"
+        app:layout_constraintEnd_toStartOf="@+id/btnCompleteEvent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline12"
+        app:layout_constraintVertical_bias="0.783" />
+
 
 
 </android.support.constraint.ConstraintLayout>

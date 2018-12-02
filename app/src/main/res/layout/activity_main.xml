@@ -17,6 +17,7 @@
             app:title="4real"
             app:titleTextColor="#fff"
             android:layout_gravity="left"
+            app:subtitle="beta"
             app:navigationIcon="@drawable/logo_transparent_tab"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"

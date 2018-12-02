@@ -35,21 +35,23 @@
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Password" />
+                android:hint="Lozinka"
+                android:inputType="textWebPassword"/>
+
+            <EditText
+                android:layout_margin="2dp"
+                android:id="@+id/etPasswordCheck"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ponovite lozinku"
+                android:inputType="textWebPassword"/>
 
             <EditText
                 android:layout_margin="2dp"
                 android:id="@+id/etName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Ime" />
-
-            <EditText
-                android:layout_margin="2dp"
-                android:id="@+id/etSurname"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Prezime" />
+                android:hint="Ime i prezime" />
 
             <EditText
                 android:layout_margin="2dp"

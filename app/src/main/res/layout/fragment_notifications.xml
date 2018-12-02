@@ -12,6 +12,7 @@
         android:theme="@style/AppTheme.AppBarOverlay">
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
+            app:subtitle="beta"
             app:navigationIcon="@drawable/logo_transparent_tab"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"

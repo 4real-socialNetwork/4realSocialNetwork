@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.marko.areyou4real">
+    package="com.gg4real.marko.areyou4real">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -14,14 +14,14 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service android:name=".service.MyFirebaseMessagingService">
+        <service android:name="com.gg4real.marko.areyou4real.service.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
         <activity
-            android:name=".LoginCreateUser.LoginActivity"
+            android:name="com.gg4real.marko.areyou4real.LoginCreateUser.LoginActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing">
             <intent-filter>
@@ -31,46 +31,46 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginCreateUser.CreateUser"
+            android:name="com.gg4real.marko.areyou4real.LoginCreateUser.CreateUser"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing"/>
         <activity
-            android:name=".MainActivity"
+            android:name="com.gg4real.marko.areyou4real.MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".InsideEvent"
+            android:name="com.gg4real.marko.areyou4real.InsideEvent"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="OPEN_NOTIFICATION" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".CreateEvent"
+            android:name="com.gg4real.marko.areyou4real.CreateEvent"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".UserProfile"
+            android:name="com.gg4real.marko.areyou4real.UserProfile"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".InsideGroup"
+            android:name="com.gg4real.marko.areyou4real.InsideGroup"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".CreateGroup"
+            android:name="com.gg4real.marko.areyou4real.CreateGroup"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing"/>
         <activity
-            android:name=".OtherUserProfile"
+            android:name="com.gg4real.marko.areyou4real.OtherUserProfile"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".NotificationsActivity"
+            android:name="com.gg4real.marko.areyou4real.NotificationsActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".PlacesActivity"
+            android:name="com.gg4real.marko.areyou4real.PlacesActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".GroupChatRoom"
+            android:name="com.gg4real.marko.areyou4real.GroupChatRoom"
             android:screenOrientation="portrait" />
 
         <!--
@@ -89,43 +89,43 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".MapsActivity"
+            android:name="com.gg4real.marko.areyou4real.MapsActivity"
             android:label="@string/title_activity_maps"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".EventChatRoom"
+            android:name="com.gg4real.marko.areyou4real.EventChatRoom"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SearchUserActivity"
+            android:name="com.gg4real.marko.areyou4real.SearchUserActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".MyFriendsActivity"
+            android:name="com.gg4real.marko.areyou4real.MyFriendsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MyGroupsSelector"
+            android:name="com.gg4real.marko.areyou4real.MyGroupsSelector"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".fragments.InsideEventMap"
+            android:name="com.gg4real.marko.areyou4real.fragments.InsideEventMap"
             android:label="@string/title_activity_inside_event_map"
             android:screenOrientation="portrait"></activity>
         <activity
-            android:name=".MyFriendsSelectorActivity"
+            android:name="com.gg4real.marko.areyou4real.MyFriendsSelectorActivity"
             android:label="FriendSelector"
             android:screenOrientation="portrait"></activity>
 
         <activity
-            android:name=".CompleteEventActivity"
+            android:name="com.gg4real.marko.areyou4real.CompleteEventActivity"
             android:label="FriendSelector"
             android:screenOrientation="portrait"></activity>
 
         <activity
-            android:name=".UsersInEventActivity"
+            android:name="com.gg4real.marko.areyou4real.UsersInEventActivity"
             android:label="FriendSelector"
             android:screenOrientation="portrait"></activity>
 
         <activity
-            android:name=".RemovePlayerActivity"
+            android:name="com.gg4real.marko.areyou4real.RemovePlayerActivity"
             android:label="FriendSelector"
             android:screenOrientation="portrait"></activity>
     </application>
